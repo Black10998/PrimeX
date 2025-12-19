@@ -145,8 +145,18 @@ const NotificationsModule = {
 
         PrimeXCore.showModal('Create System Notification', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Create', class: 'btn-primary', onclick: 'document.getElementById("createNotificationForm").requestSubmit()' }
+            { text: 'Create', class: 'btn-primary', onclick: 'NotificationsModule.submitCreate()' }
         ]);
+        
+        setTimeout(() => {
+            const form = document.getElementById('createNotificationForm');
+            if (form) form.onsubmit = (e) => NotificationsModule.createNotification(e);
+        }, 100);
+    },
+    
+    submitCreate() {
+        const form = document.getElementById('createNotificationForm');
+        if (form) form.requestSubmit();
     },
 
     async createNotification(event) {
