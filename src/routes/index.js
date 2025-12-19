@@ -28,7 +28,7 @@ const notificationController = require('../controllers/notificationController');
 const apiSettingsController = require('../controllers/apiSettingsController');
 
 // Import v3 middleware
-const { authenticateAdmin, authenticateUser, checkSubscription } = require('../middleware/auth.middleware');
+const { authenticateAdmin, authenticateUser, authenticateAdminOrUser, checkSubscription } = require('../middleware/auth.middleware');
 const { apiLimiter } = require('../middleware/rateLimiter');
 
 // Authentication routes (v3)
@@ -110,11 +110,11 @@ router.put('/admin/servers/:id', authenticateAdmin, serverController.validateSer
 router.delete('/admin/servers/:id', authenticateAdmin, serverController.deleteServer);
 router.get('/admin/servers/:id/test', authenticateAdmin, serverController.testServerConnection);
 
-// Notifications
-router.get('/notifications', authenticateUser, notificationController.getUserNotifications);
-router.get('/notifications/unread-count', authenticateUser, notificationController.getUnreadCount);
-router.put('/notifications/:id/read', authenticateUser, notificationController.markAsRead);
-router.put('/notifications/read-all', authenticateUser, notificationController.markAllAsRead);
+// Notifications (accessible by both admins and users)
+router.get('/notifications', authenticateAdminOrUser, notificationController.getUserNotifications);
+router.get('/notifications/unread-count', authenticateAdminOrUser, notificationController.getUnreadCount);
+router.put('/notifications/:id/read', authenticateAdminOrUser, notificationController.markAsRead);
+router.put('/notifications/read-all', authenticateAdminOrUser, notificationController.markAllAsRead);
 router.post('/admin/notifications', authenticateAdmin, notificationController.createNotification);
 
 // API Settings

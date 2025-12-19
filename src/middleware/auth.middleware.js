@@ -286,6 +286,86 @@ async function checkDeviceLimit(req, res, next) {
 }
 
 /**
+ * Authenticate either admin or user token
+ * Used for endpoints that both admins and users can access
+ */
+async function authenticateAdminOrUser(req, res, next) {
+    try {
+        const token = extractToken(req);
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: 'Access token required'
+            });
+        }
+
+        // Verify token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Check if it's an admin token
+        if (decoded.isAdmin && decoded.adminId) {
+            const [admins] = await pool.query(
+                'SELECT id, username, role, status FROM admin_users WHERE id = ?',
+                [decoded.adminId]
+            );
+
+            if (admins.length > 0 && admins[0].status === 'active') {
+                req.admin = {
+                    id: admins[0].id,
+                    username: admins[0].username,
+                    role: admins[0].role
+                };
+                return next();
+            }
+        }
+
+        // Check if it's a user token
+        if (decoded.userId) {
+            const [users] = await pool.query(
+                'SELECT id, username, email, status FROM users WHERE id = ?',
+                [decoded.userId]
+            );
+
+            if (users.length > 0) {
+                req.user = {
+                    id: users[0].id,
+                    username: users[0].username,
+                    email: users[0].email,
+                    status: users[0].status
+                };
+                return next();
+            }
+        }
+
+        return res.status(401).json({
+            success: false,
+            message: 'Invalid token'
+        });
+
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid token'
+            });
+        }
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({
+                success: false,
+                message: 'Token expired'
+            });
+        }
+
+        logger.error('Authentication error', { error: error.message });
+        return res.status(500).json({
+            success: false,
+            message: 'Authentication failed'
+        });
+    }
+}
+
+/**
  * Extract token from request
  * @param {Object} req 
  * @returns {string|null}
@@ -301,6 +381,7 @@ function extractToken(req) {
 module.exports = {
     authenticateAdmin,
     authenticateUser,
+    authenticateAdminOrUser,
     checkSubscription,
     checkDeviceLimit
 };
