@@ -118,26 +118,35 @@ const PrimeXCore = {
     // Routing
     loadModule(moduleName) {
         const modules = {
-            'dashboard': DashboardModule,
-            'users': UsersModule,
-            'subscriptions': SubscriptionsModule,
-            'plans': PlansModule,
-            'codes': CodesModule,
-            'channels': ChannelsModule,
-            'categories': CategoriesModule,
-            'servers': ServersModule,
-            'devices': DevicesModule,
-            'logs': LogsModule,
-            'settings': SettingsModule,
-            'api-settings': APISettingsModule,
-            'security': SecurityModule,
-            'notifications': NotificationsModule
+            'dashboard': typeof DashboardModule !== 'undefined' ? DashboardModule : null,
+            'users': typeof UsersModule !== 'undefined' ? UsersModule : null,
+            'subscriptions': typeof SubscriptionsModule !== 'undefined' ? SubscriptionsModule : null,
+            'plans': typeof PlansModule !== 'undefined' ? PlansModule : null,
+            'codes': typeof CodesModule !== 'undefined' ? CodesModule : null,
+            'channels': typeof ChannelsModule !== 'undefined' ? ChannelsModule : null,
+            'categories': typeof CategoriesModule !== 'undefined' ? CategoriesModule : null,
+            'servers': typeof ServersModule !== 'undefined' ? ServersModule : null,
+            'devices': typeof DevicesModule !== 'undefined' ? DevicesModule : null,
+            'logs': typeof LogsModule !== 'undefined' ? LogsModule : null,
+            'settings': typeof SettingsModule !== 'undefined' ? SettingsModule : null,
+            'api-settings': typeof APISettingsModule !== 'undefined' ? APISettingsModule : null,
+            'security': typeof SecurityModule !== 'undefined' ? SecurityModule : null,
+            'notifications': typeof NotificationsModule !== 'undefined' ? NotificationsModule : null
         };
 
         const module = modules[moduleName];
         if (module) {
             document.getElementById('pageTitle').textContent = module.title;
             module.render();
+        } else {
+            console.error(`Module "${moduleName}" not found or not loaded`);
+            document.getElementById('contentArea').innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <p style="color: var(--danger);">Module "${moduleName}" failed to load. Please refresh the page.</p>
+                    </div>
+                </div>
+            `;
         }
     },
 
