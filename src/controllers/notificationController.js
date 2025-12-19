@@ -5,17 +5,11 @@ const logger = require('../utils/logger');
 class NotificationController {
     async getUserNotifications(req, res) {
         try {
-            const userId = req.user?.id || req.xtreamUser?.id || req.admin?.id;
+            const userId = req.user?.id || req.xtreamUser?.id;
+            const isAdmin = !!req.admin;
             const { unread_only } = req.query;
 
-            if (!userId) {
-                return res.status(401).json(formatResponse(false, null, 'Unauthorized'));
-            }
-
-            // Determine if this is an admin or user request
-            const isAdmin = !!req.admin;
-            const userField = isAdmin ? 'admin_id' : 'user_id';
-
+            // Admins see all notifications, users see only their own
             let query = `
                 SELECT 
                     id,
@@ -26,13 +20,26 @@ class NotificationController {
                     read_at,
                     created_at
                 FROM notifications
-                WHERE ${userField} = ?
             `;
 
-            const params = [userId];
+            const params = [];
 
-            if (unread_only === 'true') {
-                query += ' AND is_read = FALSE';
+            if (!isAdmin) {
+                // Regular users only see their own notifications
+                if (!userId) {
+                    return res.status(401).json(formatResponse(false, null, 'Unauthorized'));
+                }
+                query += ' WHERE user_id = ?';
+                params.push(userId);
+                
+                if (unread_only === 'true') {
+                    query += ' AND is_read = FALSE';
+                }
+            } else {
+                // Admins see all notifications
+                if (unread_only === 'true') {
+                    query += ' WHERE is_read = FALSE';
+                }
             }
 
             query += ' ORDER BY created_at DESC LIMIT 50';
@@ -41,27 +48,33 @@ class NotificationController {
 
             return res.json(formatResponse(true, { notifications }));
         } catch (error) {
-            logger.error('Get notifications error:', { error: error.message });
+            logger.error('Get notifications error:', { error: error.message, stack: error.stack });
             return res.status(500).json(formatResponse(false, null, 'Failed to fetch notifications'));
         }
     }
 
     async markAsRead(req, res) {
         try {
-            const userId = req.user?.id || req.xtreamUser?.id || req.admin?.id;
+            const userId = req.user?.id || req.xtreamUser?.id;
+            const isAdmin = !!req.admin;
             const { id } = req.params;
 
-            if (!userId) {
+            if (!isAdmin && !userId) {
                 return res.status(401).json(formatResponse(false, null, 'Unauthorized'));
             }
 
-            const isAdmin = !!req.admin;
-            const userField = isAdmin ? 'admin_id' : 'user_id';
-
-            await pool.query(
-                `UPDATE notifications SET is_read = TRUE, read_at = NOW() WHERE id = ? AND ${userField} = ?`,
-                [id, userId]
-            );
+            // Admins can mark any notification as read, users only their own
+            if (isAdmin) {
+                await pool.query(
+                    'UPDATE notifications SET is_read = TRUE, read_at = NOW() WHERE id = ?',
+                    [id]
+                );
+            } else {
+                await pool.query(
+                    'UPDATE notifications SET is_read = TRUE, read_at = NOW() WHERE id = ? AND user_id = ?',
+                    [id, userId]
+                );
+            }
 
             return res.json(formatResponse(true, null, 'Notification marked as read'));
         } catch (error) {
@@ -72,19 +85,24 @@ class NotificationController {
 
     async markAllAsRead(req, res) {
         try {
-            const userId = req.user?.id || req.xtreamUser?.id || req.admin?.id;
+            const userId = req.user?.id || req.xtreamUser?.id;
+            const isAdmin = !!req.admin;
 
-            if (!userId) {
+            if (!isAdmin && !userId) {
                 return res.status(401).json(formatResponse(false, null, 'Unauthorized'));
             }
 
-            const isAdmin = !!req.admin;
-            const userField = isAdmin ? 'admin_id' : 'user_id';
-
-            await pool.query(
-                `UPDATE notifications SET is_read = TRUE, read_at = NOW() WHERE ${userField} = ? AND is_read = FALSE`,
-                [userId]
-            );
+            // Admins can mark all notifications as read, users only their own
+            if (isAdmin) {
+                await pool.query(
+                    'UPDATE notifications SET is_read = TRUE, read_at = NOW() WHERE is_read = FALSE'
+                );
+            } else {
+                await pool.query(
+                    'UPDATE notifications SET is_read = TRUE, read_at = NOW() WHERE user_id = ? AND is_read = FALSE',
+                    [userId]
+                );
+            }
 
             return res.json(formatResponse(true, null, 'All notifications marked as read'));
         } catch (error) {
@@ -95,20 +113,22 @@ class NotificationController {
 
     async getUnreadCount(req, res) {
         try {
-            const userId = req.user?.id || req.xtreamUser?.id || req.admin?.id;
+            const userId = req.user?.id || req.xtreamUser?.id;
+            const isAdmin = !!req.admin;
 
-            if (!userId) {
-                return res.status(401).json(formatResponse(false, null, 'Unauthorized'));
+            // Admins see count of all unread notifications, users see only their own
+            let query = 'SELECT COUNT(*) as count FROM notifications WHERE is_read = FALSE';
+            const params = [];
+
+            if (!isAdmin) {
+                if (!userId) {
+                    return res.status(401).json(formatResponse(false, null, 'Unauthorized'));
+                }
+                query += ' AND user_id = ?';
+                params.push(userId);
             }
 
-            const isAdmin = !!req.admin;
-            const userField = isAdmin ? 'admin_id' : 'user_id';
-
-            const [result] = await pool.query(
-                `SELECT COUNT(*) as count FROM notifications 
-                WHERE ${userField} = ? AND is_read = FALSE`,
-                [userId]
-            );
+            const [result] = await pool.query(query, params);
 
             return res.json(formatResponse(true, { unread_count: result[0].count }));
         } catch (error) {
