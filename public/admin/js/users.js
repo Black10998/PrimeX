@@ -262,7 +262,7 @@ const UsersModule = {
         }
 
         const modalContent = `
-            <form id="createUserForm" onsubmit="UsersModule.createUser(event); return false;">
+            <form id="createUserForm">
                 <div class="form-group">
                     <label class="form-label">Username *</label>
                     <input type="text" class="form-control" name="username" required minlength="3">
@@ -292,8 +292,23 @@ const UsersModule = {
 
         PrimeXCore.showModal('Create New User', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Create User', class: 'btn-primary', onclick: 'document.getElementById("createUserForm").requestSubmit()' }
+            { text: 'Create User', class: 'btn-primary', onclick: 'UsersModule.submitCreateUser()' }
         ]);
+        
+        // Attach form submit handler after modal is created
+        setTimeout(() => {
+            const form = document.getElementById('createUserForm');
+            if (form) {
+                form.onsubmit = (e) => UsersModule.createUser(e);
+            }
+        }, 100);
+    },
+    
+    submitCreateUser() {
+        const form = document.getElementById('createUserForm');
+        if (form) {
+            form.requestSubmit();
+        }
     },
 
     async createUser(event) {
