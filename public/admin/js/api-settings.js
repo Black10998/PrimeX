@@ -38,11 +38,16 @@ const APISettingsModule = {
                         </h4>
 
                         <div class="form-group">
-                            <label class="form-label">API Base URL</label>
+                            <label class="form-label">API Base URL *</label>
                             <input type="url" class="form-control" id="xtreamBaseUrl" name="xtream_base_url" 
                                    value="${this.settings.xtream_base_url || 'https://prime-x.live'}" 
-                                   placeholder="https://prime-x.live">
-                            <small style="color: var(--text-muted);">Base URL for Xtream API and M3U generation</small>
+                                   placeholder="https://prime-x.live"
+                                   required>
+                            <small style="color: var(--text-muted);">
+                                <strong>Important:</strong> This URL is used for Xtream API and M3U generation. 
+                                IPTV apps will connect to this URL.
+                                ${this.settings.xtream_base_url ? `<br><strong>Current:</strong> ${this.settings.xtream_base_url}` : ''}
+                            </small>
                         </div>
 
                         <div class="form-group">
@@ -172,6 +177,8 @@ const APISettingsModule = {
 
     async saveSettings() {
         try {
+            PrimeXCore.showLoading(true);
+            
             const formData = new FormData(document.getElementById('apiSettingsForm'));
             const settings = Object.fromEntries(formData);
             
@@ -181,14 +188,17 @@ const APISettingsModule = {
             settings.cors_credentials = formData.has('cors_credentials');
 
             // Save to backend
-            await PrimeXCore.apiCall('/admin/settings/api', {
-                method: 'POST',
-                body: JSON.stringify(settings)
-            });
+            await PrimeXCore.apiCall('/admin/settings/api', 'POST', settings);
 
             PrimeXCore.showToast('API settings saved successfully', 'success');
+            
+            // Reload settings to show saved values
+            await this.loadSettings();
+            this.renderSettings();
         } catch (error) {
             PrimeXCore.showToast('Failed to save API settings: ' + error.message, 'error');
+        } finally {
+            PrimeXCore.showLoading(false);
         }
     },
 
