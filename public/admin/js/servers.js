@@ -157,7 +157,7 @@ const ServersModule = {
 
     showCreateModal() {
         const modalContent = `
-            <form id="createServerForm" onsubmit="ServersModule.createServer(event)">
+            <form id="createServerForm">
                 <div class="form-group">
                     <label class="form-label">Server Name *</label>
                     <input type="text" class="form-control" name="name" required>
@@ -194,8 +194,23 @@ const ServersModule = {
 
         PrimeXCore.showModal('Add Streaming Server', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Create', class: 'btn-primary', onclick: 'document.getElementById("createServerForm").requestSubmit()' }
+            { text: 'Create', class: 'btn-primary', onclick: 'ServersModule.submitCreateServer()' }
         ]);
+        
+        // Attach form submit handler after modal is created
+        setTimeout(() => {
+            const form = document.getElementById('createServerForm');
+            if (form) {
+                form.onsubmit = (e) => ServersModule.createServer(e);
+            }
+        }, 100);
+    },
+    
+    submitCreateServer() {
+        const form = document.getElementById('createServerForm');
+        if (form) {
+            form.requestSubmit();
+        }
     },
 
     async createServer(event) {
@@ -221,7 +236,7 @@ const ServersModule = {
         if (!server) return;
 
         const modalContent = `
-            <form id="editServerForm" onsubmit="ServersModule.updateServer(event, ${serverId})">
+            <form id="editServerForm">
                 <div class="form-group">
                     <label class="form-label">Server Name *</label>
                     <input type="text" class="form-control" name="name" value="${PrimeXCore.escapeHtml(server.name)}" required>
@@ -262,8 +277,26 @@ const ServersModule = {
 
         PrimeXCore.showModal('Edit Server', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Update', class: 'btn-primary', onclick: 'document.getElementById("editServerForm").requestSubmit()' }
+            { text: 'Update', class: 'btn-primary', onclick: 'ServersModule.submitEditServer()' }
         ]);
+        
+        // Store serverId for the submit handler
+        this.editingServerId = serverId;
+        
+        // Attach form submit handler after modal is created
+        setTimeout(() => {
+            const form = document.getElementById('editServerForm');
+            if (form) {
+                form.onsubmit = (e) => ServersModule.updateServer(e, serverId);
+            }
+        }, 100);
+    },
+    
+    submitEditServer() {
+        const form = document.getElementById('editServerForm');
+        if (form) {
+            form.requestSubmit();
+        }
     },
 
     async updateServer(event, serverId) {
