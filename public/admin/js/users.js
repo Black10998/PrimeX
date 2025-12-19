@@ -235,23 +235,41 @@ const UsersModule = {
         let plansOptions = '<option value="">Select Plan</option>';
         try {
             const response = await PrimeXCore.apiCall('/admin/plans');
-            const plans = Array.isArray(response.data) ? response.data : (response.data.plans || []);
-            plansOptions += plans.map(plan => 
-                `<option value="${plan.id}">${plan.name} (${plan.duration_days} days - ${plan.max_devices} devices)</option>`
-            ).join('');
+            
+            // Normalize plans array
+            let plans = [];
+            if (response.data) {
+                if (Array.isArray(response.data)) {
+                    plans = response.data;
+                } else if (response.data.plans && Array.isArray(response.data.plans)) {
+                    plans = response.data.plans;
+                }
+            }
+            
+            if (plans.length > 0) {
+                plansOptions += plans.map(plan => {
+                    const planName = plan.name || plan.name_en || 'Unnamed Plan';
+                    const duration = plan.duration_days || 30;
+                    const devices = plan.max_devices || 1;
+                    return `<option value="${plan.id}">${planName} (${duration} days - ${devices} devices)</option>`;
+                }).join('');
+            } else {
+                plansOptions += '<option value="" disabled>No plans available - Create plans first</option>';
+            }
         } catch (error) {
             console.error('Failed to load plans:', error);
+            plansOptions += '<option value="" disabled>Error loading plans</option>';
         }
 
         const modalContent = `
-            <form id="createUserForm" onsubmit="UsersModule.createUser(event)">
+            <form id="createUserForm" onsubmit="UsersModule.createUser(event); return false;">
                 <div class="form-group">
                     <label class="form-label">Username *</label>
-                    <input type="text" class="form-control" name="username" required>
+                    <input type="text" class="form-control" name="username" required minlength="3">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password *</label>
-                    <input type="password" class="form-control" name="password" required>
+                    <input type="password" class="form-control" name="password" required minlength="6">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Email</label>
@@ -266,7 +284,7 @@ const UsersModule = {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Max Devices (optional)</label>
-                    <input type="number" class="form-control" name="max_devices" placeholder="Leave empty to use plan default" min="1">
+                    <input type="number" class="form-control" name="max_devices" placeholder="Leave empty to use plan default" min="1" max="10">
                     <small style="color: var(--text-muted);">Override plan's device limit</small>
                 </div>
             </form>
@@ -280,17 +298,49 @@ const UsersModule = {
 
     async createUser(event) {
         event.preventDefault();
-        const formData = new FormData(event.target);
-        const data = Object.fromEntries(formData);
-
-        PrimeXCore.showLoading(true);
+        event.stopPropagation();
+        
         try {
-            await PrimeXCore.apiCall('/admin/users', 'POST', data);
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            
+            // Validate required fields
+            if (!data.username || data.username.length < 3) {
+                PrimeXCore.showToast('Username must be at least 3 characters', 'error');
+                return;
+            }
+            
+            if (!data.password || data.password.length < 6) {
+                PrimeXCore.showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            if (!data.plan_id) {
+                PrimeXCore.showToast('Please select a subscription plan', 'error');
+                return;
+            }
+            
+            // Convert plan_id to number
+            data.plan_id = parseInt(data.plan_id);
+            
+            // Convert max_devices to number if provided
+            if (data.max_devices) {
+                data.max_devices = parseInt(data.max_devices);
+            }
+            
+            PrimeXCore.showLoading(true);
+            
+            const response = await PrimeXCore.apiCall('/admin/users', 'POST', data);
+            
             PrimeXCore.showToast('User created successfully', 'success');
             PrimeXCore.closeModal();
+            
+            // Reload users list
             await this.loadUsers();
+            
         } catch (error) {
-            PrimeXCore.showToast('Failed to create user: ' + error.message, 'error');
+            console.error('Create user error:', error);
+            PrimeXCore.showToast('Failed to create user: ' + (error.message || 'Unknown error'), 'error');
         } finally {
             PrimeXCore.showLoading(false);
         }
