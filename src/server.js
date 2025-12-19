@@ -96,16 +96,20 @@ app.use('/api/v1', apiRoutes);
 
 // Admin panel (MUST be before Xtream routes)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/admin/dashboard-v2.html'));
+    res.sendFile(path.join(__dirname, '../public/admin/enterprise-panel.html'));
 });
 
 app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/admin/enterprise-panel.html'));
+});
+
+// Legacy admin panels (backup)
+app.get('/admin/legacy', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/admin/dashboard-v2.html'));
 });
 
-// Legacy admin panel (backup)
-app.get('/admin/legacy', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/admin/index.html'));
+app.get('/admin/old', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/admin/index-old.html'));
 });
 
 // Xtream API routes (MUST be after admin routes)

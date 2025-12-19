@@ -20,6 +20,11 @@ const PrimeXCore = {
 
     // Authentication
     checkAuth() {
+        // Skip auth check if on login page
+        if (window.location.pathname.includes('login.html')) {
+            return true;
+        }
+        
         if (!this.config.token) {
             window.location.href = '/admin/login.html';
             return false;
