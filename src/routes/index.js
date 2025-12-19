@@ -25,6 +25,7 @@ const dashboardController = require('../controllers/dashboardController');
 const twoFactorController = require('../controllers/twoFactorController');
 const adminSessionController = require('../controllers/adminSessionController');
 const notificationController = require('../controllers/notificationController');
+const apiSettingsController = require('../controllers/apiSettingsController');
 
 // Import v3 middleware
 const { authenticateAdmin, authenticateUser, checkSubscription } = require('../middleware/auth.middleware');
@@ -115,6 +116,10 @@ router.get('/notifications/unread-count', authenticateUser, notificationControll
 router.put('/notifications/:id/read', authenticateUser, notificationController.markAsRead);
 router.put('/notifications/read-all', authenticateUser, notificationController.markAllAsRead);
 router.post('/admin/notifications', authenticateAdmin, notificationController.createNotification);
+
+// API Settings
+router.get('/admin/settings/api', authenticateAdmin, apiSettingsController.getSettings);
+router.post('/admin/settings/api', authenticateAdmin, apiSettingsController.updateSettings);
 
 // Public/User endpoints
 router.get('/categories', apiLimiter, authenticateUser, checkSubscription, categoryController.getAllCategories);

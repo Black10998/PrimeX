@@ -230,7 +230,19 @@ const UsersModule = {
         this.renderUsersList();
     },
 
-    showCreateModal() {
+    async showCreateModal() {
+        // Load plans first
+        let plansOptions = '<option value="">Select Plan</option>';
+        try {
+            const response = await PrimeXCore.apiCall('/admin/plans');
+            const plans = Array.isArray(response.data) ? response.data : (response.data.plans || []);
+            plansOptions += plans.map(plan => 
+                `<option value="${plan.id}">${plan.name} (${plan.duration_days} days - ${plan.max_devices} devices)</option>`
+            ).join('');
+        } catch (error) {
+            console.error('Failed to load plans:', error);
+        }
+
         const modalContent = `
             <form id="createUserForm" onsubmit="UsersModule.createUser(event)">
                 <div class="form-group">
@@ -246,25 +258,16 @@ const UsersModule = {
                     <input type="email" class="form-control" name="email">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Customer Type</label>
-                    <select class="form-control" name="customer_type">
-                        <option value="regular">Regular</option>
-                        <option value="vip">VIP</option>
-                        <option value="reseller">Reseller</option>
-                        <option value="test">Test</option>
+                    <label class="form-label">Subscription Plan *</label>
+                    <select class="form-control" name="plan_id" required>
+                        ${plansOptions}
                     </select>
+                    <small style="color: var(--text-muted);">Plan determines duration and device limits</small>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Subscription Days</label>
-                    <input type="number" class="form-control" name="subscription_days" value="30">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Max Devices</label>
-                    <input type="number" class="form-control" name="max_devices" value="1" min="1">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Notes</label>
-                    <textarea class="form-control" name="notes" rows="3"></textarea>
+                    <label class="form-label">Max Devices (optional)</label>
+                    <input type="number" class="form-control" name="max_devices" placeholder="Leave empty to use plan default" min="1">
+                    <small style="color: var(--text-muted);">Override plan's device limit</small>
                 </div>
             </form>
         `;

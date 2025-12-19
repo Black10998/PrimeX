@@ -4,9 +4,21 @@
 
 const APISettingsModule = {
     title: 'API / Xtream Settings',
+    settings: {},
 
     async render() {
+        await this.loadSettings();
         this.renderSettings();
+    },
+
+    async loadSettings() {
+        try {
+            const response = await PrimeXCore.apiCall('/admin/settings/api');
+            this.settings = response.data || {};
+        } catch (error) {
+            console.error('Failed to load API settings:', error);
+            this.settings = {};
+        }
     },
 
     renderSettings() {
@@ -27,8 +39,10 @@ const APISettingsModule = {
 
                         <div class="form-group">
                             <label class="form-label">API Base URL</label>
-                            <input type="url" class="form-control" name="xtream_base_url" value="http://your-domain.com" readonly>
-                            <small style="color: var(--text-muted);">Base URL for Xtream API (configured in server settings)</small>
+                            <input type="url" class="form-control" id="xtreamBaseUrl" name="xtream_base_url" 
+                                   value="${this.settings.xtream_base_url || 'https://prime-x.live'}" 
+                                   placeholder="https://prime-x.live">
+                            <small style="color: var(--text-muted);">Base URL for Xtream API and M3U generation</small>
                         </div>
 
                         <div class="form-group">
@@ -156,17 +170,26 @@ const APISettingsModule = {
         document.getElementById('contentArea').innerHTML = content;
     },
 
-    saveSettings() {
-        const formData = new FormData(document.getElementById('apiSettingsForm'));
-        const settings = Object.fromEntries(formData);
-        
-        settings.enable_xtream_api = formData.has('enable_xtream_api');
-        settings.enable_m3u = formData.has('enable_m3u');
-        settings.enable_rate_limiting = formData.has('enable_rate_limiting');
-        settings.cors_credentials = formData.has('cors_credentials');
+    async saveSettings() {
+        try {
+            const formData = new FormData(document.getElementById('apiSettingsForm'));
+            const settings = Object.fromEntries(formData);
+            
+            settings.enable_xtream_api = formData.has('enable_xtream_api');
+            settings.enable_m3u = formData.has('enable_m3u');
+            settings.enable_rate_limiting = formData.has('enable_rate_limiting');
+            settings.cors_credentials = formData.has('cors_credentials');
 
-        PrimeXCore.showToast('API settings saved successfully', 'success');
-        console.log('API Settings:', settings);
+            // Save to backend
+            await PrimeXCore.apiCall('/admin/settings/api', {
+                method: 'POST',
+                body: JSON.stringify(settings)
+            });
+
+            PrimeXCore.showToast('API settings saved successfully', 'success');
+        } catch (error) {
+            PrimeXCore.showToast('Failed to save API settings: ' + error.message, 'error');
+        }
     },
 
     generateAPIKey() {
