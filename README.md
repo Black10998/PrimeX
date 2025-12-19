@@ -1,4 +1,4 @@
-# 🎬 PrimeX IPTV System v3.0.2
+# 🎬 PrimeX IPTV System v11.0.0
 
 **Complete IPTV Backend & Management System - Production Ready**
 
@@ -7,29 +7,32 @@ Support: **info@paxdes.com**
 
 ---
 
-## 🚀 Version 3.0.2 - Critical Hotfix
+## ⚡ Zero-Configuration Deployment
 
-**Latest:** v3.0.2 - Fixed schema.sql execution (CRITICAL - fresh installations were broken)
+**One command to deploy everything:**
 
-**Previous:**
-- v3.0.1 - Fixed database initialization race condition
-- v3.0.0 - Authentication system rebuilt
+```bash
+git clone https://github.com/Black10998/PrimeX.git
+cd PrimeX
+./deploy.sh
+```
 
-## Version 3.0 - Authentication System Rebuilt
+That's it! The system will auto-configure and start.
 
-This is a **major release** with complete authentication rebuild:
+📖 **[Full Deployment Guide →](DEPLOY_INSTRUCTIONS.md)**
 
-✅ **Fixed admin login** - Proper bcrypt handling, works immediately  
-✅ **Unified response format** - Consistent JSON across all endpoints  
-✅ **Comprehensive logging** - All auth attempts tracked  
-✅ **Clean architecture** - Proper separation of concerns  
-✅ **No dead code** - Legacy logic removed  
-✅ **Production stable** - Thoroughly tested and verified  
-✅ **Clear error messages** - Easy debugging  
+---
 
-**Previous versions:**
-- v2.0: Environment validation & database architecture
-- v1.0: Initial release  
+## 🚀 Version 11.0.0 - Production Ready
+
+**Latest:** v11.0.0 - Zero-configuration deployment with automated setup
+
+✅ **One-command deployment** - No manual configuration needed  
+✅ **Auto-generated secrets** - Secure by default  
+✅ **Database auto-setup** - Creates and initializes everything  
+✅ **PM2 auto-configured** - Production-ready process management  
+✅ **Admin auto-created** - Ready to use immediately  
+✅ **Production optimized** - Best practices built-in  
 
 ---
 
@@ -101,87 +104,47 @@ PrimeX is a complete IPTV backend system with admin dashboard, user management, 
 
 ---
 
-## Quick Start
+## ⚡ Quick Start (Automated)
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Ubuntu 20.04+ (or similar Linux)
+- Node.js 18+
 - MySQL 8.0+
-- Linux VPS (Ubuntu 20.04+ recommended)
-- PM2 (for production)
+- Port 3000 available
 
-### Installation
+### One-Command Deployment
 
 ```bash
-# Clone repository
+# Clone and deploy
 git clone https://github.com/Black10998/PrimeX.git
 cd PrimeX
-
-# Install dependencies
-npm install
-
-# Configure environment
-cp .env.example .env
-nano .env
+./deploy.sh
 ```
 
-**Required .env Configuration:**
+The script will automatically:
+1. ✅ Check prerequisites
+2. ✅ Install dependencies
+3. ✅ Generate secure secrets
+4. ✅ Create .env file
+5. ✅ Setup MySQL database
+6. ✅ Initialize schema
+7. ✅ Create admin account
+8. ✅ Start with PM2
 
-```env
-# Database (REQUIRED - database name MUST be 'primex')
-# NO DEFAULTS - You MUST set DB_HOST
-DB_HOST=YOUR_DATABASE_HOST
-DB_PORT=3306
-DB_NAME=primex
-DB_USER=primex_user
-DB_PASSWORD=your_secure_password
+**You'll only need to provide:**
+- MySQL root password (one time)
 
-# JWT Secrets (Generate with: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))")
-JWT_SECRET=your_64_char_secret_here
-JWT_REFRESH_SECRET=another_64_char_secret_here
+**Everything else is automated!**
 
-# Admin
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=change_this_now
-ADMIN_EMAIL=info@paxdes.com
-```
+### Access Your System
 
-**Setup Database:**
+After deployment:
+- **Admin Panel**: `http://YOUR_SERVER_IP:3000`
+- **Username**: `admin`
+- **Password**: (shown after setup)
 
-```sql
-CREATE DATABASE primex CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'primex_user'@'YOUR_HOST' IDENTIFIED BY 'your_password';
-GRANT ALL PRIVILEGES ON primex.* TO 'primex_user'@'YOUR_HOST';
-FLUSH PRIVILEGES;
-```
-
-**Note:** Replace `YOUR_HOST` with actual host (e.g., `localhost`, `127.0.0.1`, or `%` for any host)
-
-**Initialize:**
-
-```bash
-# Initialize database
-npm run init-db
-
-# Generate subscription codes
-npm run generate-codes
-
-# Test (development)
-npm start
-
-# Production (PM2)
-pm2 start ecosystem.config.js
-pm2 save
-pm2 startup
-```
-
-**Access:**
-- Admin Panel: `http://your-server:3000`
-- Health Check: `http://your-server:3000/health`
-
-⚠️ **Change the default admin password immediately!**
-
-📖 **Full deployment guide:** See [DEPLOYMENT.md](DEPLOYMENT.md)
+📖 **[Complete Deployment Guide →](DEPLOY_INSTRUCTIONS.md)**
 
 ---
 
@@ -481,7 +444,16 @@ Unauthorized copying, distribution, or modification is prohibited.
 
 ## Changelog
 
-### Version 1.0.0 (Initial Release)
+### Version 11.0.0 (Current)
+- Zero-configuration automated deployment
+- Auto-generated secure secrets
+- Database auto-setup and initialization
+- Admin account auto-creation
+- PM2 production configuration
+- One-command deployment script
+- Complete deployment documentation
+
+### Version 10.0.0
 - Complete IPTV backend system
 - Admin dashboard with dark mode UI
 - User and subscription management
