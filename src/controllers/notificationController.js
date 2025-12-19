@@ -5,25 +5,28 @@ const logger = require('../utils/logger');
 class NotificationController {
     async getUserNotifications(req, res) {
         try {
-            const userId = req.user?.id || req.xtreamUser?.id;
+            const userId = req.user?.id || req.xtreamUser?.id || req.admin?.id;
             const { unread_only } = req.query;
-            const lang = req.headers['accept-language']?.includes('ar') ? 'ar' : 'en';
 
             if (!userId) {
                 return res.status(401).json(formatResponse(false, null, 'Unauthorized'));
             }
 
+            // Determine if this is an admin or user request
+            const isAdmin = !!req.admin;
+            const userField = isAdmin ? 'admin_id' : 'user_id';
+
             let query = `
                 SELECT 
                     id,
                     type,
-                    title_${lang} as title,
-                    message_${lang} as message,
+                    title,
+                    message,
                     is_read,
-                    created_at,
-                    expires_at
+                    read_at,
+                    created_at
                 FROM notifications
-                WHERE user_id = ?
+                WHERE ${userField} = ?
             `;
 
             const params = [userId];
@@ -32,7 +35,6 @@ class NotificationController {
                 query += ' AND is_read = FALSE';
             }
 
-            query += ' AND (expires_at IS NULL OR expires_at > NOW())';
             query += ' ORDER BY created_at DESC LIMIT 50';
 
             const [notifications] = await pool.query(query, params);
@@ -46,15 +48,18 @@ class NotificationController {
 
     async markAsRead(req, res) {
         try {
-            const userId = req.user?.id || req.xtreamUser?.id;
+            const userId = req.user?.id || req.xtreamUser?.id || req.admin?.id;
             const { id } = req.params;
 
             if (!userId) {
                 return res.status(401).json(formatResponse(false, null, 'Unauthorized'));
             }
 
+            const isAdmin = !!req.admin;
+            const userField = isAdmin ? 'admin_id' : 'user_id';
+
             await pool.query(
-                'UPDATE notifications SET is_read = TRUE WHERE id = ? AND user_id = ?',
+                `UPDATE notifications SET is_read = TRUE, read_at = NOW() WHERE id = ? AND ${userField} = ?`,
                 [id, userId]
             );
 
@@ -67,14 +72,17 @@ class NotificationController {
 
     async markAllAsRead(req, res) {
         try {
-            const userId = req.user?.id || req.xtreamUser?.id;
+            const userId = req.user?.id || req.xtreamUser?.id || req.admin?.id;
 
             if (!userId) {
                 return res.status(401).json(formatResponse(false, null, 'Unauthorized'));
             }
 
+            const isAdmin = !!req.admin;
+            const userField = isAdmin ? 'admin_id' : 'user_id';
+
             await pool.query(
-                'UPDATE notifications SET is_read = TRUE WHERE user_id = ? AND is_read = FALSE',
+                `UPDATE notifications SET is_read = TRUE, read_at = NOW() WHERE ${userField} = ? AND is_read = FALSE`,
                 [userId]
             );
 
@@ -87,16 +95,18 @@ class NotificationController {
 
     async getUnreadCount(req, res) {
         try {
-            const userId = req.user?.id || req.xtreamUser?.id;
+            const userId = req.user?.id || req.xtreamUser?.id || req.admin?.id;
 
             if (!userId) {
                 return res.status(401).json(formatResponse(false, null, 'Unauthorized'));
             }
 
+            const isAdmin = !!req.admin;
+            const userField = isAdmin ? 'admin_id' : 'user_id';
+
             const [result] = await pool.query(
                 `SELECT COUNT(*) as count FROM notifications 
-                WHERE user_id = ? AND is_read = FALSE 
-                AND (expires_at IS NULL OR expires_at > NOW())`,
+                WHERE ${userField} = ? AND is_read = FALSE`,
                 [userId]
             );
 

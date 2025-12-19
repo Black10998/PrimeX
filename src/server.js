@@ -99,13 +99,21 @@ app.get('/setup', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/setup.html'));
 });
 
-// Admin panel (MUST be before Xtream routes)
+// Admin panel routes (MUST be before Xtream routes)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/admin/enterprise-panel.html'));
 });
 
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/admin/enterprise-panel.html'));
+});
+
+app.get('/admin/enterprise-panel.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/admin/enterprise-panel.html'));
+});
+
+app.get('/admin/login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/admin/login.html'));
 });
 
 // Legacy admin panels (backup)
