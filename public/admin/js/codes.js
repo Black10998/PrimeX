@@ -134,7 +134,7 @@ const CodesModule = {
 
     showGenerateModal() {
         const modalContent = `
-            <form id="generateCodesForm" onsubmit="CodesModule.generateCodes(event)">
+            <form id="generateCodesForm">
                 <div class="form-group">
                     <label class="form-label">Number of Codes *</label>
                     <input type="number" class="form-control" name="count" value="10" min="1" max="1000" required>
@@ -152,8 +152,18 @@ const CodesModule = {
 
         PrimeXCore.showModal('Generate Subscription Codes', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Generate', class: 'btn-primary', onclick: 'document.getElementById("generateCodesForm").requestSubmit()' }
+            { text: 'Generate', class: 'btn-primary', onclick: 'CodesModule.submitGenerate()' }
         ]);
+        
+        setTimeout(() => {
+            const form = document.getElementById('generateCodesForm');
+            if (form) form.onsubmit = (e) => CodesModule.generateCodes(e);
+        }, 100);
+    },
+    
+    submitGenerate() {
+        const form = document.getElementById('generateCodesForm');
+        if (form) form.requestSubmit();
     },
 
     async generateCodes(event) {

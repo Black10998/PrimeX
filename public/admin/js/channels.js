@@ -189,7 +189,7 @@ const ChannelsModule = {
 
     showCreateModal() {
         const modalContent = `
-            <form id="createChannelForm" onsubmit="ChannelsModule.createChannel(event)">
+            <form id="createChannelForm">
                 <div class="form-group">
                     <label class="form-label">Name (English) *</label>
                     <input type="text" class="form-control" name="name_en" required>
@@ -232,8 +232,18 @@ const ChannelsModule = {
 
         PrimeXCore.showModal('Create Channel', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Create', class: 'btn-primary', onclick: 'document.getElementById("createChannelForm").requestSubmit()' }
+            { text: 'Create', class: 'btn-primary', onclick: 'ChannelsModule.submitCreate()' }
         ]);
+        
+        setTimeout(() => {
+            const form = document.getElementById('createChannelForm');
+            if (form) form.onsubmit = (e) => ChannelsModule.createChannel(e);
+        }, 100);
+    },
+    
+    submitCreate() {
+        const form = document.getElementById('createChannelForm');
+        if (form) form.requestSubmit();
     },
 
     async createChannel(event) {
@@ -259,7 +269,7 @@ const ChannelsModule = {
         if (!channel) return;
 
         const modalContent = `
-            <form id="editChannelForm" onsubmit="ChannelsModule.updateChannel(event, ${channelId})">
+            <form id="editChannelForm">
                 <div class="form-group">
                     <label class="form-label">Name (English) *</label>
                     <input type="text" class="form-control" name="name_en" value="${PrimeXCore.escapeHtml(channel.name_en)}" required>
@@ -306,8 +316,19 @@ const ChannelsModule = {
 
         PrimeXCore.showModal('Edit Channel', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Update', class: 'btn-primary', onclick: 'document.getElementById("editChannelForm").requestSubmit()' }
+            { text: 'Update', class: 'btn-primary', onclick: 'ChannelsModule.submitEdit()' }
         ]);
+        
+        this.editingChannelId = channelId;
+        setTimeout(() => {
+            const form = document.getElementById('editChannelForm');
+            if (form) form.onsubmit = (e) => ChannelsModule.updateChannel(e, channelId);
+        }, 100);
+    },
+    
+    submitEdit() {
+        const form = document.getElementById('editChannelForm');
+        if (form) form.requestSubmit();
     },
 
     async updateChannel(event, channelId) {
@@ -345,7 +366,7 @@ const ChannelsModule = {
 
     showM3UImport() {
         const modalContent = `
-            <form id="m3uImportForm" onsubmit="ChannelsModule.importM3U(event)">
+            <form id="m3uImportForm">
                 <div class="form-group">
                     <label class="form-label">M3U Playlist URL *</label>
                     <input type="url" class="form-control" name="m3u_url" required placeholder="http://example.com/playlist.m3u">
@@ -373,8 +394,18 @@ const ChannelsModule = {
 
         PrimeXCore.showModal('Import M3U Playlist', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Import', class: 'btn-success', onclick: 'document.getElementById("m3uImportForm").requestSubmit()' }
+            { text: 'Import', class: 'btn-success', onclick: 'ChannelsModule.submitImport()' }
         ]);
+        
+        setTimeout(() => {
+            const form = document.getElementById('m3uImportForm');
+            if (form) form.onsubmit = (e) => ChannelsModule.importM3U(e);
+        }, 100);
+    },
+    
+    submitImport() {
+        const form = document.getElementById('m3uImportForm');
+        if (form) form.requestSubmit();
     },
 
     async importM3U(event) {

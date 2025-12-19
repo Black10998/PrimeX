@@ -93,7 +93,7 @@ const PlansModule = {
 
     showCreateModal() {
         const modalContent = `
-            <form id="createPlanForm" onsubmit="PlansModule.createPlan(event)">
+            <form id="createPlanForm">
                 <div class="form-group">
                     <label class="form-label">Name (English) *</label>
                     <input type="text" class="form-control" name="name_en" required>
@@ -123,8 +123,18 @@ const PlansModule = {
 
         PrimeXCore.showModal('Create Plan', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Create', class: 'btn-primary', onclick: 'document.getElementById("createPlanForm").requestSubmit()' }
+            { text: 'Create', class: 'btn-primary', onclick: 'PlansModule.submitCreate()' }
         ]);
+        
+        setTimeout(() => {
+            const form = document.getElementById('createPlanForm');
+            if (form) form.onsubmit = (e) => PlansModule.createPlan(e);
+        }, 100);
+    },
+    
+    submitCreate() {
+        const form = document.getElementById('createPlanForm');
+        if (form) form.requestSubmit();
     },
 
     async createPlan(event) {
@@ -150,7 +160,7 @@ const PlansModule = {
         if (!plan) return;
 
         const modalContent = `
-            <form id="editPlanForm" onsubmit="PlansModule.updatePlan(event, ${planId})">
+            <form id="editPlanForm">
                 <div class="form-group">
                     <label class="form-label">Name (English) *</label>
                     <input type="text" class="form-control" name="name_en" value="${PrimeXCore.escapeHtml(plan.name_en)}" required>
@@ -187,8 +197,19 @@ const PlansModule = {
 
         PrimeXCore.showModal('Edit Plan', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Update', class: 'btn-primary', onclick: 'document.getElementById("editPlanForm").requestSubmit()' }
+            { text: 'Update', class: 'btn-primary', onclick: 'PlansModule.submitEdit()' }
         ]);
+        
+        this.editingPlanId = planId;
+        setTimeout(() => {
+            const form = document.getElementById('editPlanForm');
+            if (form) form.onsubmit = (e) => PlansModule.updatePlan(e, planId);
+        }, 100);
+    },
+    
+    submitEdit() {
+        const form = document.getElementById('editPlanForm');
+        if (form) form.requestSubmit();
     },
 
     async updatePlan(event, planId) {

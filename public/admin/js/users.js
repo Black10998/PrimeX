@@ -366,7 +366,7 @@ const UsersModule = {
         if (!user) return;
 
         const modalContent = `
-            <form id="editUserForm" onsubmit="UsersModule.updateUser(event, ${userId})">
+            <form id="editUserForm">
                 <div class="form-group">
                     <label class="form-label">Username</label>
                     <input type="text" class="form-control" name="username" value="${PrimeXCore.escapeHtml(user.username)}" required>
@@ -404,8 +404,19 @@ const UsersModule = {
 
         PrimeXCore.showModal('Edit User', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Update', class: 'btn-primary', onclick: 'document.getElementById("editUserForm").requestSubmit()' }
+            { text: 'Update', class: 'btn-primary', onclick: 'UsersModule.submitEditUser()' }
         ]);
+        
+        this.editingUserId = userId;
+        setTimeout(() => {
+            const form = document.getElementById('editUserForm');
+            if (form) form.onsubmit = (e) => UsersModule.updateUser(e, userId);
+        }, 100);
+    },
+    
+    submitEditUser() {
+        const form = document.getElementById('editUserForm');
+        if (form) form.requestSubmit();
     },
 
     async updateUser(event, userId) {
@@ -431,7 +442,7 @@ const UsersModule = {
         if (!user) return;
 
         const modalContent = `
-            <form id="extendForm" onsubmit="UsersModule.extendSubscription(event, ${userId})">
+            <form id="extendForm">
                 <p>Extend subscription for: <strong>${PrimeXCore.escapeHtml(user.username)}</strong></p>
                 <p>Current end date: <strong>${this.formatSubscriptionEnd(user.subscription_end)}</strong></p>
                 <div class="form-group">
@@ -533,7 +544,7 @@ const UsersModule = {
         if (!user) return;
 
         const modalContent = `
-            <form id="passwordForm" onsubmit="UsersModule.updatePassword(event, ${userId})">
+            <form id="passwordForm">
                 <p>Change password for: <strong>${PrimeXCore.escapeHtml(user.username)}</strong></p>
                 <div class="form-group">
                     <label class="form-label">New Password</label>

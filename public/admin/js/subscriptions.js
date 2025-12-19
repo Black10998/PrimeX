@@ -240,7 +240,7 @@ const SubscriptionsModule = {
         if (!user) return;
 
         const modalContent = `
-            <form id="extendSubForm" onsubmit="SubscriptionsModule.submitExtend(event, ${userId})">
+            <form id="extendSubForm">
                 <p>Extend subscription for: <strong>${PrimeXCore.escapeHtml(user.username)}</strong></p>
                 <p>Current end: <strong>${this.formatEndDate(user.subscription_end)}</strong></p>
                 <div class="form-group">

@@ -114,7 +114,7 @@ const NotificationsModule = {
 
     showCreateModal() {
         const modalContent = `
-            <form id="createNotificationForm" onsubmit="NotificationsModule.createNotification(event)">
+            <form id="createNotificationForm">
                 <div class="form-group">
                     <label class="form-label">Notification Type</label>
                     <select class="form-control" name="type" required>

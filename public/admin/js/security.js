@@ -72,7 +72,7 @@ const SecurityModule = {
                         <i class="fas fa-key"></i> Change Admin Password
                     </h4>
 
-                    <form id="changePasswordForm" onsubmit="SecurityModule.changePassword(event)" style="max-width: 500px; margin-bottom: 30px;">
+                    <form id="changePasswordForm" style="max-width: 500px; margin-bottom: 30px;">
                         <div class="form-group">
                             <label class="form-label">Current Password</label>
                             <input type="password" class="form-control" name="current_password" required>
@@ -181,6 +181,15 @@ const SecurityModule = {
         `;
 
         document.getElementById('contentArea').innerHTML = content;
+        
+        // Attach form handlers after DOM is ready
+        setTimeout(() => {
+            const pwdForm = document.getElementById('changePasswordForm');
+            if (pwdForm) pwdForm.onsubmit = (e) => SecurityModule.changePassword(e);
+            
+            const tfaForm = document.getElementById('verify2FAForm');
+            if (tfaForm) tfaForm.onsubmit = (e) => SecurityModule.verify2FA(e);
+        }, 100);
     },
 
     async enable2FA() {
@@ -196,7 +205,7 @@ const SecurityModule = {
                     <img src="${qrCode}" style="max-width: 250px; margin: 20px auto;">
                     <p style="margin-top: 20px;"><strong>Secret Key:</strong></p>
                     <code style="font-size: 14px; padding: 10px; background: var(--bg-tertiary); display: block; margin: 10px 0;">${secret}</code>
-                    <form id="verify2FAForm" onsubmit="SecurityModule.verify2FA(event)" style="margin-top: 20px;">
+                    <form id="verify2FAForm" style="margin-top: 20px;">
                         <div class="form-group">
                             <label class="form-label">Enter 6-digit code from your app</label>
                             <input type="text" class="form-control" name="token" required pattern="[0-9]{6}" maxlength="6" style="text-align: center; font-size: 24px; letter-spacing: 5px;">

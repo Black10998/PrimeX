@@ -91,7 +91,7 @@ const CategoriesModule = {
 
     showCreateModal() {
         const modalContent = `
-            <form id="createCategoryForm" onsubmit="CategoriesModule.createCategory(event)">
+            <form id="createCategoryForm">
                 <div class="form-group">
                     <label class="form-label">Name (English) *</label>
                     <input type="text" class="form-control" name="name_en" required>
@@ -109,8 +109,18 @@ const CategoriesModule = {
 
         PrimeXCore.showModal('Create Category', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Create', class: 'btn-primary', onclick: 'document.getElementById("createCategoryForm").requestSubmit()' }
+            { text: 'Create', class: 'btn-primary', onclick: 'CategoriesModule.submitCreate()' }
         ]);
+        
+        setTimeout(() => {
+            const form = document.getElementById('createCategoryForm');
+            if (form) form.onsubmit = (e) => CategoriesModule.createCategory(e);
+        }, 100);
+    },
+    
+    submitCreate() {
+        const form = document.getElementById('createCategoryForm');
+        if (form) form.requestSubmit();
     },
 
     async createCategory(event) {
@@ -136,7 +146,7 @@ const CategoriesModule = {
         if (!category) return;
 
         const modalContent = `
-            <form id="editCategoryForm" onsubmit="CategoriesModule.updateCategory(event, ${categoryId})">
+            <form id="editCategoryForm">
                 <div class="form-group">
                     <label class="form-label">Name (English) *</label>
                     <input type="text" class="form-control" name="name_en" value="${PrimeXCore.escapeHtml(category.name_en)}" required>
@@ -161,8 +171,19 @@ const CategoriesModule = {
 
         PrimeXCore.showModal('Edit Category', modalContent, [
             { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-            { text: 'Update', class: 'btn-primary', onclick: 'document.getElementById("editCategoryForm").requestSubmit()' }
+            { text: 'Update', class: 'btn-primary', onclick: 'CategoriesModule.submitEdit()' }
         ]);
+        
+        this.editingCategoryId = categoryId;
+        setTimeout(() => {
+            const form = document.getElementById('editCategoryForm');
+            if (form) form.onsubmit = (e) => CategoriesModule.updateCategory(e, categoryId);
+        }, 100);
+    },
+    
+    submitEdit() {
+        const form = document.getElementById('editCategoryForm');
+        if (form) form.requestSubmit();
     },
 
     async updateCategory(event, categoryId) {
