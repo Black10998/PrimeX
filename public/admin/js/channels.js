@@ -19,9 +19,23 @@ const ChannelsModule = {
         PrimeXCore.showLoading(true);
         try {
             const response = await PrimeXCore.apiCall('/admin/channels');
-            this.channels = response.data || [];
+            
+            // Normalize response - ensure channels is always an array
+            if (response.data) {
+                if (Array.isArray(response.data)) {
+                    this.channels = response.data;
+                } else if (response.data.channels && Array.isArray(response.data.channels)) {
+                    this.channels = response.data.channels;
+                } else {
+                    this.channels = [];
+                }
+            } else {
+                this.channels = [];
+            }
+            
             this.renderChannelsList();
         } catch (error) {
+            this.channels = [];
             PrimeXCore.showToast('Failed to load channels', 'error');
         } finally {
             PrimeXCore.showLoading(false);

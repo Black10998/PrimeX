@@ -18,9 +18,21 @@ const LogsModule = {
         PrimeXCore.showLoading(true);
         try {
             const response = await PrimeXCore.apiCall('/admin/dashboard/stats');
-            this.logs = response.data.recent_activity || [];
+            
+            // Normalize response - ensure logs is always an array
+            if (response.data && response.data.recent_activity) {
+                if (Array.isArray(response.data.recent_activity)) {
+                    this.logs = response.data.recent_activity;
+                } else {
+                    this.logs = [];
+                }
+            } else {
+                this.logs = [];
+            }
+            
             this.renderLogsList();
         } catch (error) {
+            this.logs = [];
             PrimeXCore.showToast('Failed to load activity logs', 'error');
         } finally {
             PrimeXCore.showLoading(false);

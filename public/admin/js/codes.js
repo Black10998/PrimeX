@@ -18,9 +18,23 @@ const CodesModule = {
         PrimeXCore.showLoading(true);
         try {
             const response = await PrimeXCore.apiCall('/admin/codes');
-            this.codes = response.data || [];
+            
+            // Normalize response - ensure codes is always an array
+            if (response.data) {
+                if (Array.isArray(response.data)) {
+                    this.codes = response.data;
+                } else if (response.data.codes && Array.isArray(response.data.codes)) {
+                    this.codes = response.data.codes;
+                } else {
+                    this.codes = [];
+                }
+            } else {
+                this.codes = [];
+            }
+            
             this.renderCodesList();
         } catch (error) {
+            this.codes = [];
             PrimeXCore.showToast('Failed to load codes', 'error');
         } finally {
             PrimeXCore.showLoading(false);

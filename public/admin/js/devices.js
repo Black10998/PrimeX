@@ -19,20 +19,43 @@ const DevicesModule = {
         try {
             // Get all users to access their devices
             const usersResponse = await PrimeXCore.apiCall('/admin/users');
-            this.users = usersResponse.data || [];
+            
+            // Normalize users response
+            if (usersResponse.data) {
+                if (Array.isArray(usersResponse.data)) {
+                    this.users = usersResponse.data;
+                } else if (usersResponse.data.users && Array.isArray(usersResponse.data.users)) {
+                    this.users = usersResponse.data.users;
+                } else {
+                    this.users = [];
+                }
+            } else {
+                this.users = [];
+            }
             
             // Collect all devices from all users
             this.devices = [];
             for (const user of this.users) {
                 try {
                     const devicesResponse = await PrimeXCore.apiCall(`/admin/users/${user.id}/devices`);
-                    const userDevices = (devicesResponse.data || []).map(device => ({
+                    
+                    // Normalize devices response
+                    let userDevices = [];
+                    if (devicesResponse.data) {
+                        if (Array.isArray(devicesResponse.data)) {
+                            userDevices = devicesResponse.data;
+                        } else if (devicesResponse.data.devices && Array.isArray(devicesResponse.data.devices)) {
+                            userDevices = devicesResponse.data.devices;
+                        }
+                    }
+                    
+                    const mappedDevices = userDevices.map(device => ({
                         ...device,
                         username: user.username,
                         userId: user.id,
                         userEmail: user.email
                     }));
-                    this.devices.push(...userDevices);
+                    this.devices.push(...mappedDevices);
                 } catch (error) {
                     // Skip if user has no devices
                 }

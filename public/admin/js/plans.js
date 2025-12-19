@@ -14,9 +14,23 @@ const PlansModule = {
         PrimeXCore.showLoading(true);
         try {
             const response = await PrimeXCore.apiCall('/admin/plans');
-            this.plans = response.data || [];
+            
+            // Normalize response - ensure plans is always an array
+            if (response.data) {
+                if (Array.isArray(response.data)) {
+                    this.plans = response.data;
+                } else if (response.data.plans && Array.isArray(response.data.plans)) {
+                    this.plans = response.data.plans;
+                } else {
+                    this.plans = [];
+                }
+            } else {
+                this.plans = [];
+            }
+            
             this.renderPlansList();
         } catch (error) {
+            this.plans = [];
             PrimeXCore.showToast('Failed to load plans', 'error');
         } finally {
             PrimeXCore.showLoading(false);

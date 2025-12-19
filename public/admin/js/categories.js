@@ -14,9 +14,23 @@ const CategoriesModule = {
         PrimeXCore.showLoading(true);
         try {
             const response = await PrimeXCore.apiCall('/admin/categories');
-            this.categories = response.data || [];
+            
+            // Normalize response - ensure categories is always an array
+            if (response.data) {
+                if (Array.isArray(response.data)) {
+                    this.categories = response.data;
+                } else if (response.data.categories && Array.isArray(response.data.categories)) {
+                    this.categories = response.data.categories;
+                } else {
+                    this.categories = [];
+                }
+            } else {
+                this.categories = [];
+            }
+            
             this.renderCategoriesList();
         } catch (error) {
+            this.categories = [];
             PrimeXCore.showToast('Failed to load categories', 'error');
         } finally {
             PrimeXCore.showLoading(false);

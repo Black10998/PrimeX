@@ -19,9 +19,23 @@ const UsersModule = {
         
         try {
             const response = await PrimeXCore.apiCall('/admin/users');
-            this.users = response.data || [];
+            
+            // Normalize response - ensure users is always an array
+            if (response.data) {
+                if (Array.isArray(response.data)) {
+                    this.users = response.data;
+                } else if (response.data.users && Array.isArray(response.data.users)) {
+                    this.users = response.data.users;
+                } else {
+                    this.users = [];
+                }
+            } else {
+                this.users = [];
+            }
+            
             this.renderUsersList();
         } catch (error) {
+            this.users = [];
             PrimeXCore.showToast('Failed to load users: ' + error.message, 'error');
             document.getElementById('contentArea').innerHTML = `
                 <div class="card">
@@ -145,6 +159,12 @@ const UsersModule = {
     },
 
     getFilteredUsers() {
+        // Ensure users is an array before filtering
+        if (!Array.isArray(this.users)) {
+            console.error('users is not an array:', this.users);
+            return [];
+        }
+        
         return this.users.filter(user => {
             const matchesSearch = !this.searchTerm || 
                 user.username.toLowerCase().includes(this.searchTerm.toLowerCase()) ||

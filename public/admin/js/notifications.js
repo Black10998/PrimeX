@@ -14,9 +14,23 @@ const NotificationsModule = {
         PrimeXCore.showLoading(true);
         try {
             const response = await PrimeXCore.apiCall('/notifications');
-            this.notifications = response.data || [];
+            
+            // Normalize response - ensure notifications is always an array
+            if (response.data) {
+                if (Array.isArray(response.data)) {
+                    this.notifications = response.data;
+                } else if (response.data.notifications && Array.isArray(response.data.notifications)) {
+                    this.notifications = response.data.notifications;
+                } else {
+                    this.notifications = [];
+                }
+            } else {
+                this.notifications = [];
+            }
+            
             this.renderNotifications();
         } catch (error) {
+            this.notifications = [];
             PrimeXCore.showToast('Failed to load notifications', 'error');
             this.renderNotifications();
         } finally {

@@ -186,7 +186,7 @@ const SettingsModule = {
                                 </div>
                                 <div>
                                     <div style="color: var(--text-muted); font-size: 12px; margin-bottom: 5px;">Node.js Version</div>
-                                    <div style="font-weight: 600;">${process?.version || 'N/A'}</div>
+                                    <div style="font-weight: 600;">${this.settings.nodeVersion || 'N/A'}</div>
                                 </div>
                             </div>
                         </div>

@@ -17,10 +17,24 @@ const ServersModule = {
                 PrimeXCore.apiCall('/admin/servers'),
                 PrimeXCore.apiCall('/admin/servers/stats')
             ]);
-            this.servers = serversResponse.data || [];
+            
+            // Normalize servers response
+            if (serversResponse.data) {
+                if (Array.isArray(serversResponse.data)) {
+                    this.servers = serversResponse.data;
+                } else if (serversResponse.data.servers && Array.isArray(serversResponse.data.servers)) {
+                    this.servers = serversResponse.data.servers;
+                } else {
+                    this.servers = [];
+                }
+            } else {
+                this.servers = [];
+            }
+            
             this.stats = statsResponse.data || {};
             this.renderServersList();
         } catch (error) {
+            this.servers = [];
             PrimeXCore.showToast('Failed to load servers', 'error');
         } finally {
             PrimeXCore.showLoading(false);

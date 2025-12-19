@@ -19,9 +19,23 @@ const SubscriptionsModule = {
         try {
             // Get all users with subscription info
             const response = await PrimeXCore.apiCall('/admin/users');
-            this.subscriptions = response.data || [];
+            
+            // Normalize response - ensure subscriptions is always an array
+            if (response.data) {
+                if (Array.isArray(response.data)) {
+                    this.subscriptions = response.data;
+                } else if (response.data.users && Array.isArray(response.data.users)) {
+                    this.subscriptions = response.data.users;
+                } else {
+                    this.subscriptions = [];
+                }
+            } else {
+                this.subscriptions = [];
+            }
+            
             this.renderSubscriptionsList();
         } catch (error) {
+            this.subscriptions = [];
             PrimeXCore.showToast('Failed to load subscriptions', 'error');
         } finally {
             PrimeXCore.showLoading(false);
