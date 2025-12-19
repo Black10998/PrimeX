@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeX IPTV - Admin Dashboard</title>
+    <link rel="stylesheet" href="/admin/enterprise-dark.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Login Page -->
+        <div id="loginPage" class="login-container">
+            <div class="login-box">
+                <h1 class="login-title">🎬 PrimeX Admin</h1>
+                <div id="loginError" class="alert alert-error hidden"></div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="username" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" class="form-input" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                </form>
+                <div class="footer">
+                    Developer: PAX | Support: info@paxdes.com
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="hidden">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-content">
+                    <div class="logo">🎬 PrimeX IPTV</div>
+                    <div class="user-info">
+                        <span id="adminUsername"></span>
+                        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="nav-menu">
+                    <div class="nav-item active" onclick="showSection('overview')">
+                        <div class="nav-icon">📊</div>
+                        <div>Dashboard</div>
+                    </div>
+                    <div class="nav-item" onclick="showSection('users')">
+                        <div class="nav-icon">👥</div>
+                        <div>Users</div>
+                    </div>
+                    <div class="nav-item" onclick="showSection('codes')">
+                        <div class="nav-icon">🎫</div>
+                        <div>Codes</div>
+                    </div>
+                    <div class="nav-item" onclick="showSection('channels')">
+                        <div class="nav-icon">📺</div>
+                        <div>Channels</div>
+                    </div>
+                    <div class="nav-item" onclick="showSection('categories')">
+                        <div class="nav-icon">📁</div>
+                        <div>Categories</div>
+                    </div>
+                    <div class="nav-item" onclick="showSection('servers')">
+                        <div class="nav-icon">🖥️</div>
+                        <div>Servers</div>
+                    </div>
+                    <div class="nav-item" onclick="showSection('plans')">
+                        <div class="nav-icon">💳</div>
+                        <div>Plans</div>
+                    </div>
+                    <div class="nav-item" onclick="showSection('clients')">
+                        <div class="nav-icon">📱</div>
+                        <div>Client Apps</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Overview Section -->
+                <div id="overviewSection" class="content-section">
+                    <h1>Dashboard Overview</h1>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Users</div>
+                            <div class="stat-value" id="totalUsers">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Active Subscriptions</div>
+                            <div class="stat-value" id="activeSubscriptions">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Channels</div>
+                            <div class="stat-value" id="totalChannels">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Active Servers</div>
+                            <div class="stat-value" id="activeServers">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="usersSection" class="content-section hidden">
+                    <div class="section-header">
+                        <h1>User Management</h1>
+                        <button class="btn btn-primary" onclick="showUserModal()">+ Add User</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Subscription End</th>
+                                    <th>Devices</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr><td colspan="7" class="text-center">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Codes Section -->
+                <div id="codesSection" class="content-section hidden">
+                    <div class="section-header">
+                        <h1>Subscription Codes</h1>
+                        <button class="btn btn-primary" onclick="showCodeModal()">+ Generate Codes</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Source</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                    <th>Used/Max</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="codesTableBody">
+                                <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Channels Section -->
+                <div id="channelsSection" class="content-section hidden">
+                    <div class="section-header">
+                        <h1>Channel Management</h1>
+                        <button class="btn btn-primary" onclick="showChannelModal()">+ Add Channel</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name (EN)</th>
+                                    <th>Name (AR)</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="channelsTableBody">
+                                <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Categories Section -->
+                <div id="categoriesSection" class="content-section hidden">
+                    <div class="section-header">
+                        <h1>Category Management</h1>
+                        <button class="btn btn-primary" onclick="showCategoryModal()">+ Add Category</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name (EN)</th>
+                                    <th>Name (AR)</th>
+                                    <th>Slug</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTableBody">
+                                <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Servers Section -->
+                <div id="serversSection" class="content-section hidden">
+                    <div class="section-header">
+                        <h1>Server Management</h1>
+                        <button class="btn btn-primary" onclick="showServerModal()">+ Add Server</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>URL</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Location</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="serversTableBody">
+                                <tr><td colspan="7" class="text-center">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Plans Section -->
+                <div id="plansSection" class="content-section hidden">
+                    <div class="section-header">
+                        <h1>Subscription Plans</h1>
+                        <button class="btn btn-primary" onclick="showPlanModal()">+ Add Plan</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name (EN)</th>
+                                    <th>Duration</th>
+                                    <th>Price</th>
+                                    <th>Max Devices</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="plansTableBody">
+                                <tr><td colspan="7" class="text-center">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Client Apps Section -->
+                <div id="clientsSection" class="content-section hidden">
+                    <h1>Client Applications & Connection Info</h1>
+                    <p>Loading client information...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Container -->
+        <div id="modalContainer"></div>
+    </div>
+
+    <script src="/admin/enterprise-v9.js"></script>
+</body>
+</html>

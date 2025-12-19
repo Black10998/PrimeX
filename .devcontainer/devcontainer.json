@@ -1,0 +1,7 @@
+{
+	"name": "PrimeX IPTV",
+	"image": "mcr.microsoft.com/devcontainers/universal:4.0.1-noble",
+	"features": {
+		"ghcr.io/devcontainers-contrib/features/mysql-homebrew:1": {}
+	}
+}

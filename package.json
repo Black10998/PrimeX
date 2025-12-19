@@ -1,0 +1,46 @@
+{
+  "name": "primex-iptv-system",
+  "version": "11.0.0",
+  "description": "PrimeX IPTV Backend System - Developer: PAX",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "init-db": "node src/scripts/initDatabase.js",
+    "generate-codes": "node src/scripts/generateCodes.js",
+    "migrate": "node src/scripts/applyMigration.js",
+    "check-subscriptions": "node src/scripts/checkSubscriptions.js"
+  },
+  "keywords": [
+    "iptv",
+    "streaming",
+    "backend",
+    "api"
+  ],
+  "author": "PAX <info@paxdes.com>",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.6.5",
+    "qrcode": "^1.5.4",
+    "speakeasy": "^2.0.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل النظام - PrimeX IPTV</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-lg);
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .header p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 32px;
+            margin-bottom: 24px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section h3 {
+            font-size: 24px;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .section p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+
+        .section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .section ul li {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            padding-right: 24px;
+            position: relative;
+        }
+
+        .section ul li:before {
+            content: "◀";
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-tertiary);
+            padding: 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-card h4 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-card p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .highlight-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .back-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/admin/dashboard-v2.html" class="back-btn">
+            <i class="fas fa-arrow-right"></i>
+            العودة إلى لوحة التحكم
+        </a>
+
+        <div class="header">
+            <h1><i class="fas fa-book"></i> دليل نظام PrimeX IPTV</h1>
+            <p>دليل شامل لفهم وإدارة نظام البث الاحترافي</p>
+        </div>
+
+        <!-- ما هو PrimeX IPTV -->
+        <div class="section">
+            <h2><i class="fas fa-tv"></i> ما هو نظام PrimeX IPTV؟</h2>
+            <p>
+                PrimeX IPTV هو نظام بث متقدم على مستوى المؤسسات مصمم لإدارة وتوزيع المحتوى المرئي عبر بروتوكول الإنترنت. 
+                تم بناء النظام من الصفر باستخدام أحدث التقنيات لتوفير منصة بث قابلة للتوسع وعالية الأداء.
+            </p>
+
+            <h3>الغرض من النظام</h3>
+            <p>
+                تم تطوير PrimeX لحل التحديات الرئيسية في صناعة البث الرقمي، بما في ذلك:
+            </p>
+            <ul>
+                <li>إدارة آلاف المستخدمين والاشتراكات بكفاءة</li>
+                <li>توزيع المحتوى عبر خوادم متعددة بشكل متوازن</li>
+                <li>مراقبة الأداء والاستخدام في الوقت الفعلي</li>
+                <li>التحكم الكامل في الوصول والصلاحيات</li>
+                <li>التكامل مع أنظمة Xtream Codes</li>
+            </ul>
+
+            <div class="highlight-box">
+                <p><strong>ملاحظة مهمة:</strong> PrimeX ليس مجرد لوحة تحكم بسيطة، بل هو نظام متكامل يوفر بنية تحتية كاملة لإدارة خدمات IPTV على نطاق واسع.</p>
+            </div>
+        </div>
+
+        <!-- لماذا PrimeX احترافي -->
+        <div class="section">
+            <h2><i class="fas fa-star"></i> لماذا PrimeX نظام احترافي على مستوى المؤسسات؟</h2>
+
+            <h3>البنية المعمارية</h3>
+            <p>
+                يعتمد النظام على معمارية موزعة حديثة تفصل بين طبقات التطبيق، مما يضمن:
+            </p>
+            <ul>
+                <li>استقلالية الخدمات وسهولة الصيانة</li>
+                <li>إمكانية التوسع الأفقي والعمودي</li>
+                <li>عزل الأخطاء ومنع تأثيرها على النظام بأكمله</li>
+                <li>مرونة في التطوير والتحديث</li>
+            </ul>
+
+            <h3>قابلية التوسع</h3>
+            <p>
+                تم تصميم PrimeX للتعامل مع النمو المستمر:
+            </p>
+            <ul>
+                <li>دعم ملايين المستخدمين المتزامنين</li>
+                <li>توزيع الحمل عبر خوادم متعددة</li>
+                <li>نظام تخزين مؤقت ذكي لتحسين الأداء</li>
+                <li>إمكانية إضافة خوادم جديدة دون توقف الخدمة</li>
+            </ul>
+
+            <h3>الأداء العالي</h3>
+            <ul>
+                <li>استجابة فورية لطلبات المستخدمين</li>
+                <li>تحسين استهلاك الموارد</li>
+                <li>معالجة متوازية للعمليات</li>
+                <li>ضغط البيانات وتحسين النقل</li>
+            </ul>
+
+            <h3>الأمان</h3>
+            <ul>
+                <li>تشفير شامل للبيانات الحساسة</li>
+                <li>مصادقة متعددة العوامل (2FA)</li>
+                <li>نظام صلاحيات متقدم</li>
+                <li>تسجيل كامل للعمليات والأنشطة</li>
+                <li>حماية ضد الهجمات الشائعة</li>
+            </ul>
+        </div>
+
+        <!-- كيف يعمل النظام -->
+        <div class="section">
+            <h2><i class="fas fa-cogs"></i> كيف يعمل النظام؟</h2>
+
+            <h3>المستخدمون والاشتراكات</h3>
+            <p>
+                يدير النظام دورة حياة المستخدم الكاملة من التسجيل إلى انتهاء الاشتراك:
+            </p>
+            <ul>
+                <li>إنشاء حسابات المستخدمين بمعلومات مفصلة</li>
+                <li>ربط الاشتراكات بخطط محددة</li>
+                <li>تتبع تواريخ البداية والانتهاء تلقائياً</li>
+                <li>إدارة حالات الاشتراك (نشط، منتهي، معلق)</li>
+                <li>تجديد الاشتراكات وتمديدها</li>
+            </ul>
+
+            <h3>الأجهزة والتحكم</h3>
+            <p>
+                يوفر النظام تحكماً دقيقاً في الأجهزة المسموح بها:
+            </p>
+            <ul>
+                <li>تحديد عدد الأجهزة لكل مستخدم</li>
+                <li>تتبع الأجهزة المتصلة في الوقت الفعلي</li>
+                <li>منع الاستخدام المتزامن غير المصرح به</li>
+                <li>إدارة قائمة الأجهزة المسجلة</li>
+            </ul>
+
+            <h3>الخوادم وتوزيع الحمل</h3>
+            <ul>
+                <li>إدارة خوادم البث المتعددة</li>
+                <li>توزيع المستخدمين بشكل متوازن</li>
+                <li>مراقبة صحة الخوادم وأدائها</li>
+                <li>التبديل التلقائي عند فشل خادم</li>
+            </ul>
+
+            <h3>الفئات والقنوات</h3>
+            <ul>
+                <li>تنظيم القنوات في فئات منطقية</li>
+                <li>إدارة روابط البث ومصادر المحتوى</li>
+                <li>تحديث معلومات القنوات بسهولة</li>
+                <li>ترتيب وتصنيف المحتوى</li>
+            </ul>
+
+            <h3>التتبع والحدود</h3>
+            <ul>
+                <li>مراقبة استخدام النطاق الترددي</li>
+                <li>تتبع عدد الاتصالات المتزامنة</li>
+                <li>فرض حدود الاستخدام تلقائياً</li>
+                <li>إنشاء تقارير مفصلة</li>
+            </ul>
+
+            <h3>التكامل مع Xtream</h3>
+            <p>
+                يدعم النظام التكامل الكامل مع بروتوكول Xtream Codes:
+            </p>
+            <ul>
+                <li>توافق مع تطبيقات IPTV الشائعة</li>
+                <li>دعم جميع نقاط النهاية القياسية</li>
+                <li>مزامنة البيانات والمحتوى</li>
+                <li>إدارة موحدة للخدمات</li>
+            </ul>
+        </div>
+
+        <!-- دليل الميزات الكامل -->
+        <div class="section">
+            <h2><i class="fas fa-list-check"></i> دليل الميزات الكامل</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fas fa-chart-line"></i> لوحة التحكم</h4>
+                    <p>عرض شامل للإحصائيات والمقاييس الرئيسية، مراقبة صحة النظام، تتبع الأداء في الوقت الفعلي</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><i class="fas fa-users"></i> إدارة المستخدمين</h4>
+                    <p>إنشاء وتعديل حسابات المستخدمين، إدارة الاشتراكات، تتبع الأجهزة، تعليق وتفعيل الحسابات</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><i class="fas fa-box"></i> خطط الاشتراك</h4>
+                    <p>إنشاء خطط مخصصة، تحديد الأسعار والمدد، تعيين حدود الأجهزة، إدارة الميزات</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><i class="fas fa-server"></i> إدارة الخوادم</h4>
+                    <p>إضافة وتكوين خوادم البث، مراقبة الأداء والحمل، توزيع المستخدمين، إدارة الصيانة</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><i class="fas fa-folder-tree"></i> الفئات</h4>
+                    <p>تنظيم المحتوى في فئات، ترتيب وتصنيف، إدارة الأيقونات والصور، تحديد الأولويات</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><i class="fas fa-ticket-alt"></i> أكواد الاشتراك</h4>
+                    <p>إنشاء أكواد تفعيل، تحديد المدة والخطة، تتبع الاستخدام، إدارة الصلاحية</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><i class="fas fa-mobile-alt"></i> تطبيقات المشغل</h4>
+                    <p>دعم تطبيقات متعددة، توافق مع الأجهزة المختلفة، تحديثات تلقائية، إدارة الإصدارات</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><i class="fas fa-circle"></i> المستخدمون المتصلون</h4>
+                    <p>عرض المستخدمين النشطين، تتبع الأجهزة المتصلة، مراقبة الاستخدام، قطع الاتصالات</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><i class="fas fa-chart-bar"></i> الإحصائيات</h4>
+                    <p>تقارير مفصلة، تحليل الاستخدام، رسوم بيانية تفاعلية، تصدير البيانات</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- دليل التشغيل والاستخدام -->
+        <div class="section">
+            <h2><i class="fas fa-user-gear"></i> دليل التشغيل والاستخدام</h2>
+
+            <h3>العمليات اليومية للمسؤولين</h3>
+            <p>
+                المهام الأساسية التي يقوم بها المسؤول بشكل يومي:
+            </p>
+            <ul>
+                <li>مراجعة لوحة التحكم والإحصائيات الرئيسية</li>
+                <li>التحقق من صحة الخوادم وأدائها</li>
+                <li>معالجة طلبات المستخدمين الجدد</li>
+                <li>تجديد الاشتراكات المنتهية</li>
+                <li>حل المشاكل التقنية والشكاوى</li>
+                <li>مراقبة المستخدمين المتصلين</li>
+                <li>تحديث المحتوى والقنوات</li>
+            </ul>
+
+            <h3>أفضل الممارسات</h3>
+            <ul>
+                <li><strong>النسخ الاحتياطي:</strong> إجراء نسخ احتياطي منتظم لقاعدة البيانات</li>
+                <li><strong>المراقبة:</strong> متابعة أداء النظام والخوادم باستمرار</li>
+                <li><strong>التحديثات:</strong> تطبيق التحديثات الأمنية فوراً</li>
+                <li><strong>الصيانة:</strong> جدولة صيانة دورية للخوادم</li>
+                <li><strong>الأمان:</strong> مراجعة سجلات الأمان بانتظام</li>
+                <li><strong>الأداء:</strong> تحسين توزيع الحمل بين الخوادم</li>
+                <li><strong>الدعم:</strong> الرد السريع على استفسارات المستخدمين</li>
+            </ul>
+
+            <h3>إدارة والتحكم في المنصة</h3>
+            <p>
+                للحفاظ على تشغيل سلس للمنصة:
+            </p>
+            <ul>
+                <li>استخدام نظام الصلاحيات لتوزيع المهام</li>
+                <li>إنشاء حسابات فرعية للمسؤولين</li>
+                <li>تفعيل المصادقة الثنائية لجميع الحسابات</li>
+                <li>مراجعة التقارير الإحصائية بشكل دوري</li>
+                <li>تحديث معلومات الاتصال والدعم</li>
+                <li>إدارة الموارد وتخطيط التوسع</li>
+                <li>توثيق الإجراءات والتغييرات</li>
+            </ul>
+
+            <div class="highlight-box">
+                <p><strong>نصيحة:</strong> استخدم ميزة التقارير المجدولة لتلقي ملخصات يومية عن أداء النظام واستخدام الموارد.</p>
+            </div>
+        </div>
+
+        <!-- الخاتمة -->
+        <div class="section">
+            <h2><i class="fas fa-graduation-cap"></i> الخلاصة</h2>
+            <p>
+                نظام PrimeX IPTV هو حل شامل ومتقدم لإدارة خدمات البث الرقمي. تم تصميمه ليكون قابلاً للتوسع، آمناً، وسهل الإدارة.
+                باستخدام هذا الدليل، يمكن للمسؤولين فهم جميع جوانب النظام وإدارته بكفاءة.
+            </p>
+            <p>
+                للحصول على دعم تقني أو استفسارات إضافية، يرجى التواصل مع المطور الرئيسي عبر الموقع الرسمي.
+            </p>
+        </div>
+
+        <a href="/admin/dashboard-v2.html" class="back-btn">
+            <i class="fas fa-arrow-right"></i>
+            العودة إلى لوحة التحكم
+        </a>
+    </div>
+</body>
+</html>
