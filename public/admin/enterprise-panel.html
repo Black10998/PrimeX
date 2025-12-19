@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeX IPTV - Enterprise Admin Panel</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Enterprise Panel CSS -->
+    <link rel="stylesheet" href="enterprise-panel.css">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-tv"></i>
+                    <span>PrimeX IPTV</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-module="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a href="#users" class="nav-item" data-module="users">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                </a>
+                
+                <a href="#subscriptions" class="nav-item" data-module="subscriptions">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Subscriptions</span>
+                </a>
+                
+                <a href="#plans" class="nav-item" data-module="plans">
+                    <i class="fas fa-box"></i>
+                    <span>Subscription Plans</span>
+                </a>
+                
+                <a href="#codes" class="nav-item" data-module="codes">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Subscription Codes</span>
+                </a>
+                
+                <a href="#channels" class="nav-item" data-module="channels">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Channels</span>
+                </a>
+                
+                <a href="#categories" class="nav-item" data-module="categories">
+                    <i class="fas fa-folder"></i>
+                    <span>Categories</span>
+                </a>
+                
+                <a href="#servers" class="nav-item" data-module="servers">
+                    <i class="fas fa-server"></i>
+                    <span>Streaming Servers</span>
+                </a>
+                
+                <a href="#devices" class="nav-item" data-module="devices">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Devices & Connections</span>
+                </a>
+                
+                <a href="#logs" class="nav-item" data-module="logs">
+                    <i class="fas fa-history"></i>
+                    <span>Activity Logs</span>
+                </a>
+                
+                <a href="#settings" class="nav-item" data-module="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>System Settings</span>
+                </a>
+                
+                <a href="#api-settings" class="nav-item" data-module="api-settings">
+                    <i class="fas fa-plug"></i>
+                    <span>API / Xtream Settings</span>
+                </a>
+                
+                <a href="#security" class="nav-item" data-module="security">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security</span>
+                </a>
+                
+                <a href="#notifications" class="nav-item" data-module="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                    <span class="badge" id="notificationBadge">0</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name" id="adminName">Admin</div>
+                        <div class="user-role">Super Administrator</div>
+                    </div>
+                </div>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                </div>
+                
+                <div class="top-bar-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search..." id="globalSearch">
+                    </div>
+                    
+                    <button class="icon-btn" id="notificationsBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    
+                    <button class="icon-btn" id="settingsBtn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    
+                    <div class="user-menu">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect fill='%236366f1' width='40' height='40'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='16' font-family='Arial'%3EA%3C/text%3E%3C/svg%3E" alt="Admin" class="user-avatar-img">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area" id="contentArea">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Modal Container -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <!-- Enterprise Panel JavaScript -->
+    <script src="js/core.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/users.js"></script>
+    <script src="js/subscriptions.js"></script>
+    <script src="js/plans.js"></script>
+    <script src="js/codes.js"></script>
+    <script src="js/channels.js"></script>
+    <script src="js/categories.js"></script>
+    <script src="js/servers.js"></script>
+    <script src="js/devices.js"></script>
+    <script src="js/logs.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/api-settings.js"></script>
+    <script src="js/security.js"></script>
+    <script src="js/notifications.js"></script>
+</body>
+</html>
