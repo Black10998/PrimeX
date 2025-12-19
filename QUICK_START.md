@@ -1,10 +1,39 @@
-# PrimeX IPTV - Quick Start Guide
+# PrimeX IPTV v11.0 - Quick Start Guide
 
-Get your IPTV system running in 10 minutes!
+## 🚀 For Existing Installation (3 Steps)
+
+If you already have PrimeX running and just need to update:
+
+### 1. Pull Latest Code
+```bash
+cd /var/www/primex-iptv
+git pull origin main
+```
+
+### 2. Restart Server
+```bash
+pm2 restart primex-iptv
+```
+
+### 3. Complete Web Setup
+Open browser: **https://prime-x.live/setup**
+
+Fill in:
+- Username: `admin`
+- Email: `admin@prime-x.live`
+- Password: `PAX430550!!!` (or your choice)
+
+Click "Create Admin Account" → Done!
+
+**Login:** https://prime-x.live/admin/login.html
 
 ---
 
-## Prerequisites
+## 📦 Fresh Installation
+
+Get your IPTV system running in 10 minutes!
+
+### Prerequisites
 
 - Linux VPS (Ubuntu 20.04+)
 - Root or sudo access

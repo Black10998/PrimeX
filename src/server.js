@@ -94,6 +94,11 @@ app.get('/health', async (req, res) => {
 // API routes
 app.use('/api/v1', apiRoutes);
 
+// Setup page (one-time initialization)
+app.get('/setup', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/setup.html'));
+});
+
 // Admin panel (MUST be before Xtream routes)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/admin/enterprise-panel.html'));

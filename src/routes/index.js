@@ -12,6 +12,7 @@ const router = express.Router();
 
 // Import v3 authentication routes
 const authRoutes = require('./auth.routes');
+const setupRoutes = require('./setup.routes');
 
 // Import controllers
 const userController = require('../controllers/userController');
@@ -31,6 +32,9 @@ const { apiLimiter } = require('../middleware/rateLimiter');
 
 // Authentication routes (v3)
 router.use('/auth', authRoutes);
+
+// Setup routes (one-time initialization)
+router.use('/setup', setupRoutes);
 
 router.get('/admin/dashboard/stats', authenticateAdmin, dashboardController.getStats);
 router.get('/admin/dashboard/health', authenticateAdmin, dashboardController.getSystemHealth);
