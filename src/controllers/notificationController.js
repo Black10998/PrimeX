@@ -209,9 +209,10 @@ class NotificationController {
 
             for (const user of users) {
                 await pool.query(`
-                    INSERT INTO notifications (user_id, type, title_en, title_ar, message_en, message_ar)
-                    VALUES (?, 'subscription_expired', ?, ?, ?, ?)
+                    INSERT INTO notifications (user_id, type, title, message)
+                    VALUES (?, 'error', ?, ?)
                 `, [
+                    user.id,
                     user.id,
                     'Subscription Expired',
                     'انتهى الاشتراك',
