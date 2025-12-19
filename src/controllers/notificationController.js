@@ -120,21 +120,36 @@ class NotificationController {
     // Admin: Create notification for user
     async createNotification(req, res) {
         try {
-            const { user_id, type, title_en, title_ar, message_en, message_ar, expires_at } = req.body;
+            const { user_id, type, title, message } = req.body;
 
-            if (!user_id || !title_en || !title_ar || !message_en || !message_ar) {
-                return res.status(400).json(formatResponse(false, null, 'Missing required fields'));
+            if (!title || !message) {
+                return res.status(400).json(formatResponse(false, null, 'Title and message are required'));
             }
 
-            const [result] = await pool.query(
-                `INSERT INTO notifications (user_id, type, title_en, title_ar, message_en, message_ar, expires_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                [user_id, type || 'general', title_en, title_ar, message_en, message_ar, expires_at || null]
-            );
-
-            return res.status(201).json(formatResponse(true, { id: result.insertId }, 'Notification created'));
+            // If user_id is provided, create for specific user, otherwise for all users
+            if (user_id) {
+                const [result] = await pool.query(
+                    `INSERT INTO notifications (user_id, type, title, message)
+                    VALUES (?, ?, ?, ?)`,
+                    [user_id, type || 'info', title, message]
+                );
+                return res.status(201).json(formatResponse(true, { id: result.insertId }, 'Notification created'));
+            } else {
+                // Create notification for all users
+                const [users] = await pool.query('SELECT id FROM users WHERE status = "active"');
+                
+                for (const user of users) {
+                    await pool.query(
+                        `INSERT INTO notifications (user_id, type, title, message)
+                        VALUES (?, ?, ?, ?)`,
+                        [user.id, type || 'info', title, message]
+                    );
+                }
+                
+                return res.status(201).json(formatResponse(true, { count: users.length }, 'Notifications created for all users'));
+            }
         } catch (error) {
-            logger.error('Create notification error:', { error: error.message });
+            logger.error('Create notification error:', { error: error.message, stack: error.stack });
             return res.status(500).json(formatResponse(false, null, 'Failed to create notification'));
         }
     }
@@ -159,14 +174,12 @@ class NotificationController {
 
             for (const user of users) {
                 await pool.query(`
-                    INSERT INTO notifications (user_id, type, title_en, title_ar, message_en, message_ar)
-                    VALUES (?, 'subscription_expiring', ?, ?, ?, ?)
+                    INSERT INTO notifications (user_id, type, title, message)
+                    VALUES (?, 'warning', ?, ?)
                 `, [
                     user.id,
                     'Subscription Expiring Soon',
-                    'اشتراكك على وشك الانتهاء',
-                    'Your subscription will expire in 3 days. Please renew to continue enjoying our service.',
-                    'سينتهي اشتراكك خلال 3 أيام. يرجى التجديد لمواصلة الاستمتاع بخدمتنا.'
+                    'Your subscription will expire in 3 days. Please renew to continue enjoying our service.'
                 ]);
             }
 
