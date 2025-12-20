@@ -1,0 +1,319 @@
+<div class="module-container">
+    <div class="module-header">
+        <div>
+            <h2><i class="fas fa-tv"></i> Device Activation</h2>
+            <p class="module-description">Activate devices using Device Key (4Kmatic-style) - Industry standard IPTV activation</p>
+        </div>
+    </div>
+
+    <!-- Activation Card -->
+    <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+            <h3><i class="fas fa-key"></i> Activate Device</h3>
+        </div>
+        <div class="card-body">
+            <div class="activation-form">
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label class="form-label">Device Key *</label>
+                        <input type="text" id="deviceKeyInput" class="form-control" 
+                               placeholder="K-DEVICE-ABC123" 
+                               style="text-transform: uppercase;">
+                        <small class="form-text">Enter the device key shown on the TV/app</small>
+                    </div>
+                    
+                    <div class="form-group" style="flex: 2;">
+                        <label class="form-label">Subscription Plan *</label>
+                        <select id="planSelect" class="form-control">
+                            <option value="">Select Plan</option>
+                        </select>
+                        <small class="form-text">Choose subscription plan for this device</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Username (Optional)</label>
+                        <input type="text" id="usernameInput" class="form-control" 
+                               placeholder="Leave empty for auto-generation">
+                        <small class="form-text">Auto-generated if left empty</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Duration (Days)</label>
+                        <input type="number" id="durationInput" class="form-control" 
+                               placeholder="30" min="1">
+                        <small class="form-text">Override plan duration if needed</small>
+                    </div>
+                </div>
+
+                <button id="activateDeviceBtn" class="btn btn-primary btn-lg">
+                    <i class="fas fa-check-circle"></i> Activate Device
+                </button>
+            </div>
+
+            <div class="alert alert-info" style="margin-top: 20px;">
+                <i class="fas fa-info-circle"></i>
+                <strong>How it works:</strong> Customer sends you the Device Key from their TV/app. 
+                Enter it here, select a plan, and click Activate. The device will automatically receive 
+                credentials and start working within seconds.
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Devices -->
+    <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+            <h3><i class="fas fa-list"></i> Device Activations</h3>
+            <div style="display: flex; gap: 12px;">
+                <select id="statusFilter" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="activated">Activated</option>
+                    <option value="expired">Expired</option>
+                    <option value="deactivated">Deactivated</option>
+                </select>
+                <button id="refreshDevicesBtn" class="btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Device Key</th>
+                        <th>Username</th>
+                        <th>Plan</th>
+                        <th>Status</th>
+                        <th>Activated At</th>
+                        <th>Activated By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="devicesTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <div class="spinner"></div>
+                            <p style="margin-top: 16px; color: var(--text-muted);">Loading devices...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="devicesPagination"></div>
+    </div>
+
+    <!-- Supported Apps -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-mobile-alt"></i> Supported Applications</h3>
+        </div>
+        <div class="card-body">
+            <div id="appsContainer">
+                <p style="color: var(--text-muted);">Loading apps...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Device Activation Specific Styles */
+.activation-form {
+    max-width: 100%;
+}
+
+.credential-item {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+}
+
+.credential-item label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.credential-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.credential-value code {
+    flex: 1;
+    padding: 8px 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--primary);
+    font-size: 13px;
+}
+
+.credentials-display {
+    padding: 8px 0;
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.alert i {
+    font-size: 18px;
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: var(--success);
+}
+
+.alert-info {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: var(--info);
+}
+
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: var(--warning);
+}
+
+/* Apps Grid */
+.apps-section {
+    margin-bottom: 32px;
+}
+
+.apps-section h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.app-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.app-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.app-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.app-icon img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+}
+
+.app-icon i {
+    font-size: 28px;
+    color: var(--primary);
+}
+
+.app-info {
+    width: 100%;
+}
+
+.app-info h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.app-os {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.app-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.method-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.verified-badge {
+    font-size: 11px;
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+}
+
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .apps-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+</style>
+
+<script>
+// Populate plans dropdown when module loads
+setTimeout(() => {
+    const planSelect = document.getElementById('planSelect');
+    if (planSelect && DeviceActivationModule.plans) {
+        planSelect.innerHTML = '<option value="">Select Plan</option>' +
+            DeviceActivationModule.plans.map(plan => 
+                `<option value="${plan.id}">${plan.name} (${plan.duration_days} days - $${plan.price})</option>`
+            ).join('');
+    }
+}, 500);
+</script>

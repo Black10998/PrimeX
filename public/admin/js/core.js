@@ -271,7 +271,8 @@ const PrimeXCore = {
             'api-settings': typeof APISettingsModule !== 'undefined' ? APISettingsModule : null,
             'security': typeof SecurityModule !== 'undefined' ? SecurityModule : null,
             'notifications': typeof NotificationsModule !== 'undefined' ? NotificationsModule : null,
-            'admin-management': typeof AdminManagement !== 'undefined' ? AdminManagement : null
+            'admin-management': typeof AdminManagement !== 'undefined' ? AdminManagement : null,
+            'device-activation': typeof DeviceActivationModule !== 'undefined' ? DeviceActivationModule : null
         };
 
         const moduleMap = {
@@ -289,7 +290,8 @@ const PrimeXCore = {
             'api-settings': 'api_settings',
             'logs': 'activity_logs',
             'devices': 'users',
-            'admin-management': 'admin_management'
+            'admin-management': 'admin_management',
+            'device-activation': 'codes'
         };
 
         // Check permissions
