@@ -15,6 +15,7 @@ const authRoutes = require('./auth.routes');
 const setupRoutes = require('./setup.routes');
 const deviceActivationRoutes = require('./deviceActivation.routes');
 const securityRoutes = require('./security');
+const vodRoutes = require('./vod');
 
 // Import controllers
 const userController = require('../controllers/userController');
@@ -45,6 +46,9 @@ router.use('/', deviceActivationRoutes);
 
 // Security monitoring routes
 router.use('/admin/security', securityRoutes);
+
+// VOD/Series routes
+router.use('/admin/vod', vodRoutes);
 
 router.get('/admin/dashboard/stats', authenticateAdmin, dashboardController.getStats);
 router.get('/admin/dashboard/health', authenticateAdmin, dashboardController.getSystemHealth);

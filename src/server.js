@@ -186,6 +186,15 @@ async function startServer() {
                 console.log('⚠️  Security monitoring initialization failed - continuing startup');
             }
             
+            // Initialize VOD/Series tables
+            try {
+                const { initializeVODTables } = require('./utils/vodInit');
+                await initializeVODTables();
+            } catch (error) {
+                logger.error('VOD tables initialization failed', { error: error.message });
+                console.log('⚠️  VOD/Series initialization failed - continuing startup');
+            }
+            
             // Run migration to add missing tables (non-blocking)
             try {
                 const { addMissingTables } = require('./scripts/addMissingTables');
