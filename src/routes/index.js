@@ -13,6 +13,7 @@ const router = express.Router();
 // Import v3 authentication routes
 const authRoutes = require('./auth.routes');
 const setupRoutes = require('./setup.routes');
+const deviceActivationRoutes = require('./deviceActivation.routes');
 
 // Import controllers
 const userController = require('../controllers/userController');
@@ -37,6 +38,9 @@ router.use('/auth', authRoutes);
 
 // Setup routes (one-time initialization)
 router.use('/setup', setupRoutes);
+
+// Device activation routes (4Kmatic-style)
+router.use('/', deviceActivationRoutes);
 
 router.get('/admin/dashboard/stats', authenticateAdmin, dashboardController.getStats);
 router.get('/admin/dashboard/health', authenticateAdmin, dashboardController.getSystemHealth);
