@@ -1,6 +1,7 @@
 const authService = require('../services/authService');
 const { formatResponse } = require('../utils/helpers');
 const { body, validationResult } = require('express-validator');
+const { securityMonitor } = require('../middleware/securityMonitor');
 
 class AuthController {
     async login(req, res) {
@@ -52,9 +53,23 @@ class AuthController {
             }
 
             const { username, password } = req.body;
+            const ip = req.ip || req.connection.remoteAddress;
+            const userAgent = req.get('user-agent');
+            
             const result = await authService.loginAdmin(username, password, req);
 
             if (!result.success) {
+                // Log failed login attempt
+                await securityMonitor.logSecurityEvent({
+                    event_type: 'failed_login',
+                    severity: 'medium',
+                    ip_address: ip,
+                    user_agent: userAgent,
+                    endpoint: req.path,
+                    username: username,
+                    description: 'Failed admin login attempt'
+                });
+                
                 return res.status(401).json(result);
             }
 

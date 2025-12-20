@@ -14,6 +14,7 @@ const router = express.Router();
 const authRoutes = require('./auth.routes');
 const setupRoutes = require('./setup.routes');
 const deviceActivationRoutes = require('./deviceActivation.routes');
+const securityRoutes = require('./security');
 
 // Import controllers
 const userController = require('../controllers/userController');
@@ -41,6 +42,9 @@ router.use('/setup', setupRoutes);
 
 // Device activation routes (4Kmatic-style)
 router.use('/', deviceActivationRoutes);
+
+// Security monitoring routes
+router.use('/admin/security', securityRoutes);
 
 router.get('/admin/dashboard/stats', authenticateAdmin, dashboardController.getStats);
 router.get('/admin/dashboard/health', authenticateAdmin, dashboardController.getSystemHealth);

@@ -36,6 +36,7 @@ const logger = require('./utils/logger');
 const { autoInitialize } = require('./utils/autoInit');
 const apiRoutes = require('./routes/index');
 const xtreamRoutes = require('./routes/xtream');
+const { blockIPMiddleware, detectSuspiciousMiddleware } = require('./middleware/securityMonitor');
 
 // Create Express app
 const app = express();
@@ -64,6 +65,10 @@ app.use(cookieParser());
 if (config.env !== 'production') {
     app.use(morgan('dev'));
 }
+
+// Security monitoring middleware
+app.use(blockIPMiddleware);
+app.use(detectSuspiciousMiddleware);
 
 // Static files
 app.use(express.static(path.join(__dirname, '../public')));

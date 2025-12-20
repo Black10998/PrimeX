@@ -1337,6 +1337,296 @@ textarea.form-control {
     margin: 6px 0;
 }
 
+/* ============================================
+   SECURITY MONITOR
+   ============================================ */
+.security-monitor-btn {
+    position: relative;
+}
+
+.security-status-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-secondary);
+    transition: var(--transition-fast);
+}
+
+.security-status-indicator.secure {
+    background: #34C759;
+    box-shadow: 0 0 8px rgba(52, 199, 89, 0.6);
+}
+
+.security-status-indicator.warning {
+    background: #FF9500;
+    box-shadow: 0 0 8px rgba(255, 149, 0, 0.6);
+    animation: securityPulse 2s ease-in-out infinite;
+}
+
+.security-status-indicator.threat {
+    background: #FF3B30;
+    box-shadow: 0 0 12px rgba(255, 59, 48, 0.8);
+    animation: securityPulse 1s ease-in-out infinite;
+}
+
+@keyframes securityPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+.security-panel {
+    position: fixed;
+    background: rgba(28, 28, 30, 0.98);
+    backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.7);
+    width: 420px;
+    max-height: 600px;
+    padding: 0;
+    animation: dropdownFadeIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow: hidden;
+}
+
+.security-panel-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.security-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.security-panel-title h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.security-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.security-status-badge.secure {
+    background: rgba(52, 199, 89, 0.15);
+    color: #34C759;
+}
+
+.security-status-badge.warning {
+    background: rgba(255, 149, 0, 0.15);
+    color: #FF9500;
+}
+
+.security-status-badge.threat {
+    background: rgba(255, 59, 48, 0.15);
+    color: #FF3B30;
+}
+
+.security-status-badge i {
+    font-size: 10px;
+}
+
+.security-panel-body {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.security-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 20px;
+}
+
+.security-stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 16px;
+    transition: var(--transition-fast);
+}
+
+.security-stat-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.security-stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.security-stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.security-stat-value.critical {
+    color: #FF3B30;
+}
+
+.security-stat-value.warning {
+    color: #FF9500;
+}
+
+.security-events-list {
+    padding: 0 20px 20px 20px;
+}
+
+.security-events-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.security-events-header h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.security-event-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    transition: var(--transition-fast);
+}
+
+.security-event-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.security-event-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.security-event-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.security-event-severity {
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.security-event-severity.critical {
+    background: rgba(255, 59, 48, 0.15);
+    color: #FF3B30;
+}
+
+.security-event-severity.high {
+    background: rgba(255, 149, 0, 0.15);
+    color: #FF9500;
+}
+
+.security-event-severity.medium {
+    background: rgba(255, 204, 0, 0.15);
+    color: #FFCC00;
+}
+
+.security-event-severity.low {
+    background: rgba(52, 199, 89, 0.15);
+    color: #34C759;
+}
+
+.security-event-description {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.security-event-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.security-event-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.security-panel-footer {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.security-refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.security-refresh-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.security-last-update {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .sidebar {
