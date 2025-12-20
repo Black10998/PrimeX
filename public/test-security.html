@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Monitor Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin/enterprise-panel.css">
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            padding: 40px;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .test-button {
+            padding: 12px 24px;
+            background: #D4AF37;
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #F4D03F;
+        }
+        .test-log {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            padding: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #34C759;
+            padding-left: 12px;
+        }
+        .log-entry.error {
+            border-left-color: #FF3B30;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔐 Security Monitor Test Page</h1>
+        
+        <div class="test-header">
+            <button class="icon-btn security-monitor-btn" id="securityMonitorBtn" title="Security Monitor">
+                <i class="fas fa-shield-alt"></i>
+                <span class="security-status-indicator" id="securityStatusIndicator"></span>
+            </button>
+            
+            <button class="test-button" onclick="testAPI()">Test API</button>
+            <button class="test-button" onclick="testClick()">Test Click</button>
+            <button class="test-button" onclick="clearLog()">Clear Log</button>
+        </div>
+        
+        <div class="test-log" id="testLog">
+            <div class="log-entry">Test page loaded. Click "Test API" to check security endpoint.</div>
+        </div>
+    </div>
+
+    <script src="admin/js/security-monitor.js"></script>
+    <script>
+        function log(message, isError = false) {
+            const logDiv = document.getElementById('testLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry' + (isError ? ' error' : '');
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        async function testAPI() {
+            log('Testing security API endpoint...');
+            try {
+                const response = await fetch('/api/v1/admin/security/status', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('adminToken') || 'test-token'}`
+                    }
+                });
+                
+                log(`Response status: ${response.status}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ API Response: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    const text = await response.text();
+                    log(`❌ API Error: ${text}`, true);
+                }
+            } catch (error) {
+                log(`❌ Fetch Error: ${error.message}`, true);
+            }
+        }
+
+        function testClick() {
+            log('Simulating button click...');
+            const btn = document.getElementById('securityMonitorBtn');
+            if (btn) {
+                btn.click();
+                log('✅ Button clicked');
+            } else {
+                log('❌ Button not found', true);
+            }
+        }
+
+        function clearLog() {
+            document.getElementById('testLog').innerHTML = '<div class="log-entry">Log cleared.</div>';
+        }
+
+        // Log when security monitor initializes
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (window.securityMonitor) {
+                    log('✅ Security Monitor initialized');
+                } else {
+                    log('❌ Security Monitor NOT initialized', true);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
