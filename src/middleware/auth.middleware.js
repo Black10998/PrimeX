@@ -12,7 +12,7 @@
  */
 
 const jwt = require('jsonwebtoken');
-const { pool } = require('../config/database');
+const db = require('../config/database');
 const logger = require('../utils/logger');
 
 /**
@@ -40,7 +40,7 @@ async function authenticateAdmin(req, res, next) {
         }
 
         // Fetch admin details
-        const [admins] = await pool.query(
+        const [admins] = await db.query(
             'SELECT id, username, role, status FROM admin_users WHERE id = ?',
             [decoded.adminId]
         );
@@ -116,7 +116,7 @@ async function authenticateUser(req, res, next) {
         }
 
         // Fetch user details
-        const [users] = await pool.query(
+        const [users] = await db.query(
             'SELECT id, username, email, status, subscription_end, max_devices FROM users WHERE id = ?',
             [decoded.userId]
         );
@@ -249,14 +249,14 @@ async function checkDeviceLimit(req, res, next) {
         }
 
         // Check if device is registered
-        const [devices] = await pool.query(
+        const [devices] = await db.query(
             'SELECT id FROM user_devices WHERE user_id = ? AND device_id = ? AND status = "active"',
             [req.user.id, deviceId]
         );
 
         if (devices.length > 0) {
             // Update last seen
-            await pool.query(
+            await db.query(
                 'UPDATE user_devices SET last_seen = NOW() WHERE id = ?',
                 [devices[0].id]
             );
@@ -264,7 +264,7 @@ async function checkDeviceLimit(req, res, next) {
         }
 
         // Check device limit
-        const [activeDevices] = await pool.query(
+        const [activeDevices] = await db.query(
             'SELECT COUNT(*) as count FROM user_devices WHERE user_id = ? AND status = "active"',
             [req.user.id]
         );
@@ -277,7 +277,7 @@ async function checkDeviceLimit(req, res, next) {
         }
 
         // Register new device
-        await pool.query(
+        await db.query(
             'INSERT INTO user_devices (user_id, device_id, status) VALUES (?, ?, "active")',
             [req.user.id, deviceId]
         );
@@ -313,7 +313,7 @@ async function authenticateAdminOrUser(req, res, next) {
 
         // Check if it's an admin token
         if (decoded.isAdmin && decoded.adminId) {
-            const [admins] = await pool.query(
+            const [admins] = await db.query(
                 'SELECT id, username, role, status FROM admin_users WHERE id = ?',
                 [decoded.adminId]
             );
@@ -330,7 +330,7 @@ async function authenticateAdminOrUser(req, res, next) {
 
         // Check if it's a user token
         if (decoded.userId) {
-            const [users] = await pool.query(
+            const [users] = await db.query(
                 'SELECT id, username, email, status FROM users WHERE id = ?',
                 [decoded.userId]
             );

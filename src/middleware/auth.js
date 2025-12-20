@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { pool } = require('../config/database');
+const db = require('../config/database');
 const { formatResponse, getClientIp, isSubscriptionActive } = require('../utils/helpers');
 const logger = require('../utils/logger');
 
@@ -14,7 +14,7 @@ async function authenticateToken(req, res, next) {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
-        const [users] = await pool.query(
+        const [users] = await db.query(
             'SELECT id, username, status, subscription_end, max_devices FROM users WHERE id = ?',
             [decoded.userId]
         );
@@ -64,7 +64,7 @@ async function authenticateAdmin(req, res, next) {
             return res.status(403).json(formatResponse(false, null, 'Admin access required'));
         }
 
-        const [admins] = await pool.query(
+        const [admins] = await db.query(
             'SELECT id, username, role, status FROM admin_users WHERE id = ?',
             [decoded.adminId]
         );
@@ -141,7 +141,7 @@ async function checkDeviceLimit(req, res, next) {
             return res.status(400).json(formatResponse(false, null, 'Device identification required'));
         }
 
-        const [devices] = await pool.query(
+        const [devices] = await db.query(
             'SELECT COUNT(*) as count FROM user_devices WHERE user_id = ? AND status = "active"',
             [req.user.id]
         );
@@ -149,7 +149,7 @@ async function checkDeviceLimit(req, res, next) {
         const activeDevices = devices[0].count;
 
         if (deviceId) {
-            const [existingDevice] = await pool.query(
+            const [existingDevice] = await db.query(
                 'SELECT id FROM user_devices WHERE user_id = ? AND device_id = ? AND status = "active"',
                 [req.user.id, deviceId]
             );
@@ -159,12 +159,12 @@ async function checkDeviceLimit(req, res, next) {
             }
 
             if (existingDevice.length === 0) {
-                await pool.query(
+                await db.query(
                     'INSERT INTO user_devices (user_id, device_id, mac_address, device_name, last_seen) VALUES (?, ?, ?, ?, NOW())',
                     [req.user.id, deviceId, macAddress, req.headers['user-agent']]
                 );
             } else {
-                await pool.query(
+                await db.query(
                     'UPDATE user_devices SET last_seen = NOW() WHERE id = ?',
                     [existingDevice[0].id]
                 );
@@ -186,7 +186,7 @@ async function logActivity(action, details = {}) {
             const userAgent = req.headers['user-agent'];
             const deviceId = req.headers['x-device-id'];
 
-            await pool.query(
+            await db.query(
                 'INSERT INTO activity_logs (user_id, action, ip_address, user_agent, device_id, details) VALUES (?, ?, ?, ?, ?, ?)',
                 [userId, action, ip, userAgent, deviceId, JSON.stringify(details)]
             );

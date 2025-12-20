@@ -96,4 +96,27 @@ try {
     process.exit(1);
 }
 
-module.exports = { pool, testConnection };
+// Create a database wrapper with consistent interface
+const db = {
+    // Direct query method (most common usage)
+    query: async (...args) => {
+        return pool.query(...args);
+    },
+    
+    // Execute method (alias for query)
+    execute: async (...args) => {
+        return pool.execute(...args);
+    },
+    
+    // Get connection from pool
+    getConnection: async () => {
+        return pool.getConnection();
+    },
+    
+    // Access to raw pool if needed
+    pool: pool
+};
+
+module.exports = db;
+module.exports.pool = pool;
+module.exports.testConnection = testConnection;
