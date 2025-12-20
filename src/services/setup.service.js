@@ -76,7 +76,7 @@ class SetupService {
                     username VARCHAR(50) UNIQUE NOT NULL,
                     password VARCHAR(255) NOT NULL,
                     email VARCHAR(100) UNIQUE NOT NULL,
-                    role ENUM('super_admin', 'admin', 'moderator') DEFAULT 'super_admin',
+                    role ENUM('super_admin', 'admin', 'moderator', 'codes_seller') DEFAULT 'super_admin',
                     status ENUM('active', 'inactive', 'suspended') DEFAULT 'active',
                     two_factor_enabled BOOLEAN DEFAULT FALSE,
                     two_factor_secret VARCHAR(255) DEFAULT NULL,

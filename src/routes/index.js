@@ -26,6 +26,7 @@ const twoFactorController = require('../controllers/twoFactorController');
 const adminSessionController = require('../controllers/adminSessionController');
 const notificationController = require('../controllers/notificationController');
 const apiSettingsController = require('../controllers/apiSettingsController');
+const adminManagementController = require('../controllers/adminManagementController');
 
 // Import v3 middleware
 const { authenticateAdmin, authenticateUser, authenticateAdminOrUser, checkSubscription } = require('../middleware/auth.middleware');
@@ -41,18 +42,21 @@ router.get('/admin/dashboard/stats', authenticateAdmin, dashboardController.getS
 router.get('/admin/dashboard/health', authenticateAdmin, dashboardController.getSystemHealth);
 router.get('/admin/dashboard/revenue', authenticateAdmin, dashboardController.getRevenueStats);
 
-router.get('/admin/users', authenticateAdmin, userController.getAllUsers);
-router.get('/admin/users/:id', authenticateAdmin, userController.getUserById);
-router.post('/admin/users', authenticateAdmin, userController.validateCreate(), userController.createUser);
-router.put('/admin/users/:id', authenticateAdmin, userController.validateUpdate(), userController.updateUser);
-router.delete('/admin/users/:id', authenticateAdmin, userController.deleteUser);
-router.post('/admin/users/:id/extend', authenticateAdmin, userController.extendSubscription);
-router.get('/admin/users/:id/devices', authenticateAdmin, userController.getUserDevices);
-router.delete('/admin/users/:id/devices/:deviceId', authenticateAdmin, userController.removeDevice);
-router.post('/admin/users/:id/devices/:deviceId/kick', authenticateAdmin, userController.kickDevice);
-router.post('/admin/users/:id/force-logout', authenticateAdmin, userController.forceLogoutUser);
-router.post('/admin/users/:id/change-password', authenticateAdmin, userController.changeUserPassword);
-router.get('/admin/users/online/list', authenticateAdmin, userController.getOnlineUsers);
+// Admin Management (Super Admin only)
+const { requireSuperAdmin, checkModuleAccess } = require('../middleware/rbac');
+
+router.get('/admin/users', authenticateAdmin, checkModuleAccess('users'), userController.getAllUsers);
+router.get('/admin/users/:id', authenticateAdmin, checkModuleAccess('users'), userController.getUserById);
+router.post('/admin/users', authenticateAdmin, checkModuleAccess('users'), userController.validateCreate(), userController.createUser);
+router.put('/admin/users/:id', authenticateAdmin, checkModuleAccess('users'), userController.validateUpdate(), userController.updateUser);
+router.delete('/admin/users/:id', authenticateAdmin, checkModuleAccess('users'), userController.deleteUser);
+router.post('/admin/users/:id/extend', authenticateAdmin, checkModuleAccess('users'), userController.extendSubscription);
+router.get('/admin/users/:id/devices', authenticateAdmin, checkModuleAccess('users'), userController.getUserDevices);
+router.delete('/admin/users/:id/devices/:deviceId', authenticateAdmin, checkModuleAccess('users'), userController.removeDevice);
+router.post('/admin/users/:id/devices/:deviceId/kick', authenticateAdmin, checkModuleAccess('users'), userController.kickDevice);
+router.post('/admin/users/:id/force-logout', authenticateAdmin, checkModuleAccess('users'), userController.forceLogoutUser);
+router.post('/admin/users/:id/change-password', authenticateAdmin, checkModuleAccess('users'), userController.changeUserPassword);
+router.get('/admin/users/online/list', authenticateAdmin, checkModuleAccess('users'), userController.getOnlineUsers);
 
 // Two-Factor Authentication & Security
 router.get('/admin/2fa/status', authenticateAdmin, twoFactorController.getStatus);
@@ -78,14 +82,14 @@ router.post('/admin/plans/:id/channels', authenticateAdmin, subscriptionControll
 router.get('/admin/subscriptions/expired', authenticateAdmin, subscriptionController.getExpiredSubscriptions);
 router.post('/admin/subscriptions/deactivate-expired', authenticateAdmin, subscriptionController.deactivateExpiredSubscriptions);
 
-router.get('/admin/codes', authenticateAdmin, codeController.getAllCodes);
-router.get('/admin/codes/stats', authenticateAdmin, codeController.getCodeStats);
-router.get('/admin/codes/export', authenticateAdmin, codeController.exportCodes);
-router.get('/admin/codes/:id', authenticateAdmin, codeController.getCodeById);
-router.post('/admin/codes/generate', authenticateAdmin, codeController.validateGenerate(), codeController.generateCodes);
-router.put('/admin/codes/:id', authenticateAdmin, codeController.updateCode);
-router.delete('/admin/codes/:id', authenticateAdmin, codeController.deleteCode);
-router.post('/admin/codes/bulk-delete', authenticateAdmin, codeController.bulkDeleteCodes);
+router.get('/admin/codes', authenticateAdmin, checkModuleAccess('codes'), codeController.getAllCodes);
+router.get('/admin/codes/stats', authenticateAdmin, checkModuleAccess('codes'), codeController.getCodeStats);
+router.get('/admin/codes/export', authenticateAdmin, checkModuleAccess('codes'), codeController.exportCodes);
+router.get('/admin/codes/:id', authenticateAdmin, checkModuleAccess('codes'), codeController.getCodeById);
+router.post('/admin/codes/generate', authenticateAdmin, checkModuleAccess('codes'), codeController.validateGenerate(), codeController.generateCodes);
+router.put('/admin/codes/:id', authenticateAdmin, checkModuleAccess('codes'), codeController.updateCode);
+router.delete('/admin/codes/:id', authenticateAdmin, checkModuleAccess('codes'), codeController.deleteCode);
+router.post('/admin/codes/bulk-delete', authenticateAdmin, checkModuleAccess('codes'), codeController.bulkDeleteCodes);
 
 router.get('/admin/channels', authenticateAdmin, channelController.getAllChannels);
 router.get('/admin/channels/:id', authenticateAdmin, channelController.getChannelById);
@@ -118,8 +122,16 @@ router.put('/notifications/read-all', authenticateAdminOrUser, notificationContr
 router.post('/admin/notifications', authenticateAdmin, notificationController.createNotification);
 
 // API Settings
-router.get('/admin/settings/api', authenticateAdmin, apiSettingsController.getSettings);
-router.post('/admin/settings/api', authenticateAdmin, apiSettingsController.updateSettings);
+router.get('/admin/settings/api', authenticateAdmin, checkModuleAccess('api_settings'), apiSettingsController.getSettings);
+router.post('/admin/settings/api', authenticateAdmin, checkModuleAccess('api_settings'), apiSettingsController.updateSettings);
+
+// Admin Management (Super Admin only)
+router.get('/admin/admins', authenticateAdmin, requireSuperAdmin, adminManagementController.getAdmins);
+router.get('/admin/admins/:id', authenticateAdmin, requireSuperAdmin, adminManagementController.getAdmin);
+router.post('/admin/admins', authenticateAdmin, requireSuperAdmin, adminManagementController.createAdmin);
+router.put('/admin/admins/:id', authenticateAdmin, requireSuperAdmin, adminManagementController.updateAdmin);
+router.delete('/admin/admins/:id', authenticateAdmin, requireSuperAdmin, adminManagementController.deleteAdmin);
+router.get('/admin/permissions', authenticateAdmin, adminManagementController.getPermissions);
 
 // Public/User endpoints
 router.get('/categories', apiLimiter, authenticateUser, checkSubscription, categoryController.getAllCategories);

@@ -199,11 +199,20 @@ class AuthService {
                 return { success: false, message: 'Invalid credentials' };
             }
 
-            const token = this.generateToken(admin.id, true);
+            const token = this.generateToken(admin.id, true, admin.role);
 
             await pool.query(
-                'UPDATE admin_users SET last_login = NOW() WHERE id = ?',
-                [admin.id]
+                'UPDATE admin_users SET last_login = NOW(), last_login_ip = ? WHERE id = ?',
+                [getClientIp(req), admin.id]
+            );
+
+            // Create admin session
+            const adminSessionService = require('./adminSession.service');
+            await adminSessionService.createSession(
+                admin.id,
+                token,
+                getClientIp(req),
+                getUserAgent(req)
             );
 
             return {
@@ -214,7 +223,8 @@ class AuthService {
                         id: admin.id,
                         username: admin.username,
                         role: admin.role,
-                        email: admin.email
+                        email: admin.email,
+                        two_factor_enabled: admin.two_factor_enabled
                     }
                 }
             };
@@ -269,8 +279,10 @@ class AuthService {
         }
     }
 
-    generateToken(id, isAdmin = false) {
-        const payload = isAdmin ? { adminId: id, isAdmin: true } : { userId: id };
+    generateToken(id, isAdmin = false, role = null) {
+        const payload = isAdmin 
+            ? { adminId: id, isAdmin: true, role: role || 'admin' } 
+            : { userId: id };
         return jwt.sign(payload, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRES_IN || '24h'
         });

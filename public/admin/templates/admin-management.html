@@ -1,0 +1,244 @@
+<div class="module-container">
+    <div class="module-header">
+        <div>
+            <h2><i class="fas fa-user-shield"></i> Admin Management</h2>
+            <p class="module-description">Manage admin users and their roles</p>
+        </div>
+        <button class="btn btn-primary" id="createAdminBtn">
+            <i class="fas fa-plus"></i> Create Admin
+        </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="adminSearch" placeholder="Search by username or email...">
+        </div>
+        
+        <select id="roleFilter" class="filter-select">
+            <option value="">All Roles</option>
+            <option value="super_admin">Super Admin</option>
+            <option value="admin">Admin</option>
+            <option value="moderator">Moderator</option>
+            <option value="codes_seller">Codes Seller</option>
+        </select>
+    </div>
+
+    <!-- Admins Table -->
+    <div class="card">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>2FA</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminsTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <div class="spinner"></div>
+                            <p style="margin-top: 16px; color: var(--text-muted);">Loading admins...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="adminsPagination"></div>
+    </div>
+</div>
+
+<!-- Create Admin Modal -->
+<div id="createAdminModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-user-plus"></i> Create Admin</h3>
+            <button class="modal-close" onclick="Core.closeModal('createAdminModal')">&times;</button>
+        </div>
+        
+        <form id="createAdminForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="createUsername">Username *</label>
+                    <input type="text" id="createUsername" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="createEmail">Email *</label>
+                    <input type="email" id="createEmail" name="email" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="createPassword">Password *</label>
+                    <input type="password" id="createPassword" name="password" required minlength="8">
+                    <small>Minimum 8 characters</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="createRole">Role *</label>
+                    <select id="createRole" name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="super_admin">Super Admin</option>
+                        <option value="admin">Admin</option>
+                        <option value="moderator">Moderator</option>
+                        <option value="codes_seller">Codes Seller</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="createStatus">Status</label>
+                <select id="createStatus" name="status">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+            </div>
+
+            <div class="role-permissions-info">
+                <h4>Role Permissions:</h4>
+                <div class="permissions-grid">
+                    <div class="permission-item">
+                        <strong>Super Admin:</strong> Full system access
+                    </div>
+                    <div class="permission-item">
+                        <strong>Admin:</strong> All modules except settings & security
+                    </div>
+                    <div class="permission-item">
+                        <strong>Moderator:</strong> Users, subscriptions, channels, categories
+                    </div>
+                    <div class="permission-item">
+                        <strong>Codes Seller:</strong> Subscription codes only
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="Core.closeModal('createAdminModal')">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Create Admin
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Admin Modal -->
+<div id="editAdminModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-user-edit"></i> Edit Admin</h3>
+            <button class="modal-close" onclick="Core.closeModal('editAdminModal')">&times;</button>
+        </div>
+        
+        <form id="editAdminForm">
+            <input type="hidden" id="editAdminId">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editUsername">Username *</label>
+                    <input type="text" id="editUsername" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEmail">Email *</label>
+                    <input type="email" id="editEmail" name="email" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editPassword">New Password</label>
+                    <input type="password" id="editPassword" name="password" minlength="8">
+                    <small>Leave blank to keep current password</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editRole">Role *</label>
+                    <select id="editRole" name="role" required>
+                        <option value="super_admin">Super Admin</option>
+                        <option value="admin">Admin</option>
+                        <option value="moderator">Moderator</option>
+                        <option value="codes_seller">Codes Seller</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="editStatus">Status</label>
+                <select id="editStatus" name="status">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="Core.closeModal('editAdminModal')">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Admin
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.role-permissions-info {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 20px 0;
+}
+
+.role-permissions-info h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.permissions-grid {
+    display: grid;
+    gap: 8px;
+}
+
+.permission-item {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 8px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+.permission-item strong {
+    color: var(--primary);
+    margin-right: 8px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 16px;
+}
+</style>

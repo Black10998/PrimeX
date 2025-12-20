@@ -12,10 +12,82 @@ const PrimeXCore = {
     },
 
     // Initialize
-    init() {
+    async init() {
         this.checkAuth();
+        await this.loadPermissions();
         this.setupEventListeners();
         this.loadCurrentModule();
+    },
+
+    // Load user permissions
+    async loadPermissions() {
+        try {
+            const response = await this.apiCall('/admin/permissions');
+            if (response.success) {
+                this.permissions = response.data.permissions;
+                this.userRole = response.data.role;
+                this.applyPermissions();
+            }
+        } catch (error) {
+            console.error('Failed to load permissions:', error);
+            this.permissions = {};
+            this.userRole = 'moderator';
+        }
+    },
+
+    // Apply permissions to UI
+    applyPermissions() {
+        const moduleMap = {
+            'dashboard': 'dashboard',
+            'users': 'users',
+            'subscriptions': 'subscriptions',
+            'codes': 'codes',
+            'channels': 'channels',
+            'categories': 'categories',
+            'servers': 'servers',
+            'plans': 'plans',
+            'settings': 'settings',
+            'security': 'security',
+            'notifications': 'notifications',
+            'api-settings': 'api_settings',
+            'logs': 'activity_logs',
+            'devices': 'users'
+        };
+
+        // Show/hide navigation items based on permissions
+        document.querySelectorAll('.nav-item').forEach(item => {
+            const module = item.getAttribute('data-module');
+            const permissionKey = moduleMap[module];
+            
+            if (permissionKey && this.permissions[permissionKey] === false) {
+                item.style.display = 'none';
+            } else {
+                item.style.display = 'flex';
+            }
+        });
+
+        // Show admin management only for super_admin
+        const adminManagementNav = document.getElementById('adminManagementNav');
+        if (adminManagementNav) {
+            adminManagementNav.style.display = this.userRole === 'super_admin' ? 'flex' : 'none';
+        }
+
+        // Update user role display
+        const userRole = document.getElementById('userRole');
+        if (userRole) {
+            const roleLabels = {
+                'super_admin': 'Super Admin',
+                'admin': 'Admin',
+                'moderator': 'Moderator',
+                'codes_seller': 'Codes Seller'
+            };
+            userRole.textContent = roleLabels[this.userRole] || this.userRole;
+        }
+    },
+
+    // Check if user has permission for a module
+    hasPermission(module) {
+        return this.permissions && this.permissions[module] !== false;
     },
 
     // Authentication
@@ -136,13 +208,51 @@ const PrimeXCore = {
             'settings': typeof SettingsModule !== 'undefined' ? SettingsModule : null,
             'api-settings': typeof APISettingsModule !== 'undefined' ? APISettingsModule : null,
             'security': typeof SecurityModule !== 'undefined' ? SecurityModule : null,
-            'notifications': typeof NotificationsModule !== 'undefined' ? NotificationsModule : null
+            'notifications': typeof NotificationsModule !== 'undefined' ? NotificationsModule : null,
+            'admin-management': typeof AdminManagement !== 'undefined' ? AdminManagement : null
         };
+
+        const moduleMap = {
+            'dashboard': 'dashboard',
+            'users': 'users',
+            'subscriptions': 'subscriptions',
+            'codes': 'codes',
+            'channels': 'channels',
+            'categories': 'categories',
+            'servers': 'servers',
+            'plans': 'plans',
+            'settings': 'settings',
+            'security': 'security',
+            'notifications': 'notifications',
+            'api-settings': 'api_settings',
+            'logs': 'activity_logs',
+            'devices': 'users',
+            'admin-management': 'admin_management'
+        };
+
+        // Check permissions
+        const permissionKey = moduleMap[moduleName];
+        if (permissionKey && !this.hasPermission(permissionKey)) {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="card">
+                    <div class="card-body" style="text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-lock" style="font-size: 64px; color: var(--danger); margin-bottom: 20px;"></i>
+                        <h3 style="color: var(--text-primary); margin-bottom: 10px;">Access Denied</h3>
+                        <p style="color: var(--text-muted);">You don't have permission to access this module.</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
 
         const module = modules[moduleName];
         if (module) {
-            document.getElementById('pageTitle').textContent = module.title;
-            module.render();
+            document.getElementById('pageTitle').textContent = module.title || moduleName;
+            if (module.render) {
+                module.render();
+            } else if (module.init) {
+                module.init();
+            }
         } else {
             console.error(`Module "${moduleName}" not found or not loaded`);
             document.getElementById('contentArea').innerHTML = `

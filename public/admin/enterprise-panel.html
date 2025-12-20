@@ -109,6 +109,11 @@
                     <span>Notifications</span>
                     <span class="badge" id="notificationBadge">0</span>
                 </a>
+                
+                <a href="#admin-management" class="nav-item" data-module="admin-management" id="adminManagementNav" style="display: none;">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admin Management</span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">
@@ -141,21 +146,21 @@
                 
                 <div class="top-bar-right">
                     <div class="search-box">
-                        <i class="fas fa-search"></i>
                         <input type="text" placeholder="Search..." id="globalSearch">
+                        <i class="fas fa-search"></i>
                     </div>
                     
-                    <button class="icon-btn" id="notificationsBtn">
+                    <button class="icon-btn" id="notificationsBtn" title="Notifications">
                         <i class="fas fa-bell"></i>
                         <span class="notification-dot"></span>
                     </button>
                     
-                    <button class="icon-btn" id="settingsBtn">
+                    <button class="icon-btn" id="settingsBtn" title="Settings">
                         <i class="fas fa-cog"></i>
                     </button>
                     
                     <div class="user-menu">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect fill='%236366f1' width='40' height='40'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='16' font-family='Arial'%3EA%3C/text%3E%3C/svg%3E" alt="Admin" class="user-avatar-img">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect fill='%236366f1' width='40' height='40' rx='8'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='16' font-family='Arial'%3EA%3C/text%3E%3C/svg%3E" alt="Admin" class="user-avatar-img" title="Profile">
                     </div>
                 </div>
             </header>
@@ -188,6 +193,7 @@
     <script src="js/api-settings.js"></script>
     <script src="js/security.js"></script>
     <script src="js/notifications.js"></script>
+    <script src="js/admin-management.js"></script>
     <!-- Load core.js LAST so all modules are defined -->
     <script src="js/core.js"></script>
 </body>

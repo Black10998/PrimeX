@@ -365,40 +365,55 @@ body {
     gap: 15px;
 }
 
+/* Header Icons - Unified Design System */
 .search-box {
     position: relative;
     display: flex;
     align-items: center;
+    margin-right: 12px;
 }
 
 .search-box i {
     position: absolute;
-    left: 12px;
+    left: 14px;
     color: var(--text-muted);
+    font-size: 16px;
+    pointer-events: none;
+    transition: var(--transition);
 }
 
 .search-box input {
-    padding: 8px 12px 8px 36px;
+    padding: 10px 14px 10px 40px;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: 8px;
     color: var(--text-primary);
     width: 250px;
+    height: 40px;
+    font-size: 14px;
     transition: var(--transition);
 }
 
 .search-box input:focus {
     outline: none;
     border-color: var(--primary);
+    background: var(--bg-secondary);
     width: 300px;
 }
 
+.search-box input:focus + i {
+    color: var(--primary);
+}
+
+/* Unified Icon Button Styles */
 .icon-btn {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 8px;
     background: var(--bg-tertiary);
-    border: none;
+    border: 1px solid transparent;
     color: var(--text-secondary);
     cursor: pointer;
     display: flex;
@@ -406,29 +421,71 @@ body {
     justify-content: center;
     position: relative;
     transition: var(--transition);
+    margin-left: 8px;
+}
+
+.icon-btn i {
+    font-size: 18px;
+    transition: var(--transition);
 }
 
 .icon-btn:hover {
     background: var(--bg-hover);
+    border-color: var(--border-color);
     color: var(--text-primary);
+    transform: translateY(-1px);
 }
 
+.icon-btn:active {
+    transform: translateY(0);
+}
+
+/* Notification Badge */
 .notification-dot {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 8px;
-    height: 8px;
+    top: 6px;
+    right: 6px;
+    width: 10px;
+    height: 10px;
     background: var(--danger);
     border-radius: 50%;
     border: 2px solid var(--bg-secondary);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* User Avatar - Unified with Icon Buttons */
+.user-menu {
+    margin-left: 8px;
 }
 
 .user-avatar-img {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 8px;
     cursor: pointer;
+    border: 1px solid transparent;
+    transition: var(--transition);
+    object-fit: cover;
+}
+
+.user-avatar-img:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.user-avatar-img:active {
+    transform: translateY(0);
 }
 
 /* Content Area */
