@@ -218,40 +218,57 @@ class VODController {
     // ==================== M3U IMPORT ====================
     
     async importVODM3U(req, res) {
+        // Check validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            logger.error('VOD import validation failed', { errors: errors.array() });
+            return res.status(400).json(formatResponse(false, null, 'Validation failed', errors.array()));
+        }
+
         const connection = await db.getConnection();
         try {
             await connection.beginTransaction();
 
             const { m3u_url, content_type, default_category_id } = req.body;
 
-            if (!m3u_url) {
-                await connection.rollback();
-                return res.status(400).json(formatResponse(false, null, 'M3U URL is required'));
-            }
-
-            if (!content_type || !['movie', 'series'].includes(content_type)) {
-                await connection.rollback();
-                return res.status(400).json(formatResponse(false, null, 'Content type must be "movie" or "series"'));
-            }
-
-            logger.info('Starting VOD M3U import', { url: m3u_url, type: content_type });
+            logger.info('Starting VOD M3U import', { 
+                url: m3u_url, 
+                type: content_type,
+                category: default_category_id 
+            });
 
             // Fetch M3U content
             const fetch = (await import('node-fetch')).default;
-            const response = await fetch(m3u_url);
+            logger.info('Fetching M3U from URL...');
+            
+            const response = await fetch(m3u_url, {
+                headers: {
+                    'User-Agent': 'PrimeX-IPTV/1.0'
+                }
+            });
             
             if (!response.ok) {
                 await connection.rollback();
-                return res.status(400).json(formatResponse(false, null, 'Failed to fetch M3U playlist'));
+                logger.error('Failed to fetch M3U', { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    url: m3u_url 
+                });
+                return res.status(400).json(formatResponse(false, null, `Failed to fetch M3U playlist: ${response.statusText}`));
             }
 
+            logger.info('M3U fetched successfully, reading content...');
             const m3uContent = await response.text();
+            logger.info('M3U content received', { size: m3uContent.length });
             
             // Parse M3U
+            logger.info('Parsing M3U content...');
             const items = this.parseVODM3U(m3uContent, content_type);
+            logger.info('M3U parsed', { items: items.length });
             
             if (items.length === 0) {
                 await connection.rollback();
+                logger.warn('No VOD content found in playlist');
                 return res.status(400).json(formatResponse(false, null, 'No VOD content found in playlist'));
             }
 
@@ -381,6 +398,8 @@ class VODController {
         const items = [];
         const lines = content.split('\n').map(line => line.trim()).filter(line => line);
         
+        logger.info('Parsing M3U', { totalLines: lines.length, contentType });
+        
         let currentItem = {};
         
         for (let i = 0; i < lines.length; i++) {
@@ -433,11 +452,14 @@ class VODController {
                 if (currentItem.name) {
                     currentItem.url = line;
                     items.push(currentItem);
+                } else {
+                    logger.warn('Found URL without name', { url: line.substring(0, 50) });
                 }
                 currentItem = {};
             }
         }
         
+        logger.info('M3U parsing complete', { itemsFound: items.length });
         return items;
     }
 
