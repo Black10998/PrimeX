@@ -307,12 +307,12 @@ class AdminManagementController {
         try {
             const { getRolePermissions } = require('../middleware/rbac');
             
-            // Get role from req.user (set by auth middleware)
-            const role = req.user?.role || req.admin?.role || 'super_admin';
+            // Get role from req.admin first (for admin routes), then req.user
+            const role = req.admin?.role || req.user?.role || 'super_admin';
             
             logger.info('Getting permissions for role:', { 
                 role, 
-                userId: req.user?.userId || req.admin?.id,
+                userId: req.admin?.id || req.user?.userId,
                 hasReqUser: !!req.user,
                 hasReqAdmin: !!req.admin
             });

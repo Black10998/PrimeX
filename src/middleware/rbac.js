@@ -129,7 +129,8 @@ function getRolePermissions(role) {
 function checkModuleAccess(module) {
     return (req, res, next) => {
         try {
-            const userRole = req.user?.role || req.admin?.role || 'moderator';
+            // Check req.admin first (for admin routes), then req.user
+            const userRole = req.admin?.role || req.user?.role || 'moderator';
 
             // Super admin always has access
             if (userRole === 'super_admin') {
@@ -138,9 +139,11 @@ function checkModuleAccess(module) {
 
             if (!hasPermission(userRole, module)) {
                 logger.warn('Access denied', {
-                    user_id: req.user?.userId || req.admin?.id,
+                    user_id: req.admin?.id || req.user?.userId,
                     role: userRole,
-                    module: module
+                    module: module,
+                    hasReqAdmin: !!req.admin,
+                    hasReqUser: !!req.user
                 });
 
                 return res.status(403).json(
@@ -162,12 +165,15 @@ function checkModuleAccess(module) {
  * Middleware to check if user is super admin
  */
 function requireSuperAdmin(req, res, next) {
-    const userRole = req.user?.role || 'moderator';
+    // Check both req.admin and req.user for role
+    const userRole = req.admin?.role || req.user?.role || 'moderator';
 
     if (userRole !== 'super_admin') {
         logger.warn('Super admin access denied', {
-            user_id: req.user?.userId,
-            role: userRole
+            user_id: req.admin?.id || req.user?.userId,
+            role: userRole,
+            hasReqAdmin: !!req.admin,
+            hasReqUser: !!req.user
         });
 
         return res.status(403).json(

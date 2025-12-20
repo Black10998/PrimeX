@@ -59,6 +59,14 @@ async function authenticateAdmin(req, res, next) {
             role: admins[0].role
         };
 
+        // Also attach to req.user for RBAC middleware compatibility
+        req.user = {
+            userId: admins[0].id,
+            username: admins[0].username,
+            role: admins[0].role,
+            isAdmin: true
+        };
+
         next();
 
     } catch (error) {
