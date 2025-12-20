@@ -9,9 +9,32 @@ const CodesModule = {
     searchTerm: '',
     filterStatus: 'all',
     codes: [],
+    availablePlans: [],
 
     async render() {
         await this.loadCodes();
+    },
+
+    async loadPlansForModal() {
+        try {
+            const response = await PrimeXCore.apiCall('/admin/plans');
+            if (response.success && response.data) {
+                // Handle different response formats
+                if (Array.isArray(response.data)) {
+                    this.availablePlans = response.data;
+                } else if (response.data.plans && Array.isArray(response.data.plans)) {
+                    this.availablePlans = response.data.plans;
+                } else {
+                    this.availablePlans = [];
+                }
+            } else {
+                this.availablePlans = [];
+            }
+        } catch (error) {
+            console.error('Failed to load plans:', error);
+            this.availablePlans = [];
+            PrimeXCore.showToast('Failed to load subscription plans', 'error');
+        }
     },
 
     async loadCodes() {
@@ -132,9 +155,24 @@ const CodesModule = {
         this.renderCodesList();
     },
 
-    showGenerateModal() {
+    async showGenerateModal() {
+        // Load plans first
+        await this.loadPlansForModal();
+
+        const plansOptions = this.availablePlans.map(plan => 
+            `<option value="${plan.id}">${plan.name} (${plan.duration_days} days - $${plan.price})</option>`
+        ).join('');
+
         const modalContent = `
             <form id="generateCodesForm">
+                <div class="form-group">
+                    <label class="form-label">Subscription Plan *</label>
+                    <select class="form-control" name="plan_id" id="planSelect" required>
+                        <option value="">Select a plan</option>
+                        ${plansOptions}
+                    </select>
+                    <small class="form-text">Select the subscription plan for these codes</small>
+                </div>
                 <div class="form-group">
                     <label class="form-label">Number of Codes *</label>
                     <input type="number" class="form-control" name="count" value="10" min="1" max="1000" required>
@@ -142,6 +180,7 @@ const CodesModule = {
                 <div class="form-group">
                     <label class="form-label">Duration (days) *</label>
                     <input type="number" class="form-control" name="duration_days" value="30" min="1" required>
+                    <small class="form-text">Override plan duration if needed</small>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Source/Note</label>
@@ -158,6 +197,18 @@ const CodesModule = {
         setTimeout(() => {
             const form = document.getElementById('generateCodesForm');
             if (form) form.onsubmit = (e) => CodesModule.generateCodes(e);
+            
+            // Auto-fill duration when plan is selected
+            const planSelect = document.getElementById('planSelect');
+            const durationInput = document.querySelector('input[name="duration_days"]');
+            if (planSelect && durationInput) {
+                planSelect.addEventListener('change', (e) => {
+                    const selectedPlan = this.availablePlans.find(p => p.id == e.target.value);
+                    if (selectedPlan) {
+                        durationInput.value = selectedPlan.duration_days;
+                    }
+                });
+            }
         }, 100);
     },
     
@@ -171,6 +222,17 @@ const CodesModule = {
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData);
 
+        // Validate plan_id
+        if (!data.plan_id) {
+            PrimeXCore.showToast('Please select a subscription plan', 'error');
+            return;
+        }
+
+        // Convert to numbers
+        data.plan_id = parseInt(data.plan_id);
+        data.count = parseInt(data.count);
+        data.duration_days = parseInt(data.duration_days);
+
         PrimeXCore.showLoading(true);
         try {
             const response = await PrimeXCore.apiCall('/admin/codes/generate', 'POST', data);
@@ -178,7 +240,8 @@ const CodesModule = {
             PrimeXCore.closeModal();
             await this.loadCodes();
         } catch (error) {
-            PrimeXCore.showToast('Failed to generate codes', 'error');
+            console.error('Generate codes error:', error);
+            PrimeXCore.showToast(error.message || 'Failed to generate codes', 'error');
         } finally {
             PrimeXCore.showLoading(false);
         }
