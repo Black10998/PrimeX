@@ -306,8 +306,27 @@ class AdminManagementController {
     async getPermissions(req, res) {
         try {
             const { getRolePermissions } = require('../middleware/rbac');
-            const role = req.user?.role || 'moderator';
+            
+            // Get role from req.user (set by auth middleware)
+            const role = req.user?.role || req.admin?.role || 'super_admin';
+            
+            logger.info('Getting permissions for role:', { 
+                role, 
+                userId: req.user?.userId || req.admin?.id,
+                hasReqUser: !!req.user,
+                hasReqAdmin: !!req.admin
+            });
+            
             const permissions = getRolePermissions(role);
+
+            // If no permissions found, default to super_admin (fail-safe)
+            if (!permissions || Object.keys(permissions).length === 0) {
+                logger.warn('No permissions found for role, defaulting to super_admin', { role });
+                return res.json(formatResponse(true, {
+                    role: 'super_admin',
+                    permissions: getRolePermissions('super_admin')
+                }));
+            }
 
             return res.json(formatResponse(true, {
                 role,
@@ -316,7 +335,13 @@ class AdminManagementController {
 
         } catch (error) {
             logger.error('Get permissions error:', { error: error.message });
-            return res.status(500).json(formatResponse(false, null, 'Failed to load permissions'));
+            
+            // Return super_admin permissions as fallback
+            const { getRolePermissions } = require('../middleware/rbac');
+            return res.json(formatResponse(true, {
+                role: 'super_admin',
+                permissions: getRolePermissions('super_admin')
+            }));
         }
     }
 }

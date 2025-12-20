@@ -129,11 +129,16 @@ function getRolePermissions(role) {
 function checkModuleAccess(module) {
     return (req, res, next) => {
         try {
-            const userRole = req.user?.role || 'moderator';
+            const userRole = req.user?.role || req.admin?.role || 'moderator';
+
+            // Super admin always has access
+            if (userRole === 'super_admin') {
+                return next();
+            }
 
             if (!hasPermission(userRole, module)) {
                 logger.warn('Access denied', {
-                    user_id: req.user?.userId,
+                    user_id: req.user?.userId || req.admin?.id,
                     role: userRole,
                     module: module
                 });

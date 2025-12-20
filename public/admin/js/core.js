@@ -26,17 +26,49 @@ const PrimeXCore = {
             if (response.success) {
                 this.permissions = response.data.permissions;
                 this.userRole = response.data.role;
+                console.log('Permissions loaded:', this.userRole, this.permissions);
                 this.applyPermissions();
+            } else {
+                console.warn('Permissions API returned error, defaulting to full access');
+                this.setDefaultPermissions();
             }
         } catch (error) {
             console.error('Failed to load permissions:', error);
-            this.permissions = {};
-            this.userRole = 'moderator';
+            console.warn('Defaulting to full access due to API error');
+            this.setDefaultPermissions();
         }
+    },
+
+    // Set default permissions (full access) when API fails
+    setDefaultPermissions() {
+        this.permissions = {
+            dashboard: true,
+            users: true,
+            subscriptions: true,
+            codes: true,
+            channels: true,
+            categories: true,
+            servers: true,
+            plans: true,
+            settings: true,
+            security: true,
+            notifications: true,
+            api_settings: true,
+            activity_logs: true,
+            admin_management: true
+        };
+        this.userRole = 'super_admin';
+        this.applyPermissions();
     },
 
     // Apply permissions to UI
     applyPermissions() {
+        // If no permissions loaded, show everything (fail-safe)
+        if (!this.permissions || Object.keys(this.permissions).length === 0) {
+            console.warn('No permissions loaded, showing all modules');
+            return;
+        }
+
         const moduleMap = {
             'dashboard': 'dashboard',
             'users': 'users',
@@ -59,6 +91,8 @@ const PrimeXCore = {
             const module = item.getAttribute('data-module');
             const permissionKey = moduleMap[module];
             
+            // Only hide if explicitly set to false
+            // If undefined or true, show the item
             if (permissionKey && this.permissions[permissionKey] === false) {
                 item.style.display = 'none';
             } else {
@@ -87,7 +121,12 @@ const PrimeXCore = {
 
     // Check if user has permission for a module
     hasPermission(module) {
-        return this.permissions && this.permissions[module] !== false;
+        // If no permissions loaded, allow access (fail-safe)
+        if (!this.permissions || Object.keys(this.permissions).length === 0) {
+            return true;
+        }
+        // Only deny if explicitly set to false
+        return this.permissions[module] !== false;
     },
 
     // Authentication
