@@ -305,15 +305,4 @@
 }
 </style>
 
-<script>
-// Populate plans dropdown when module loads
-setTimeout(() => {
-    const planSelect = document.getElementById('planSelect');
-    if (planSelect && DeviceActivationModule.plans) {
-        planSelect.innerHTML = '<option value="">Select Plan</option>' +
-            DeviceActivationModule.plans.map(plan => 
-                `<option value="${plan.id}">${plan.name} (${plan.duration_days} days - $${plan.price})</option>`
-            ).join('');
-    }
-}, 500);
-</script>
+

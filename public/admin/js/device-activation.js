@@ -48,6 +48,18 @@ const DeviceActivationModule = {
         if (refreshDevicesBtn) {
             refreshDevicesBtn.addEventListener('click', () => this.loadDevices());
         }
+
+        // Auto-fill duration when plan is selected
+        const planSelect = document.getElementById('planSelect');
+        const durationInput = document.getElementById('durationInput');
+        if (planSelect && durationInput) {
+            planSelect.addEventListener('change', (e) => {
+                const selectedPlan = this.plans.find(p => p.id == e.target.value);
+                if (selectedPlan) {
+                    durationInput.value = selectedPlan.duration_days || 30;
+                }
+            });
+        }
     },
 
     async loadPlans() {
@@ -56,10 +68,33 @@ const DeviceActivationModule = {
             if (response.success && response.data) {
                 this.plans = Array.isArray(response.data) ? response.data : 
                             (response.data.plans || []);
+                
+                // Populate dropdown immediately after loading
+                this.populatePlansDropdown();
             }
         } catch (error) {
             console.error('Failed to load plans:', error);
+            PrimeXCore.showToast('Failed to load subscription plans', 'error');
         }
+    },
+
+    populatePlansDropdown() {
+        const planSelect = document.getElementById('planSelect');
+        if (!planSelect) return;
+
+        if (!this.plans || this.plans.length === 0) {
+            planSelect.innerHTML = '<option value="">No plans available</option>';
+            return;
+        }
+
+        planSelect.innerHTML = '<option value="">Select Plan</option>' +
+            this.plans.map(plan => {
+                // Handle bilingual names (name_en/name_ar) or fallback to name
+                const planName = plan.name_en || plan.name_ar || plan.name || 'Unnamed Plan';
+                const duration = plan.duration_days || 30;
+                const price = plan.price || 0;
+                return `<option value="${plan.id}">${planName} (${duration} days - $${price})</option>`;
+            }).join('');
     },
 
     async loadDevices() {
