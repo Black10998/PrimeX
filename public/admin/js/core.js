@@ -364,10 +364,141 @@ const PrimeXCore = {
             }
         });
 
+        // Header buttons
+        this.setupHeaderButtons();
+
         // Hash change
         window.addEventListener('hashchange', () => {
             this.loadCurrentModule();
         });
+    },
+
+    setupHeaderButtons() {
+        // Notifications button
+        const notificationsBtn = document.getElementById('notificationsBtn');
+        if (notificationsBtn) {
+            notificationsBtn.addEventListener('click', () => {
+                // Navigate to notifications page
+                window.location.hash = 'notifications';
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                const notifNav = document.querySelector('.nav-item[href="#notifications"]');
+                if (notifNav) notifNav.classList.add('active');
+                this.loadModule('notifications');
+            });
+        }
+
+        // Settings button
+        const settingsBtn = document.getElementById('settingsBtn');
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => {
+                this.showSettingsMenu();
+            });
+        }
+
+        // User avatar/profile button
+        const userAvatar = document.querySelector('.user-avatar-img');
+        if (userAvatar) {
+            userAvatar.addEventListener('click', () => {
+                this.showProfileMenu();
+            });
+        }
+    },
+
+    showSettingsMenu() {
+        const menuContent = `
+            <div class="dropdown-menu">
+                <div class="dropdown-item" onclick="PrimeXCore.navigateToModule('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>System Settings</span>
+                </div>
+                <div class="dropdown-item" onclick="PrimeXCore.navigateToModule('api-settings')">
+                    <i class="fas fa-plug"></i>
+                    <span>API Settings</span>
+                </div>
+                <div class="dropdown-item" onclick="PrimeXCore.navigateToModule('security')">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security</span>
+                </div>
+            </div>
+        `;
+
+        this.showDropdown(menuContent, document.getElementById('settingsBtn'));
+    },
+
+    showProfileMenu() {
+        const menuContent = `
+            <div class="dropdown-menu">
+                <div class="dropdown-header">
+                    <div class="dropdown-user-info">
+                        <div class="dropdown-user-name">Administrator</div>
+                        <div class="dropdown-user-role">${this.userRole || 'Admin'}</div>
+                    </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" onclick="PrimeXCore.navigateToModule('security')">
+                    <i class="fas fa-key"></i>
+                    <span>Change Password</span>
+                </div>
+                <div class="dropdown-item" onclick="PrimeXCore.navigateToModule('security')">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security Settings</span>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" onclick="PrimeXCore.logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </div>
+            </div>
+        `;
+
+        this.showDropdown(menuContent, document.querySelector('.user-avatar-img'));
+    },
+
+    showDropdown(content, triggerElement) {
+        // Remove existing dropdown
+        const existing = document.querySelector('.dropdown-overlay');
+        if (existing) {
+            existing.remove();
+            return;
+        }
+
+        // Create dropdown overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'dropdown-overlay';
+        overlay.innerHTML = content;
+
+        // Position dropdown
+        const rect = triggerElement.getBoundingClientRect();
+        const dropdown = overlay.querySelector('.dropdown-menu');
+        
+        document.body.appendChild(overlay);
+
+        // Position the menu
+        setTimeout(() => {
+            const menuRect = dropdown.getBoundingClientRect();
+            dropdown.style.top = `${rect.bottom + 8}px`;
+            dropdown.style.right = `${window.innerWidth - rect.right}px`;
+        }, 0);
+
+        // Close on click outside
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.remove();
+            }
+        });
+    },
+
+    navigateToModule(module) {
+        // Close dropdown
+        const dropdown = document.querySelector('.dropdown-overlay');
+        if (dropdown) dropdown.remove();
+
+        // Navigate to module
+        window.location.hash = module;
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        const navItem = document.querySelector(`.nav-item[href="#${module}"]`);
+        if (navItem) navItem.classList.add('active');
+        this.loadModule(module);
     },
 
     // Utilities
