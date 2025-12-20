@@ -1,5 +1,6 @@
 class VODManager {
     constructor() {
+        this.title = 'VOD & Series';
         this.currentView = 'movies';
         this.movies = [];
         this.series = [];
@@ -7,39 +8,86 @@ class VODManager {
     }
 
     async init() {
+        console.log('VOD Manager: Initializing...');
         await this.loadCategories();
         await this.loadMovies();
         this.render();
+    }
+    
+    async render() {
+        console.log('VOD Manager: Rendering...');
+        const container = document.getElementById('contentArea');
+        
+        if (!container) {
+            console.error('VOD Manager: contentArea not found');
+            return;
+        }
+        
+        container.innerHTML = `
+            <div class="vod-manager">
+                <div class="page-header">
+                    <h1>VOD & Series Management</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="vodManager.showImportModal()">
+                            <i class="fas fa-file-import"></i> Import M3U
+                        </button>
+                    </div>
+                </div>
+
+                <div class="vod-tabs">
+                    <button class="tab-btn ${this.currentView === 'movies' ? 'active' : ''}" 
+                            onclick="vodManager.switchView('movies')">
+                        <i class="fas fa-film"></i> Movies (${this.movies.length})
+                    </button>
+                    <button class="tab-btn ${this.currentView === 'series' ? 'active' : ''}" 
+                            onclick="vodManager.switchView('series')">
+                        <i class="fas fa-tv"></i> Series (${this.series.length})
+                    </button>
+                </div>
+
+                <div class="vod-content">
+                    ${this.currentView === 'movies' ? this.renderMovies() : this.renderSeries()}
+                </div>
+            </div>
+        `;
     }
 
     async loadCategories() {
         try {
             const token = localStorage.getItem('adminToken');
+            console.log('Loading VOD categories...');
             const response = await fetch('/api/v1/admin/vod/categories', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const result = await response.json();
+            console.log('Categories response:', result);
             if (result.success) {
-                this.categories = result.data;
+                this.categories = result.data || [];
+                console.log('Loaded categories:', this.categories.length);
             }
         } catch (error) {
             console.error('Failed to load VOD categories:', error);
+            this.categories = [];
         }
     }
 
     async loadMovies(page = 1) {
         try {
             const token = localStorage.getItem('adminToken');
+            console.log('Loading movies...');
             const response = await fetch(`/api/v1/admin/vod/movies?page=${page}&limit=50`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const result = await response.json();
+            console.log('Movies response:', result);
             if (result.success) {
-                this.movies = result.data.movies;
+                this.movies = result.data.movies || [];
                 this.pagination = result.data.pagination;
+                console.log('Loaded movies:', this.movies.length);
             }
         } catch (error) {
             console.error('Failed to load movies:', error);
+            this.movies = [];
         }
     }
 
@@ -94,37 +142,7 @@ class VODManager {
         }
     }
 
-    render() {
-        const container = document.getElementById('content');
-        
-        container.innerHTML = `
-            <div class="vod-manager">
-                <div class="page-header">
-                    <h1>VOD & Series Management</h1>
-                    <div class="header-actions">
-                        <button class="btn btn-primary" onclick="vodManager.showImportModal()">
-                            <i class="fas fa-file-import"></i> Import M3U
-                        </button>
-                    </div>
-                </div>
 
-                <div class="vod-tabs">
-                    <button class="tab-btn ${this.currentView === 'movies' ? 'active' : ''}" 
-                            onclick="vodManager.switchView('movies')">
-                        <i class="fas fa-film"></i> Movies (${this.movies.length})
-                    </button>
-                    <button class="tab-btn ${this.currentView === 'series' ? 'active' : ''}" 
-                            onclick="vodManager.switchView('series')">
-                        <i class="fas fa-tv"></i> Series (${this.series.length})
-                    </button>
-                </div>
-
-                <div class="vod-content">
-                    ${this.currentView === 'movies' ? this.renderMovies() : this.renderSeries()}
-                </div>
-            </div>
-        `;
-    }
 
     renderMovies() {
         if (this.movies.length === 0) {

@@ -59,6 +59,7 @@
     --color-device-activation: #64D2FF;
     --color-channels: #30D158;
     --color-categories: #FFD60A;
+    --color-vod: #FF2D55;
     --color-servers: #FF375F;
     --color-devices: #5AC8FA;
     --color-logs: #AC8E68;
@@ -301,6 +302,7 @@ body {
 .nav-item[href="#device-activation"] i { color: var(--color-device-activation); }
 .nav-item[href="#channels"] i { color: var(--color-channels); }
 .nav-item[href="#categories"] i { color: var(--color-categories); }
+.nav-item[href="#vod"] i { color: var(--color-vod); }
 .nav-item[href="#servers"] i { color: var(--color-servers); }
 .nav-item[href="#devices"] i { color: var(--color-devices); }
 .nav-item[href="#logs"] i { color: var(--color-logs); }
@@ -340,6 +342,10 @@ body {
     filter: drop-shadow(0 0 8px var(--color-channels));
 }
 .nav-item.active[href="#categories"] i { 
+.nav-item.active[href="#vod"] i { 
+    color: var(--color-vod); 
+    filter: drop-shadow(0 0 8px var(--color-vod));
+}
     color: var(--color-categories); 
     filter: drop-shadow(0 0 8px var(--color-categories));
 }
