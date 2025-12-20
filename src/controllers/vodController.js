@@ -490,7 +490,17 @@ class VODController {
         return [
             body('m3u_url').notEmpty().isURL().withMessage('Valid M3U URL is required'),
             body('content_type').isIn(['movie', 'series']).withMessage('Content type must be movie or series'),
-            body('default_category_id').optional().isInt().withMessage('Category ID must be an integer')
+            body('default_category_id')
+                .optional({ nullable: true, checkFalsy: false })
+                .custom((value) => {
+                    if (value === null || value === undefined || value === '') {
+                        return true;
+                    }
+                    if (!Number.isInteger(Number(value))) {
+                        throw new Error('Category ID must be an integer');
+                    }
+                    return true;
+                })
         ];
     }
 }
