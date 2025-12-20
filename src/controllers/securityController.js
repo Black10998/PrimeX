@@ -5,6 +5,33 @@ class SecurityController {
     // Get current security status
     async getSecurityStatus(req, res) {
         try {
+            // Check if tables exist first
+            const [tableCheck] = await db.query("SHOW TABLES LIKE 'security_events'");
+            
+            if (tableCheck.length === 0) {
+                // Tables don't exist yet - return default secure status
+                return res.json({
+                    success: true,
+                    data: {
+                        status: 'secure',
+                        statusColor: 'green',
+                        stats: {
+                            total_events: 0,
+                            critical_events: 0,
+                            high_events: 0,
+                            medium_events: 0,
+                            low_events: 0,
+                            failed_logins: 0,
+                            brute_force_attempts: 0,
+                            rate_limit_violations: 0,
+                            malformed_requests: 0,
+                            blocked_ips: 0,
+                            recent_events_1h: 0
+                        }
+                    }
+                });
+            }
+            
             // Get counts for last 24 hours
             const [stats] = await db.query(`
                 SELECT 
@@ -82,6 +109,22 @@ class SecurityController {
     // Get recent security events
     async getRecentEvents(req, res) {
         try {
+            // Check if tables exist first
+            const [tableCheck] = await db.query("SHOW TABLES LIKE 'security_events'");
+            
+            if (tableCheck.length === 0) {
+                // Tables don't exist yet - return empty array
+                return res.json({
+                    success: true,
+                    data: {
+                        events: [],
+                        total: 0,
+                        limit: parseInt(req.query.limit) || 20,
+                        offset: parseInt(req.query.offset) || 0
+                    }
+                });
+            }
+            
             const limit = parseInt(req.query.limit) || 20;
             const offset = parseInt(req.query.offset) || 0;
 

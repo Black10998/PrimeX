@@ -173,6 +173,15 @@ async function startServer() {
             // Database connected - run automatic initialization
             await autoInitialize();
             
+            // Initialize security monitoring tables
+            try {
+                const { initializeSecurityTables } = require('./utils/securityInit');
+                await initializeSecurityTables();
+            } catch (error) {
+                logger.error('Security tables initialization failed', { error: error.message });
+                console.log('⚠️  Security monitoring initialization failed - continuing startup');
+            }
+            
             // Run migration to add missing tables (non-blocking)
             try {
                 const { addMissingTables } = require('./scripts/addMissingTables');

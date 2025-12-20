@@ -9,31 +9,41 @@ class SecurityMonitor {
     init() {
         const securityBtn = document.getElementById('securityMonitorBtn');
         if (securityBtn) {
+            console.log('✅ Security Monitor: Button found, attaching click handler');
             securityBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
+                console.log('🔐 Security Monitor: Button clicked');
                 this.toggleSecurityPanel(e.currentTarget);
             });
+        } else {
+            console.error('❌ Security Monitor: Button not found (ID: securityMonitorBtn)');
         }
 
         // Auto-refresh every 10 seconds
         this.startAutoRefresh();
+        console.log('✅ Security Monitor: Initialized successfully');
     }
 
     async fetchSecurityStatus() {
         try {
             const token = localStorage.getItem('adminToken');
+            console.log('🔐 Fetching security status...');
             const response = await fetch('/api/v1/admin/security/status', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (!response.ok) throw new Error('Failed to fetch security status');
+            if (!response.ok) {
+                console.error('❌ Security status fetch failed:', response.status, response.statusText);
+                throw new Error('Failed to fetch security status');
+            }
 
             const result = await response.json();
+            console.log('✅ Security status received:', result.data);
             return result.data;
         } catch (error) {
-            console.error('Security status fetch error:', error);
+            console.error('❌ Security status fetch error:', error);
             return null;
         }
     }
@@ -294,6 +304,16 @@ class SecurityMonitor {
     }
 
     startAutoRefresh() {
+        console.log('🔄 Security Monitor: Starting auto-refresh (10s interval)');
+        
+        // Initial status fetch
+        this.fetchSecurityStatus().then(statusData => {
+            if (statusData) {
+                this.updateStatusIndicator(statusData.status);
+                console.log('✅ Initial security status loaded:', statusData.status);
+            }
+        });
+        
         // Update status indicator every 10 seconds
         this.refreshInterval = setInterval(async () => {
             const statusData = await this.fetchSecurityStatus();
