@@ -177,6 +177,10 @@ async function startServer() {
             try {
                 const { initializeSecurityTables } = require('./utils/securityInit');
                 await initializeSecurityTables();
+                
+                // Initialize security monitor after tables are ready
+                const { securityMonitor } = require('./middleware/securityMonitor');
+                await securityMonitor.initialize();
             } catch (error) {
                 logger.error('Security tables initialization failed', { error: error.message });
                 console.log('⚠️  Security monitoring initialization failed - continuing startup');

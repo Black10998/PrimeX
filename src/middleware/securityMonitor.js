@@ -5,23 +5,41 @@ class SecurityMonitor {
         this.rateLimitMap = new Map();
         this.suspiciousIPs = new Set();
         this.blockedIPs = new Set();
-        
-        // Load blocked IPs on startup
-        this.loadBlockedIPs();
+        this.initialized = false;
         
         // Clean up old rate limit data every 5 minutes
         setInterval(() => this.cleanupRateLimits(), 5 * 60 * 1000);
     }
 
+    async initialize() {
+        if (this.initialized) return;
+        
+        try {
+            await this.loadBlockedIPs();
+            this.initialized = true;
+        } catch (error) {
+            console.error('Security monitor initialization failed:', error.message);
+        }
+    }
+
     async loadBlockedIPs() {
         try {
+            // Check if db.query is available
+            if (!db || typeof db.query !== 'function') {
+                console.warn('Database not ready, skipping blocked IPs load');
+                return;
+            }
+            
             const [rows] = await db.query(`
                 SELECT ip_address FROM blocked_ips 
                 WHERE is_permanent = 1 OR expires_at > NOW()
             `);
             rows.forEach(row => this.blockedIPs.add(row.ip_address));
         } catch (error) {
-            console.error('Failed to load blocked IPs:', error.message);
+            // Silently fail if table doesn't exist yet
+            if (!error.message.includes("doesn't exist")) {
+                console.error('Failed to load blocked IPs:', error.message);
+            }
         }
     }
 
