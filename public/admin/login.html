@@ -14,8 +14,9 @@
         }
 
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
+            --primary: #D4AF37;
+            --primary-dark: #C5A028;
+            --primary-light: #F4D03F;
             --bg-primary: #0f172a;
             --bg-secondary: #1e293b;
             --bg-tertiary: #334155;
@@ -160,14 +161,60 @@
             color: var(--text-secondary);
             font-size: 13px;
         }
+
+        /* Arabic Welcome Message */
+        .welcome-toast {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.95) 0%, rgba(197, 160, 40, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(244, 208, 63, 0.3);
+            border-radius: 16px;
+            padding: 20px 30px;
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.4);
+            z-index: 10000;
+            opacity: 0;
+            animation: welcomeSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            text-align: center;
+            min-width: 320px;
+        }
+
+        .welcome-toast h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            direction: rtl;
+            font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        .welcome-toast p {
+            font-size: 13px;
+            color: #334155;
+            margin: 0;
+            direction: rtl;
+            font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        @keyframes welcomeSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-card">
             <div class="logo">
-                <i class="fas fa-tv"></i>
-                <h1>PrimeX IPTV</h1>
+                <img src="assets/primex-logo.svg" alt="PrimeX IPTV" style="height: 50px; margin-bottom: 15px;">
                 <p>Enterprise Admin Panel</p>
             </div>
 
@@ -204,6 +251,22 @@
         const btnText = document.getElementById('btnText');
         const btnSpinner = document.getElementById('btnSpinner');
 
+        function showWelcomeMessage() {
+            const toast = document.createElement('div');
+            toast.className = 'welcome-toast';
+            toast.innerHTML = `
+                <h3>مرحبًا بكم في نظام PrimeX IPTV</h3>
+                <p>تم التطوير والإدارة بواسطة PAX</p>
+            `;
+            document.body.appendChild(toast);
+
+            // Remove after animation
+            setTimeout(() => {
+                toast.style.animation = 'welcomeSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 1700);
+        }
+
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -231,8 +294,13 @@
                     // Store token
                     localStorage.setItem('adminToken', data.data.token);
                     
-                    // Redirect to admin panel
-                    window.location.href = '/admin/enterprise-panel.html';
+                    // Show Arabic welcome message
+                    showWelcomeMessage();
+                    
+                    // Redirect after brief delay
+                    setTimeout(() => {
+                        window.location.href = '/admin/enterprise-panel.html';
+                    }, 2000);
                 } else {
                     throw new Error(data.message || 'Login failed');
                 }

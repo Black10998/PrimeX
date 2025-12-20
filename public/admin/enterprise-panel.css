@@ -7,10 +7,13 @@
    VARIABLES & RESET
    ============================================ */
 :root {
+    /* Premium Gold Brand Colors */
+    --primary: #D4AF37;
+    --primary-dark: #C5A028;
+    --primary-light: #F4D03F;
+    --gold-gradient: linear-gradient(135deg, #F4D03F 0%, #D4AF37 50%, #C5A028 100%);
+    
     /* Apple-Style Premium Colors */
-    --primary: #007AFF;
-    --primary-dark: #0051D5;
-    --primary-light: #4DA2FF;
     --secondary: #5856D6;
     --success: #34C759;
     --warning: #FF9500;
@@ -179,11 +182,24 @@ body {
     gap: 12px;
     font-size: 20px;
     font-weight: 700;
-    color: var(--primary);
+}
+
+.logo-image {
+    height: 32px;
+    width: auto;
+    transition: var(--transition-fast);
+}
+
+.sidebar.collapsed .logo-image {
+    height: 28px;
 }
 
 .logo i {
     font-size: 24px;
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .sidebar.collapsed .logo span {

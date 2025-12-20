@@ -1,0 +1,47 @@
+<svg width="180" height="40" viewBox="0 0 180 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Premium Gold Gradient Definition -->
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4D03F;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C5A028;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="goldGradientLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE66D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F4D03F;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: Premium Signal Tower with Crown -->
+  <g transform="translate(0, 5)">
+    <!-- Signal waves (left) -->
+    <path d="M 2 15 Q 2 10, 6 10" stroke="url(#goldGradient)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+    <path d="M 0 15 Q 0 7, 8 7" stroke="url(#goldGradient)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
+    
+    <!-- Signal waves (right) -->
+    <path d="M 28 15 Q 28 10, 24 10" stroke="url(#goldGradient)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+    <path d="M 30 15 Q 30 7, 22 7" stroke="url(#goldGradient)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
+    
+    <!-- Central tower -->
+    <rect x="12" y="12" width="6" height="16" rx="1" fill="url(#goldGradient)"/>
+    
+    <!-- Crown on top -->
+    <path d="M 10 12 L 12 8 L 15 10 L 18 8 L 20 12 Z" fill="url(#goldGradientLight)"/>
+    <circle cx="15" cy="6" r="1.5" fill="url(#goldGradientLight)"/>
+  </g>
+  
+  <!-- Text: PrimeX IPTV -->
+  <text x="40" y="25" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" font-size="18" font-weight="700" fill="url(#goldGradient)">
+    PrimeX
+  </text>
+  
+  <text x="105" y="25" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" font-size="14" font-weight="500" fill="url(#goldGradient)" opacity="0.8">
+    IPTV
+  </text>
+  
+  <!-- Tagline -->
+  <text x="40" y="33" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" font-size="7" font-weight="400" fill="url(#goldGradient)" opacity="0.6" letter-spacing="1">
+    ENTERPRISE STREAMING
+  </text>
+</svg>
