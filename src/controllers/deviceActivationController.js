@@ -191,7 +191,7 @@ class DeviceActivationController {
                 password: plainPassword,
                 server_url: serverUrl,
                 subscription_end: subscriptionEnd,
-                plan_name: plan.name,
+                plan_name: plan.name_en || plan.name_ar || 'Subscription Plan',
                 xtream_url: `${serverUrl}/player_api.php`,
                 m3u_url: `${serverUrl}/get.php?username=${generatedUsername}&password=${plainPassword}&type=m3u_plus&output=ts`
             }, 'Device activated successfully'));
@@ -277,7 +277,7 @@ class DeviceActivationController {
             const status = req.query.status || '';
 
             let query = `
-                SELECT da.*, u.username as user_username, sp.name as plan_name,
+                SELECT da.*, u.username as user_username, sp.name_en as plan_name,
                        au.username as activated_by_username
                 FROM device_activations da
                 LEFT JOIN users u ON da.user_id = u.id
