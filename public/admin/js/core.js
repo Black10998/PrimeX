@@ -177,6 +177,13 @@ const PrimeXCore = {
         }
     },
 
+    // Alias for backward compatibility
+    async apiRequest(endpoint, options = {}) {
+        const method = options.method || 'GET';
+        const data = options.body ? JSON.parse(options.body) : null;
+        return this.apiCall(endpoint, method, data);
+    },
+
     // UI Utilities
     showToast(message, type = 'info') {
         const container = document.getElementById('toastContainer');
@@ -201,6 +208,22 @@ const PrimeXCore = {
         } else {
             overlay.classList.remove('active');
         }
+    },
+
+    hideLoading() {
+        this.showLoading(false);
+    },
+
+    debounce(func, wait = 300) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
     },
 
     // Modal
@@ -367,6 +390,9 @@ const PrimeXCore = {
         return div.innerHTML;
     }
 };
+
+// Create alias for backward compatibility
+const Core = PrimeXCore;
 
 // Initialize on load
 document.addEventListener('DOMContentLoaded', () => {

@@ -178,7 +178,10 @@
     <!-- Modal Container -->
     <div class="modal-overlay" id="modalOverlay"></div>
 
-    <!-- Enterprise Panel JavaScript - Load modules first, then core -->
+    <!-- Enterprise Panel JavaScript - Load core FIRST, then modules -->
+    <script src="js/core.js"></script>
+    
+    <!-- Load all modules after core -->
     <script src="js/dashboard.js"></script>
     <script src="js/users.js"></script>
     <script src="js/subscriptions.js"></script>
@@ -194,7 +197,5 @@
     <script src="js/security.js"></script>
     <script src="js/notifications.js"></script>
     <script src="js/admin-management.js"></script>
-    <!-- Load core.js LAST so all modules are defined -->
-    <script src="js/core.js"></script>
 </body>
 </html>
