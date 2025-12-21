@@ -42,11 +42,11 @@ router.use('/auth', authRoutes);
 // Setup routes (one-time initialization)
 router.use('/setup', setupRoutes);
 
-// Device activation routes (4Kmatic-style)
-router.use('/', deviceActivationRoutes);
+// Device activation routes (4K Player style) - MUST come first to avoid conflicts
+router.use('/', deviceActivation4KRoutes);
 
-// Device activation routes (4K Player style)
-router.use('/api/v1', deviceActivation4KRoutes);
+// Device activation routes (4Kmatic-style - old)
+router.use('/', deviceActivationRoutes);
 
 // Security monitoring routes
 router.use('/admin/security', securityRoutes);
