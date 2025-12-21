@@ -20,6 +20,7 @@ class SeriesCardPresenter : Presenter() {
             isFocusable = true
             isFocusableInTouchMode = true
             setBackgroundColor(Color.DKGRAY)
+            layoutParams = ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT)
         }
         return ViewHolder(cardView)
     }
