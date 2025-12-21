@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Application Theme -->
+    <style name="Theme.PrimeX" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:colorPrimary">@color/primary_color</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent_color</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <!-- Leanback Theme -->
+    <style name="Theme.Leanback" parent="Theme.Leanback.Browse">
+        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:colorPrimary">@color/primary_color</item>
+        <item name="android:colorAccent">@color/accent_color</item>
+        <item name="browseTitleTextStyle">@style/BrowseTitleTextStyle</item>
+        <item name="browseTitleViewStyle">@style/BrowseTitleViewStyle</item>
+        <item name="defaultBrandColor">@color/accent_color</item>
+        <item name="defaultSearchColor">@color/accent_color</item>
+    </style>
+
+    <style name="BrowseTitleTextStyle" parent="Widget.Leanback.Title.Text">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BrowseTitleViewStyle" parent="Widget.Leanback.Title">
+        <item name="android:background">@color/background_dark</item>
+    </style>
+</resources>

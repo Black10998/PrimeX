@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PrimeX IPTV</string>
+    
+    <!-- Activation Screen -->
+    <string name="activation_instructions">Visit your account portal and enter this activation code to activate your device.\n\nThe code will refresh automatically once activated.</string>
+    <string name="activation_waiting">Waiting for activation…</string>
+    <string name="activation_success">Activation successful!</string>
+    
+    <!-- Main Screen -->
+    <string name="browse_title">PrimeX IPTV</string>
+    <string name="live_tv">Live TV</string>
+    <string name="movies">Movies</string>
+    <string name="series">Series</string>
+    <string name="settings">Settings</string>
+    
+    <!-- Player -->
+    <string name="player_error">Playback error occurred</string>
+    <string name="network_error">Network connection failed</string>
+    
+    <!-- Settings -->
+    <string name="device_info">Device Info</string>
+    <string name="refresh_content">Refresh Content</string>
+    <string name="logout">Logout</string>
+    
+    <!-- Error Messages -->
+    <string name="error_loading_content">Failed to load content</string>
+    <string name="error_no_connection">No internet connection</string>
+    <string name="error_device_not_activated">Device not activated</string>
+</resources>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    android:padding="48dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- App Logo/Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Status Text -->
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Initializing..."
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:layout_marginBottom="32dp"
+            android:visibility="visible" />
+
+        <!-- Device Key Display -->
+        <LinearLayout
+            android:id="@+id/device_key_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Activation Code:"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/device_key_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12345678"
+                android:textColor="@color/accent_color"
+                android:textSize="72sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.2"
+                android:fontFamily="monospace"
+                android:layout_marginBottom="24dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Instructions -->
+        <TextView
+            android:id="@+id/instructions_text"
+            android:layout_width="600dp"
+            android:layout_height="wrap_content"
+            android:text="@string/activation_instructions"
+            android:textColor="@color/text_secondary"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:visibility="gone" />
+
+        <!-- Error Text -->
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="600dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/error_color"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</RelativeLayout>
