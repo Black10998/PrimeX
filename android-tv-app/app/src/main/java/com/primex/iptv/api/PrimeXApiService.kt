@@ -7,6 +7,14 @@ import retrofit2.http.*
 interface PrimeXApiService {
 
     /**
+     * User login with username and password
+     */
+    @POST("auth/login")
+    suspend fun login(
+        @Body request: LoginRequest
+    ): Response<LoginResponse>
+
+    /**
      * Register a new device with MAC address
      * Returns device_key for activation
      */

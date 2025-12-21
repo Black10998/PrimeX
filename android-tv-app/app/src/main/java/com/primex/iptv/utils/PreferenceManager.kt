@@ -6,6 +6,10 @@ import android.content.SharedPreferences
 object PreferenceManager {
 
     private const val PREF_NAME = "primex_prefs"
+    private const val KEY_USERNAME = "username"
+    private const val KEY_AUTH_TOKEN = "auth_token"
+    private const val KEY_USER_ID = "user_id"
+    private const val KEY_IS_LOGGED_IN = "is_logged_in"
     private const val KEY_DEVICE_KEY = "device_key"
     private const val KEY_MAC_ADDRESS = "mac_address"
     private const val KEY_IS_ACTIVATED = "is_activated"
@@ -54,6 +58,40 @@ object PreferenceManager {
 
     fun getSubscriptionExpires(context: Context): String? {
         return getPreferences(context).getString(KEY_SUBSCRIPTION_EXPIRES, null)
+    }
+
+    fun saveUserCredentials(context: Context, username: String, token: String?, userId: Int?) {
+        getPreferences(context).edit()
+            .putString(KEY_USERNAME, username)
+            .putString(KEY_AUTH_TOKEN, token)
+            .putInt(KEY_USER_ID, userId ?: 0)
+            .putBoolean(KEY_IS_LOGGED_IN, true)
+            .apply()
+    }
+
+    fun isLoggedIn(context: Context): Boolean {
+        return getPreferences(context).getBoolean(KEY_IS_LOGGED_IN, false)
+    }
+
+    fun getAuthToken(context: Context): String? {
+        return getPreferences(context).getString(KEY_AUTH_TOKEN, null)
+    }
+
+    fun getUsername(context: Context): String? {
+        return getPreferences(context).getString(KEY_USERNAME, null)
+    }
+
+    fun getUserId(context: Context): Int {
+        return getPreferences(context).getInt(KEY_USER_ID, 0)
+    }
+
+    fun logout(context: Context) {
+        getPreferences(context).edit()
+            .putBoolean(KEY_IS_LOGGED_IN, false)
+            .remove(KEY_AUTH_TOKEN)
+            .remove(KEY_USERNAME)
+            .remove(KEY_USER_ID)
+            .apply()
     }
 
     fun clearAll(context: Context) {

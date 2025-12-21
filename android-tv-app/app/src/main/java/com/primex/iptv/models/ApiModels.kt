@@ -2,6 +2,29 @@ package com.primex.iptv.models
 
 import com.google.gson.annotations.SerializedName
 
+// Login
+data class LoginRequest(
+    @SerializedName("username")
+    val username: String,
+    @SerializedName("password")
+    val password: String
+)
+
+data class LoginResponse(
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String? = null,
+    @SerializedName("token")
+    val token: String? = null,
+    @SerializedName("user_id")
+    val user_id: Int? = null,
+    @SerializedName("username")
+    val username: String? = null,
+    @SerializedName("subscription")
+    val subscription: Subscription? = null
+)
+
 // Device Registration
 data class DeviceRegistrationRequest(
     @SerializedName("mac_address")
