@@ -51,17 +51,14 @@ class ActivationActivity : AppCompatActivity() {
     }
 
     private fun registerDevice() {
-        macAddress = DeviceUtils.getMacAddress(this)
+        // Always get a device ID - never fail
+        macAddress = DeviceUtils.getDeviceId(this)
         
-        if (macAddress.isNullOrEmpty()) {
-            showError("Unable to get device MAC address")
-            return
-        }
-
         lifecycleScope.launch {
             try {
                 progressBar.visibility = View.VISIBLE
                 statusText.text = "Registering device..."
+                errorText.visibility = View.GONE
                 
                 val request = DeviceRegistrationRequest(macAddress!!)
                 val response = ApiClient.apiService.registerDevice(request)
@@ -84,10 +81,10 @@ class ActivationActivity : AppCompatActivity() {
                     // Start polling for activation status
                     startPolling()
                 } else {
-                    showError("Registration failed: ${response.message()}")
+                    showError("Registration failed: ${response.message()}", true)
                 }
             } catch (e: Exception) {
-                showError("Registration error: ${e.message}")
+                showError("Registration error: ${e.message}", true)
             }
         }
     }
@@ -159,11 +156,11 @@ class ActivationActivity : AppCompatActivity() {
             }
             "expired" -> {
                 stopPolling()
-                showError("Device subscription has expired. Please contact support.")
+                showError("Device subscription has expired. Please contact support.", false)
             }
             "blocked" -> {
                 stopPolling()
-                showError("Device has been blocked. Please contact support.")
+                showError("Device has been blocked. Please contact support.", false)
             }
             else -> {
                 statusText.text = "Status: ${response.status}"
@@ -171,15 +168,39 @@ class ActivationActivity : AppCompatActivity() {
         }
     }
 
-    private fun showError(message: String) {
+    private fun showError(message: String, showRetry: Boolean = false) {
         progressBar.visibility = View.GONE
-        errorText.text = message
+        
+        val errorMessage = if (showRetry) {
+            "$message\n\nPress BACK to return to main menu, or wait to retry automatically."
+        } else {
+            "$message\n\nPress BACK to return to main menu."
+        }
+        
+        errorText.text = errorMessage
         errorText.visibility = View.VISIBLE
         statusText.text = "Error"
+        
+        // Auto-retry after 10 seconds if showRetry is true
+        if (showRetry) {
+            handler.postDelayed({
+                if (!isFinishing) {
+                    errorText.visibility = View.GONE
+                    registerDevice()
+                }
+            }, 10000)
+        }
+    }
+
+    override fun onBackPressed() {
+        // Allow user to return to main menu
+        super.onBackPressed()
+        finish()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         stopPolling()
+        handler.removeCallbacksAndMessages(null)
     }
 }

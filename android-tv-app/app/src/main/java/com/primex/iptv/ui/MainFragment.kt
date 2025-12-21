@@ -57,50 +57,48 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun loadContent() {
+        // Always show UI first - load content in background
+        setupRows()
+        
         val deviceKey = PreferenceManager.getDeviceKey(requireContext())
-        val macAddress = PreferenceManager.getMacAddress(requireContext())
+        val deviceId = PreferenceManager.getMacAddress(requireContext())
 
-        if (deviceKey.isNullOrEmpty() || macAddress.isNullOrEmpty()) {
-            showError("Device not properly activated")
-            return
-        }
-
-        lifecycleScope.launch {
-            try {
-                // Check device status and get content
-                val response = ApiClient.apiService.checkDeviceStatus(deviceKey, macAddress)
-                
-                if (response.isSuccessful && response.body() != null) {
-                    val statusResponse = response.body()!!
+        // Only attempt to load content if device credentials exist
+        if (!deviceKey.isNullOrEmpty() && !deviceId.isNullOrEmpty()) {
+            lifecycleScope.launch {
+                try {
+                    val response = ApiClient.apiService.checkDeviceStatus(deviceKey, deviceId)
                     
-                    if (statusResponse.status == "active") {
-                        // Load channels
-                        statusResponse.channels?.let {
-                            channels.clear()
-                            channels.addAll(it)
-                        }
+                    if (response.isSuccessful && response.body() != null) {
+                        val statusResponse = response.body()!!
                         
-                        // Load VOD content
-                        statusResponse.vod?.let { vod ->
-                            vod.movies?.let {
-                                movies.clear()
-                                movies.addAll(it)
+                        if (statusResponse.status == "active") {
+                            // Load channels
+                            statusResponse.channels?.let {
+                                channels.clear()
+                                channels.addAll(it)
                             }
-                            vod.series?.let {
-                                series.clear()
-                                series.addAll(it)
+                            
+                            // Load VOD content
+                            statusResponse.vod?.let { vod ->
+                                vod.movies?.let {
+                                    movies.clear()
+                                    movies.addAll(it)
+                                }
+                                vod.series?.let {
+                                    series.clear()
+                                    series.addAll(it)
+                                }
                             }
+                            
+                            // Refresh UI with loaded content
+                            setupRows()
                         }
-                        
-                        setupRows()
-                    } else {
-                        showError("Device is not active: ${statusResponse.status}")
                     }
-                } else {
-                    showError("Failed to load content")
+                } catch (e: Exception) {
+                    // Silent fail - app still works, just shows activation option
+                    e.printStackTrace()
                 }
-            } catch (e: Exception) {
-                showError("Error loading content: ${e.message}")
             }
         }
     }
@@ -132,9 +130,16 @@ class MainFragment : BrowseSupportFragment() {
             rowsAdapter.add(ListRow(seriesHeader, seriesAdapter))
         }
 
-        // Settings Row
+        // Settings Row - Always visible
         val settingsHeader = HeaderItem(3, "Settings")
         val settingsAdapter = ArrayObjectAdapter(SettingsCardPresenter())
+        
+        // Show activation option if not activated
+        val deviceKey = PreferenceManager.getDeviceKey(requireContext())
+        if (deviceKey.isNullOrEmpty()) {
+            settingsAdapter.add(SettingsItem("Activate Device", "Get activation code to unlock content"))
+        }
+        
         settingsAdapter.add(SettingsItem("Device Info", "View device and subscription info"))
         settingsAdapter.add(SettingsItem("Refresh Content", "Reload channels and content"))
         rowsAdapter.add(ListRow(settingsHeader, settingsAdapter))
@@ -189,9 +194,15 @@ class MainFragment : BrowseSupportFragment() {
 
     private fun handleSettingsClick(item: SettingsItem) {
         when (item.title) {
+            "Activate Device" -> openActivationScreen()
             "Device Info" -> showDeviceInfo()
             "Refresh Content" -> loadContent()
         }
+    }
+    
+    private fun openActivationScreen() {
+        val intent = Intent(requireContext(), ActivationActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showDeviceInfo() {

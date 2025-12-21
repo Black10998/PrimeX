@@ -9,12 +9,22 @@ import java.util.*
 object DeviceUtils {
 
     /**
-     * Get device MAC address
-     * Tries multiple methods for compatibility
+     * Get stable device identifier
+     * Always returns a valid ID - never null or empty
+     * Uses ANDROID_ID as primary method for emulator compatibility
      */
-    fun getMacAddress(context: Context): String {
+    fun getDeviceId(context: Context): String {
         try {
-            // Method 1: Try WiFi MAC address
+            // Primary: Use ANDROID_ID (works on emulators and real devices)
+            val androidId = Settings.Secure.getString(
+                context.contentResolver,
+                Settings.Secure.ANDROID_ID
+            )
+            if (!androidId.isNullOrEmpty() && androidId != "9774d56d682e549c") {
+                return formatAndroidIdAsMac(androidId)
+            }
+
+            // Secondary: Try WiFi MAC address (real devices only)
             val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
             wifiManager?.connectionInfo?.macAddress?.let { mac ->
                 if (mac != "02:00:00:00:00:00" && mac.isNotEmpty()) {
@@ -22,7 +32,7 @@ object DeviceUtils {
                 }
             }
 
-            // Method 2: Try network interfaces
+            // Tertiary: Try network interfaces
             val interfaces = NetworkInterface.getNetworkInterfaces()
             while (interfaces.hasMoreElements()) {
                 val networkInterface = interfaces.nextElement()
@@ -37,23 +47,19 @@ object DeviceUtils {
                 }
             }
 
-            // Method 3: Fallback to Android ID
-            val androidId = Settings.Secure.getString(
-                context.contentResolver,
-                Settings.Secure.ANDROID_ID
-            )
-            if (androidId != null && androidId.isNotEmpty()) {
-                // Convert Android ID to MAC-like format
-                return formatAndroidIdAsMac(androidId)
-            }
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
-        // Last resort: Generate a unique identifier
+        // Fallback: Generate consistent ID from device info
         return generateFallbackMac(context)
     }
+
+    /**
+     * Legacy method - redirects to getDeviceId
+     */
+    @Deprecated("Use getDeviceId instead", ReplaceWith("getDeviceId(context)"))
+    fun getMacAddress(context: Context): String = getDeviceId(context)
 
     private fun formatAndroidIdAsMac(androidId: String): String {
         // Take first 12 characters and format as MAC
