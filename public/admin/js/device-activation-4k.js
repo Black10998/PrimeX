@@ -24,12 +24,26 @@ const DeviceActivation4KModule = {
     async loadPlans() {
         try {
             const token = localStorage.getItem('adminToken');
+            console.log('Loading subscription plans...');
             const response = await fetch('/api/v1/admin/plans', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+            
+            if (!response.ok) {
+                console.error('Plans API error:', response.status, response.statusText);
+                this.plans = [];
+                return;
+            }
+            
             const result = await response.json();
+            console.log('Plans API response:', result);
+            
             if (result.success) {
                 this.plans = result.data || [];
+                console.log('Loaded plans:', this.plans.length, this.plans);
+            } else {
+                console.error('Plans API returned success=false:', result.message);
+                this.plans = [];
             }
         } catch (error) {
             console.error('Failed to load plans:', error);
@@ -121,7 +135,7 @@ const DeviceActivation4KModule = {
                         <button class="btn btn-secondary" onclick="DeviceActivation4KModule.refresh()">
                             <i class="fas fa-sync-alt"></i> Refresh
                         </button>
-                        <button class="btn btn-primary" onclick="DeviceActivation4KModule.showActivateModal()">
+                        <button class="btn btn-primary" onclick="DeviceActivation4KModule.openActivateModal()">
                             <i class="fas fa-mobile-alt"></i> Activate Device
                         </button>
                     </div>
@@ -198,7 +212,7 @@ const DeviceActivation4KModule = {
                             ` : ''}
                         </div>
                         <button class="btn btn-primary btn-block" 
-                                onclick="DeviceActivation4KModule.showActivateModal('${device.device_key}')">
+                                onclick="DeviceActivation4KModule.openActivateModal('${device.device_key}')">
                             <i class="fas fa-check"></i> Activate Now
                         </button>
                     </div>
@@ -263,7 +277,28 @@ const DeviceActivation4KModule = {
         }
     },
 
-    showActivateModal(deviceKey = '') {
+    // Wrapper for onclick handlers (can't be async in HTML)
+    openActivateModal(deviceKey = '') {
+        this.showActivateModal(deviceKey).catch(error => {
+            console.error('Error opening activate modal:', error);
+            this.showNotification('error', 'Failed to open activation modal');
+        });
+    },
+
+    async showActivateModal(deviceKey = '') {
+        // Ensure plans are loaded
+        if (this.plans.length === 0) {
+            console.log('Plans not loaded, loading now...');
+            await this.loadPlans();
+        }
+        
+        if (this.plans.length === 0) {
+            this.showNotification('error', 'No subscription plans available. Please create plans first.');
+            return;
+        }
+        
+        console.log('Showing activate modal with', this.plans.length, 'plans');
+        
         const modal = document.createElement('div');
         modal.className = 'modal-overlay active';
         modal.innerHTML = `
@@ -292,7 +327,7 @@ const DeviceActivation4KModule = {
                                 <option value="">Select Plan</option>
                                 ${this.plans.map(plan => `
                                     <option value="${plan.id}" data-duration="${plan.duration_days}">
-                                        ${plan.name_en} (${plan.duration_days} days)
+                                        ${plan.name_en || plan.name_ar || plan.name || 'Plan #' + plan.id} (${plan.duration_days} days)
                                     </option>
                                 `).join('')}
                             </select>
