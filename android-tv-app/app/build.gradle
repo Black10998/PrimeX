@@ -15,8 +15,8 @@ android {
         versionCode 1
         versionName "1.0.0"
         
-        // Replace with your actual server URL
-        buildConfigField "String", "API_BASE_URL", "\"https://your-server.com/api/v1/\""
+        // PrimeX Production Server
+        buildConfigField "String", "API_BASE_URL", "\"https://prime-x.live/api/v1/\""
     }
 
     buildTypes {

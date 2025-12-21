@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PrimeX IPTV"
+rootProject.name = "Amarco"
 include ':app'

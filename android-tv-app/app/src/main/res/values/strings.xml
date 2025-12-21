@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PrimeX IPTV</string>
+    <string name="app_name">Amarco</string>
     
     <!-- Activation Screen -->
     <string name="activation_instructions">Visit your account portal and enter this activation code to activate your device.\n\nThe code will refresh automatically once activated.</string>
@@ -8,7 +8,7 @@
     <string name="activation_success">Activation successful!</string>
     
     <!-- Main Screen -->
-    <string name="browse_title">PrimeX IPTV</string>
+    <string name="browse_title">Amarco</string>
     <string name="live_tv">Live TV</string>
     <string name="movies">Movies</string>
     <string name="series">Series</string>
