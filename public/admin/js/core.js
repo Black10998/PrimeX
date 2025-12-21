@@ -273,7 +273,7 @@ const PrimeXCore = {
             'security': typeof SecurityModule !== 'undefined' ? SecurityModule : null,
             'notifications': typeof NotificationsModule !== 'undefined' ? NotificationsModule : null,
             'admin-management': typeof AdminManagement !== 'undefined' ? AdminManagement : null,
-            'device-activation': typeof DeviceActivationModule !== 'undefined' ? DeviceActivationModule : null
+            'device-activation': typeof DeviceActivation4KModule !== 'undefined' ? DeviceActivation4KModule : null
         };
 
         const moduleMap = {

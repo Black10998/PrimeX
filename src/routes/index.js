@@ -14,6 +14,7 @@ const router = express.Router();
 const authRoutes = require('./auth.routes');
 const setupRoutes = require('./setup.routes');
 const deviceActivationRoutes = require('./deviceActivation.routes');
+const deviceActivation4KRoutes = require('./deviceActivation4K');
 const securityRoutes = require('./security');
 const vodRoutes = require('./vod');
 
@@ -43,6 +44,9 @@ router.use('/setup', setupRoutes);
 
 // Device activation routes (4Kmatic-style)
 router.use('/', deviceActivationRoutes);
+
+// Device activation routes (4K Player style)
+router.use('/api/v1', deviceActivation4KRoutes);
 
 // Security monitoring routes
 router.use('/admin/security', securityRoutes);

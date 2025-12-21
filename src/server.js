@@ -195,6 +195,15 @@ async function startServer() {
                 console.log('⚠️  VOD/Series initialization failed - continuing startup');
             }
             
+            // Initialize Device Activation tables (4K Player style)
+            try {
+                const { initializeDeviceActivationTables } = require('./utils/deviceActivationInit');
+                await initializeDeviceActivationTables();
+            } catch (error) {
+                logger.error('Device activation tables initialization failed', { error: error.message });
+                console.log('⚠️  Device activation initialization failed - continuing startup');
+            }
+            
             // Run migration to add missing tables (non-blocking)
             try {
                 const { addMissingTables } = require('./scripts/addMissingTables');
