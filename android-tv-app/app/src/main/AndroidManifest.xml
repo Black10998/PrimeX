@@ -43,7 +43,7 @@
             android:name=".ui.ActivationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Leanback" />
+            android:theme="@style/Theme.PrimeX.Activation" />
 
         <!-- Video Player Activity -->
         <activity
