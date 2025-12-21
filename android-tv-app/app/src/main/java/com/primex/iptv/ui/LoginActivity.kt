@@ -78,13 +78,13 @@ class LoginActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val loginResponse = response.body()!!
 
-                    if (loginResponse.success) {
+                    if (loginResponse.success && loginResponse.data != null) {
                         // Save user credentials
                         PreferenceManager.saveUserCredentials(
                             this@LoginActivity,
-                            username,
-                            loginResponse.token,
-                            loginResponse.user_id
+                            loginResponse.data.user.username,
+                            loginResponse.data.token,
+                            loginResponse.data.user.id
                         )
 
                         // Navigate to main screen

@@ -8,8 +8,9 @@ interface PrimeXApiService {
 
     /**
      * User login with username and password
+     * Endpoint: POST /api/v1/auth/user/login
      */
-    @POST("auth/login")
+    @POST("auth/user/login")
     suspend fun login(
         @Body request: LoginRequest
     ): Response<LoginResponse>

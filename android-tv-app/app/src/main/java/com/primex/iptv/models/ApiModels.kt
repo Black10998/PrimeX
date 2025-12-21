@@ -2,12 +2,16 @@ package com.primex.iptv.models
 
 import com.google.gson.annotations.SerializedName
 
-// Login
+// Login - Matches PrimeX backend response format
 data class LoginRequest(
     @SerializedName("username")
     val username: String,
     @SerializedName("password")
-    val password: String
+    val password: String,
+    @SerializedName("device_id")
+    val device_id: String? = null,
+    @SerializedName("mac_address")
+    val mac_address: String? = null
 )
 
 data class LoginResponse(
@@ -15,14 +19,30 @@ data class LoginResponse(
     val success: Boolean,
     @SerializedName("message")
     val message: String? = null,
+    @SerializedName("data")
+    val data: LoginData? = null
+)
+
+data class LoginData(
     @SerializedName("token")
-    val token: String? = null,
-    @SerializedName("user_id")
-    val user_id: Int? = null,
+    val token: String,
+    @SerializedName("refreshToken")
+    val refreshToken: String? = null,
+    @SerializedName("user")
+    val user: UserInfo
+)
+
+data class UserInfo(
+    @SerializedName("id")
+    val id: Int,
     @SerializedName("username")
-    val username: String? = null,
-    @SerializedName("subscription")
-    val subscription: Subscription? = null
+    val username: String,
+    @SerializedName("email")
+    val email: String? = null,
+    @SerializedName("subscription_end")
+    val subscription_end: String? = null,
+    @SerializedName("max_devices")
+    val max_devices: Int? = null
 )
 
 // Device Registration
