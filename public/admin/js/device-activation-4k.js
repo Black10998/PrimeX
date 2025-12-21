@@ -91,31 +91,50 @@ const DeviceActivation4KModule = {
     async activateDevice(deviceKey, planId, durationDays) {
         try {
             const token = localStorage.getItem('adminToken');
+            
+            // Build payload
+            const payload = {
+                device_key: deviceKey,
+                subscription_plan_id: parseInt(planId)
+            };
+            
+            // Only include duration_days if provided
+            if (durationDays && durationDays !== '') {
+                payload.duration_days = parseInt(durationDays);
+            }
+            
+            console.log('Activating device with payload:', payload);
+            
             const response = await fetch('/api/v1/admin/device/activate', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    device_key: deviceKey,
-                    subscription_plan_id: parseInt(planId),
-                    duration_days: durationDays ? parseInt(durationDays) : undefined
-                })
+                body: JSON.stringify(payload)
             });
 
+            console.log('Activation response status:', response.status);
+            
             const result = await response.json();
+            console.log('Activation response:', result);
             
             if (result.success) {
                 this.showNotification('success', `Device ${deviceKey} activated successfully!`);
                 await this.loadPendingDevices();
                 this.render();
             } else {
-                this.showNotification('error', result.message || 'Activation failed');
+                // Show detailed error message
+                let errorMsg = result.message || 'Activation failed';
+                if (result.errors && Array.isArray(result.errors)) {
+                    errorMsg += ': ' + result.errors.map(e => e.msg || e.message).join(', ');
+                }
+                console.error('Activation failed:', errorMsg, result);
+                this.showNotification('error', errorMsg);
             }
         } catch (error) {
             console.error('Activation error:', error);
-            this.showNotification('error', 'Failed to activate device');
+            this.showNotification('error', 'Failed to activate device: ' + error.message);
         }
     },
 

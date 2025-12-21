@@ -188,15 +188,18 @@ class DeviceActivation4KController {
      */
     async activateDevice(req, res) {
         try {
+            logger.info('Device activation request received', { body: req.body });
+            
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
+                logger.error('Device activation validation failed', { errors: errors.array() });
                 return res.status(400).json(formatResponse(false, null, 'Validation failed', errors.array()));
             }
 
             const { device_key, subscription_plan_id, duration_days } = req.body;
             const admin_id = req.admin?.id || req.user?.id;
 
-            logger.info('Device activation request', { device_key, subscription_plan_id, admin_id });
+            logger.info('Device activation validated', { device_key, subscription_plan_id, duration_days, admin_id });
 
             // Get device
             const [devices] = await db.query(
@@ -371,9 +374,24 @@ class DeviceActivation4KController {
 
     validateActivateDevice() {
         return [
-            body('device_key').notEmpty().isLength({ min: 8, max: 8 }).isNumeric().withMessage('Valid 8-digit device key required'),
-            body('subscription_plan_id').notEmpty().isInt().withMessage('Subscription plan ID required'),
-            body('duration_days').optional().isInt({ min: 1 }).withMessage('Duration must be positive integer')
+            body('device_key')
+                .notEmpty().withMessage('Device key is required')
+                .isLength({ min: 8, max: 8 }).withMessage('Device key must be 8 digits')
+                .isNumeric().withMessage('Device key must be numeric'),
+            body('subscription_plan_id')
+                .notEmpty().withMessage('Subscription plan ID is required')
+                .isInt({ min: 1 }).withMessage('Subscription plan ID must be a positive integer'),
+            body('duration_days')
+                .optional({ nullable: true, checkFalsy: false })
+                .custom((value) => {
+                    if (value === null || value === undefined || value === '') {
+                        return true;
+                    }
+                    if (!Number.isInteger(Number(value)) || Number(value) < 1) {
+                        throw new Error('Duration must be a positive integer');
+                    }
+                    return true;
+                })
         ];
     }
 }
