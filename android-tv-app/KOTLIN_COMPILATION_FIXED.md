@@ -183,6 +183,37 @@ data class UserSubscription(
 
 ---
 
+### 4. Fragment Context Access Issues ❌→✅
+**Error:**
+```
+MovieDetailsFragment.kt: Unresolved reference: requireActivity
+MovieDetailsFragment.kt: Fragment was expected
+Glide: Overload resolution ambiguity
+```
+
+**Root Cause:**
+`androidx.leanback.app.DetailsFragment` doesn't have `requireActivity()` method. It has `activity` property instead. Using context with Glide causes overload ambiguity.
+
+**Fix:**
+```kotlin
+// BEFORE
+val ctx = requireActivity()  // ❌ Not available in DetailsFragment
+Glide.with(ctx)  // ❌ Ambiguous overload
+
+// AFTER
+val ctx = activity ?: return  // ✅ Use activity property
+Glide.with(this)  // ✅ Use fragment instance
+```
+
+**Changes:**
+- Replaced all `requireActivity()` calls with `activity` property (4 occurrences)
+- Changed `Glide.with(context)` to `Glide.with(this)` (2 occurrences)
+- Added null checks for activity property
+
+**File:** `app/src/main/java/com/primex/iptv/ui/MovieDetailsFragment.kt`
+
+---
+
 ## Build Status
 
 ✅ **All Kotlin compilation errors fixed**
