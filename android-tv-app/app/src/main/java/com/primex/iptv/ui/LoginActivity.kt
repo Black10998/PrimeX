@@ -97,10 +97,13 @@ class LoginActivity : BaseActivity() {
                     android.util.Log.d("LoginActivity", "Auth: ${userInfo?.auth}, Status: ${userInfo?.status}")
 
                     // Check if authentication was successful
-                    if (userInfo?.auth == 1 && userInfo.status == "Active") {
+                    // Accept login when auth == 1 and status is NOT blocked (Expired, Banned, Disabled)
+                    val isBlocked = userInfo?.status in listOf("Expired", "Banned", "Disabled")
+                    
+                    if (userInfo?.auth == 1 && !isBlocked) {
                         val expDate = userInfo.expDate
                         
-                        android.util.Log.d("LoginActivity", "Login successful - User: $username")
+                        android.util.Log.d("LoginActivity", "Login successful - User: $username, Status: ${userInfo.status}")
                         android.util.Log.d("LoginActivity", "Expires: $expDate, Max connections: ${userInfo.maxConnections}")
                         
                         // Save Xtream credentials
