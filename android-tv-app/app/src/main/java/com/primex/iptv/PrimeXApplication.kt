@@ -23,6 +23,13 @@ class PrimeXApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        
+        // Prefer IPv4 for Android TV network compatibility
+        System.setProperty("java.net.preferIPv4Stack", "true")
+        System.setProperty("java.net.preferIPv6Addresses", "false")
+        
+        android.util.Log.d("PrimeXApplication", "Network preferences set: IPv4 preferred")
+        
         // NOW it's safe to access SharedPreferences and apply saved locale
         try {
             LocaleHelper.applyLocale(this)

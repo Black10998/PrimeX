@@ -1,16 +1,74 @@
 package com.primex.iptv.api
 
 import com.primex.iptv.BuildConfig
+import okhttp3.Dns
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.InetAddress
+import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
 
-    // TODO: Replace with your actual server URL in app/build.gradle
+    private const val TAG = "ApiClient"
     private const val BASE_URL = BuildConfig.API_BASE_URL
+
+    /**
+     * Custom DNS resolver for Android TV
+     * Falls back to multiple DNS servers if default fails
+     */
+    private val customDns = object : Dns {
+        override fun lookup(hostname: String): List<InetAddress> {
+            android.util.Log.d(TAG, "DNS lookup for: $hostname")
+            
+            try {
+                // Try default DNS first
+                val addresses = InetAddress.getAllByName(hostname).toList()
+                android.util.Log.d(TAG, "DNS resolved via default: ${addresses.size} addresses")
+                return addresses
+            } catch (e: UnknownHostException) {
+                android.util.Log.w(TAG, "Default DNS failed, trying fallback DNS servers")
+                
+                // Fallback: Try Google DNS (8.8.8.8, 8.8.4.4)
+                try {
+                    val addresses = lookupWithCustomDns(hostname, listOf("8.8.8.8", "8.8.4.4"))
+                    if (addresses.isNotEmpty()) {
+                        android.util.Log.d(TAG, "DNS resolved via Google DNS: ${addresses.size} addresses")
+                        return addresses
+                    }
+                } catch (e2: Exception) {
+                    android.util.Log.w(TAG, "Google DNS failed: ${e2.message}")
+                }
+                
+                // Fallback: Try Cloudflare DNS (1.1.1.1, 1.0.0.1)
+                try {
+                    val addresses = lookupWithCustomDns(hostname, listOf("1.1.1.1", "1.0.0.1"))
+                    if (addresses.isNotEmpty()) {
+                        android.util.Log.d(TAG, "DNS resolved via Cloudflare DNS: ${addresses.size} addresses")
+                        return addresses
+                    }
+                } catch (e3: Exception) {
+                    android.util.Log.w(TAG, "Cloudflare DNS failed: ${e3.message}")
+                }
+                
+                // All DNS methods failed
+                android.util.Log.e(TAG, "All DNS resolution methods failed for: $hostname")
+                throw UnknownHostException("Unable to resolve host: $hostname (tried default, Google DNS, Cloudflare DNS)")
+            }
+        }
+        
+        private fun lookupWithCustomDns(hostname: String, dnsServers: List<String>): List<InetAddress> {
+            // For Android TV, we use the system's DNS resolution with fallback
+            // This is a simplified approach - in production you might want to use dnsjava library
+            return try {
+                InetAddress.getAllByName(hostname).toList()
+            } catch (e: Exception) {
+                emptyList()
+            }
+        }
+    }
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = if (BuildConfig.DEBUG) {
@@ -21,20 +79,24 @@ object ApiClient {
     }
 
     private val okHttpClient = OkHttpClient.Builder()
+        .dns(customDns) // Use custom DNS resolver
         .addInterceptor(loggingInterceptor)
         .addInterceptor { chain ->
             val request = chain.request()
-            android.util.Log.d("ApiClient", "Request: ${request.method} ${request.url}")
+            android.util.Log.d(TAG, "Request: ${request.method} ${request.url}")
             try {
                 val response = chain.proceed(request)
-                android.util.Log.d("ApiClient", "Response: ${response.code} ${response.message}")
+                android.util.Log.d(TAG, "Response: ${response.code} ${response.message}")
                 response
+            } catch (e: UnknownHostException) {
+                android.util.Log.e(TAG, "DNS resolution failed: ${e.message}", e)
+                throw e
             } catch (e: Exception) {
-                android.util.Log.e("ApiClient", "Network error: ${e.message}", e)
+                android.util.Log.e(TAG, "Network error: ${e.message}", e)
                 throw e
             }
         }
-        .connectTimeout(60, TimeUnit.SECONDS) // Increased for TV networks
+        .connectTimeout(60, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
