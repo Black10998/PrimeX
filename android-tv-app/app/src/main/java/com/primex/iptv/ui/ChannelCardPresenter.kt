@@ -1,6 +1,6 @@
 package com.primex.iptv.ui
 
-import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
@@ -10,18 +10,9 @@ import com.primex.iptv.models.Channel
 
 class ChannelCardPresenter : Presenter() {
 
-    companion object {
-        private const val CARD_WIDTH = 313
-        private const val CARD_HEIGHT = 176
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val cardView = ImageCardView(parent.context).apply {
-            isFocusable = true
-            isFocusableInTouchMode = true
-            setBackgroundColor(Color.DKGRAY)
-            layoutParams = ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT)
-        }
+        val cardView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.card_channel, parent, false) as ImageCardView
         return ViewHolder(cardView)
     }
 
@@ -31,7 +22,7 @@ class ChannelCardPresenter : Presenter() {
 
         cardView.titleText = channel.name
         cardView.contentText = channel.category ?: "Live TV"
-        cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
+        cardView.setMainImageDimensions(313, 176)
 
         if (!channel.logo_url.isNullOrEmpty()) {
             Glide.with(viewHolder.view.context)

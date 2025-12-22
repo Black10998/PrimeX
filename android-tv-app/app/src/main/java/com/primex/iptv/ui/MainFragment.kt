@@ -60,44 +60,39 @@ class MainFragment : BrowseSupportFragment() {
         // Always show UI first - load content in background
         setupRows()
         
-        val deviceKey = PreferenceManager.getDeviceKey(requireContext())
-        val deviceId = PreferenceManager.getMacAddress(requireContext())
+        val authToken = PreferenceManager.getAuthToken(requireContext())
 
-        // Only attempt to load content if device credentials exist
-        if (!deviceKey.isNullOrEmpty() && !deviceId.isNullOrEmpty()) {
+        // Load content if user is authenticated
+        if (!authToken.isNullOrEmpty()) {
             lifecycleScope.launch {
                 try {
-                    val response = ApiClient.apiService.checkDeviceStatus(deviceKey, deviceId)
-                    
-                    if (response.isSuccessful && response.body() != null) {
-                        val statusResponse = response.body()!!
-                        
-                        if (statusResponse.status == "active") {
-                            // Load channels
-                            statusResponse.channels?.let {
-                                channels.clear()
-                                channels.addAll(it)
-                            }
-                            
-                            // Load VOD content
-                            statusResponse.vod?.let { vod ->
-                                vod.movies?.let {
-                                    movies.clear()
-                                    movies.addAll(it)
-                                }
-                                vod.series?.let {
-                                    series.clear()
-                                    series.addAll(it)
-                                }
-                            }
-                            
-                            // Refresh UI with loaded content
-                            setupRows()
-                        }
+                    // Load channels
+                    val channelsResponse = ApiClient.apiService.getChannels("Bearer $authToken")
+                    if (channelsResponse.isSuccessful && channelsResponse.body() != null) {
+                        channels.clear()
+                        channels.addAll(channelsResponse.body()!!.channels)
                     }
+                    
+                    // Load movies
+                    val moviesResponse = ApiClient.apiService.getMovies("Bearer $authToken")
+                    if (moviesResponse.isSuccessful && moviesResponse.body() != null) {
+                        movies.clear()
+                        movies.addAll(moviesResponse.body()!!.movies)
+                    }
+                    
+                    // Load series
+                    val seriesResponse = ApiClient.apiService.getSeries("Bearer $authToken")
+                    if (seriesResponse.isSuccessful && seriesResponse.body() != null) {
+                        series.clear()
+                        series.addAll(seriesResponse.body()!!.series)
+                    }
+                    
+                    // Refresh UI with loaded content
+                    setupRows()
                 } catch (e: Exception) {
-                    // Silent fail - app still works, just shows activation option
+                    // Silent fail - show empty state
                     e.printStackTrace()
+                    setupRows()
                 }
             }
         }
@@ -134,14 +129,9 @@ class MainFragment : BrowseSupportFragment() {
         val settingsHeader = HeaderItem(3, "Settings")
         val settingsAdapter = ArrayObjectAdapter(SettingsCardPresenter())
         
-        // Show activation option if not activated
-        val deviceKey = PreferenceManager.getDeviceKey(requireContext())
-        if (deviceKey.isNullOrEmpty()) {
-            settingsAdapter.add(SettingsItem("Activate Device", "Get activation code to unlock content"))
-        }
-        
-        settingsAdapter.add(SettingsItem("Device Info", "View device and subscription info"))
-        settingsAdapter.add(SettingsItem("Refresh Content", "Reload channels and content"))
+        settingsAdapter.add(SettingsItem("Account", "View account and subscription info"))
+        settingsAdapter.add(SettingsItem("Refresh", "Reload content"))
+        settingsAdapter.add(SettingsItem("Logout", "Sign out of your account"))
         rowsAdapter.add(ListRow(settingsHeader, settingsAdapter))
 
         adapter = rowsAdapter
@@ -194,15 +184,23 @@ class MainFragment : BrowseSupportFragment() {
 
     private fun handleSettingsClick(item: SettingsItem) {
         when (item.title) {
-            "Activate Device" -> openActivationScreen()
-            "Device Info" -> showDeviceInfo()
-            "Refresh Content" -> loadContent()
+            "Account" -> showAccountInfo()
+            "Refresh" -> loadContent()
+            "Logout" -> performLogout()
         }
     }
     
-    private fun openActivationScreen() {
-        val intent = Intent(requireContext(), ActivationActivity::class.java)
+    private fun showAccountInfo() {
+        val username = PreferenceManager.getUsername(requireContext())
+        // TODO: Show dialog with account info
+    }
+    
+    private fun performLogout() {
+        PreferenceManager.logout(requireContext())
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun showDeviceInfo() {

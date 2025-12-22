@@ -1,6 +1,6 @@
 package com.primex.iptv.ui
 
-import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
@@ -10,18 +10,9 @@ import com.primex.iptv.models.Movie
 
 class MovieCardPresenter : Presenter() {
 
-    companion object {
-        private const val CARD_WIDTH = 200
-        private const val CARD_HEIGHT = 300
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val cardView = ImageCardView(parent.context).apply {
-            isFocusable = true
-            isFocusableInTouchMode = true
-            setBackgroundColor(Color.DKGRAY)
-            layoutParams = ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT)
-        }
+        val cardView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.card_movie, parent, false) as ImageCardView
         return ViewHolder(cardView)
     }
 
@@ -44,7 +35,7 @@ class MovieCardPresenter : Presenter() {
         }
         cardView.contentText = contentText.ifEmpty { movie.genre ?: "Movie" }
         
-        cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
+        cardView.setMainImageDimensions(200, 300)
 
         if (!movie.poster_url.isNullOrEmpty()) {
             Glide.with(viewHolder.view.context)

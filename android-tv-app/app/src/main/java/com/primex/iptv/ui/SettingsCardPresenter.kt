@@ -1,6 +1,6 @@
 package com.primex.iptv.ui
 
-import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
@@ -8,18 +8,9 @@ import com.primex.iptv.R
 
 class SettingsCardPresenter : Presenter() {
 
-    companion object {
-        private const val CARD_WIDTH = 313
-        private const val CARD_HEIGHT = 176
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val cardView = ImageCardView(parent.context).apply {
-            isFocusable = true
-            isFocusableInTouchMode = true
-            setBackgroundColor(Color.DKGRAY)
-            layoutParams = ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT)
-        }
+        val cardView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.card_settings, parent, false) as ImageCardView
         return ViewHolder(cardView)
     }
 
@@ -29,7 +20,7 @@ class SettingsCardPresenter : Presenter() {
 
         cardView.titleText = settingsItem.title
         cardView.contentText = settingsItem.description
-        cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
+        cardView.setMainImageDimensions(313, 176)
         cardView.mainImage = viewHolder.view.context.getDrawable(R.drawable.ic_settings)
     }
 
