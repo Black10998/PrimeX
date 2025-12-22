@@ -59,7 +59,6 @@
     <string name="app_info">معلومات التطبيق</string>
     <string name="version">الإصدار</string>
     <string name="build">البناء</string>
-    <string name="language_english">English</string>
     <string name="video_quality">جودة الفيديو</string>
     <string name="auto_quality">تلقائي</string>
     <string name="high_quality">عالية</string>
@@ -77,7 +76,6 @@
     <string name="cache">ذاكرة التخزين المؤقت</string>
     <string name="clear_cache">مسح الذاكرة المؤقتة</string>
     <string name="about">حول</string>
-    <string name="version">الإصدار</string>
     <string name="terms">الشروط والأحكام</string>
     <string name="privacy">سياسة الخصوصية</string>
     <string name="support">الدعم</string>
