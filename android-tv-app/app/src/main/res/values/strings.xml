@@ -37,6 +37,7 @@
     <string name="logout_description">Sign out of your account</string>
     
     <!-- Account Screen -->
+    <string name="account">Account</string>
     <string name="account_title">Account</string>
     <string name="account_info">Account Information</string>
     <string name="username">Username</string>

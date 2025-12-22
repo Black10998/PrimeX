@@ -37,6 +37,7 @@
     <string name="logout_description">تسجيل الخروج من حسابك</string>
     
     <!-- Account Screen -->
+    <string name="account">الحساب</string>
     <string name="account_title">الحساب</string>
     <string name="account_info">معلومات الحساب</string>
     <string name="username">اسم المستخدم</string>

@@ -18,8 +18,9 @@ class MovieDetailsActivity : FragmentActivity() {
         val movie = intent.getSerializableExtra(EXTRA_MOVIE) as? Movie
         
         if (movie != null && savedInstanceState == null) {
+            val fragment = MovieDetailsFragment.newInstance(movie)
             supportFragmentManager.beginTransaction()
-                .replace(R.id.details_fragment, MovieDetailsFragment.newInstance(movie))
+                .replace(R.id.details_fragment, fragment)
                 .commit()
         }
     }
