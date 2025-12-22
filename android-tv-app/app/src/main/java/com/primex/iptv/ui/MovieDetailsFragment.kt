@@ -1,105 +1,84 @@
 package com.primex.iptv.ui
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
-import androidx.leanback.app.DetailsFragment
-import androidx.leanback.widget.*
-import androidx.core.content.ContextCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.transition.Transition
 import com.primex.iptv.R
 import com.primex.iptv.models.Movie
 import com.primex.iptv.player.PlayerActivity
 
-class MovieDetailsFragment : DetailsFragment() {
+class MovieDetailsFragment : Fragment() {
 
     private lateinit var movie: Movie
-    private lateinit var detailsOverviewRow: DetailsOverviewRow
-    private lateinit var adapter: ArrayObjectAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
         movie = arguments?.getSerializable("movie") as? Movie ?: return
-        
-        setupAdapter()
-        setupDetailsOverviewRow()
-        loadBackdrop()
     }
 
-    private fun setupAdapter() {
-        val presenterSelector = ClassPresenterSelector()
-        val detailsPresenter = FullWidthDetailsOverviewRowPresenter(
-            DetailsDescriptionPresenter()
-        )
-        
-        val ctx = activity ?: return
-        detailsPresenter.backgroundColor = ContextCompat.getColor(ctx, R.color.background_secondary)
-        detailsPresenter.actionsBackgroundColor = ContextCompat.getColor(ctx, R.color.background_primary)
-        
-        presenterSelector.addClassPresenter(DetailsOverviewRow::class.java, detailsPresenter)
-        presenterSelector.addClassPresenter(ListRow::class.java, ListRowPresenter())
-        
-        adapter = ArrayObjectAdapter(presenterSelector)
-        this.adapter = adapter
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_movie_details, container, false)
     }
 
-    private fun setupDetailsOverviewRow() {
-        detailsOverviewRow = DetailsOverviewRow(movie)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         
-        val actionsAdapter = ArrayObjectAdapter()
-        
-        // Play action
-        actionsAdapter.add(Action(
-            ACTION_PLAY,
-            getString(R.string.play),
-            null
-        ))
-        
-        detailsOverviewRow.actionsAdapter = actionsAdapter
-        adapter.add(detailsOverviewRow)
+        val posterImage = view.findViewById<ImageView>(R.id.movie_poster)
+        val titleText = view.findViewById<TextView>(R.id.movie_title)
+        val metadataText = view.findViewById<TextView>(R.id.movie_metadata)
+        val descriptionText = view.findViewById<TextView>(R.id.movie_description)
+        val playButton = view.findViewById<Button>(R.id.play_button)
         
         // Load poster
-        val ctx = activity ?: return
         Glide.with(this)
-            .asBitmap()
             .load(movie.poster_url)
-            .into(object : SimpleTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    detailsOverviewRow.setImageBitmap(ctx, resource)
-                }
-            })
+            .placeholder(R.drawable.default_movie_poster)
+            .error(R.drawable.default_movie_poster)
+            .into(posterImage)
         
-        // Setup click listener
-        onItemViewClickedListener = OnItemViewClickedListener { _, item, _, _ ->
-            if (item is Action) {
-                when (item.id) {
-                    ACTION_PLAY -> playMovie()
-                }
+        // Set title
+        titleText.text = movie.title
+        
+        // Set metadata
+        val metadata = buildString {
+            movie.year?.let { append("$it") }
+            movie.rating?.let {
+                if (isNotEmpty()) append(" • ")
+                append("★ %.1f".format(it))
+            }
+            movie.duration?.let {
+                if (isNotEmpty()) append(" • ")
+                append("${it}min")
+            }
+            movie.genre?.let {
+                if (isNotEmpty()) append(" • ")
+                append(it)
             }
         }
-    }
-
-    private fun loadBackdrop() {
-        val backdropUrl = movie.backdrop_url ?: movie.poster_url
-        if (!backdropUrl.isNullOrEmpty()) {
-            val ctx = activity ?: return
-            Glide.with(this)
-                .asBitmap()
-                .load(backdropUrl)
-                .into(object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        detailsOverviewRow.setImageBitmap(ctx, resource)
-                    }
-                })
+        metadataText.text = metadata
+        
+        // Set description
+        descriptionText.text = movie.description ?: getString(R.string.no_content)
+        
+        // Play button
+        playButton.setOnClickListener {
+            playMovie()
         }
     }
 
     private fun playMovie() {
-        val ctx = activity ?: return
-        val intent = Intent(ctx, PlayerActivity::class.java).apply {
+        val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
             putExtra(PlayerActivity.EXTRA_STREAM_URL, movie.stream_url)
             putExtra(PlayerActivity.EXTRA_TITLE, movie.title)
             putExtra(PlayerActivity.EXTRA_TYPE, "movie")
@@ -107,32 +86,7 @@ class MovieDetailsFragment : DetailsFragment() {
         startActivity(intent)
     }
 
-    inner class DetailsDescriptionPresenter : AbstractDetailsDescriptionPresenter() {
-        override fun onBindDescription(vh: ViewHolder, item: Any) {
-            val movie = item as Movie
-            
-            vh.title.text = movie.title
-            
-            val subtitle = buildString {
-                movie.year?.let { append("$it") }
-                movie.rating?.let {
-                    if (isNotEmpty()) append(" • ")
-                    append("★ %.1f".format(it))
-                }
-                movie.duration?.let {
-                    if (isNotEmpty()) append(" • ")
-                    append("${it}min")
-                }
-            }
-            vh.subtitle.text = subtitle
-            
-            vh.body.text = movie.description ?: movie.genre
-        }
-    }
-
     companion object {
-        private const val ACTION_PLAY = 1L
-        
         fun newInstance(movie: Movie): MovieDetailsFragment {
             return MovieDetailsFragment().apply {
                 arguments = Bundle().apply {
