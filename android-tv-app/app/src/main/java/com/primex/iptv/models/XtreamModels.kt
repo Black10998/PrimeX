@@ -317,3 +317,146 @@ data class XtreamCategory(
     @SerializedName("parent_id")
     val parentId: Int?
 )
+
+// Series Info from /player_api.php?action=get_series_info&series_id=xxx
+data class XtreamSeriesInfo(
+    @SerializedName("seasons")
+    val seasons: List<XtreamSeason>?,
+    
+    @SerializedName("info")
+    val info: XtreamSeriesDetails?,
+    
+    @SerializedName("episodes")
+    val episodes: Map<String, List<XtreamEpisode>>? // Map of season number to episodes
+)
+
+data class XtreamSeason(
+    @SerializedName("air_date")
+    val airDate: String?,
+    
+    @SerializedName("episode_count")
+    val episodeCount: Int?,
+    
+    @SerializedName("id")
+    val id: Int?,
+    
+    @SerializedName("name")
+    val name: String?,
+    
+    @SerializedName("overview")
+    val overview: String?,
+    
+    @SerializedName("season_number")
+    val seasonNumber: Int?,
+    
+    @SerializedName("cover")
+    val cover: String?,
+    
+    @SerializedName("cover_big")
+    val coverBig: String?
+)
+
+data class XtreamSeriesDetails(
+    @SerializedName("name")
+    val name: String?,
+    
+    @SerializedName("cover")
+    val cover: String?,
+    
+    @SerializedName("plot")
+    val plot: String?,
+    
+    @SerializedName("cast")
+    val cast: String?,
+    
+    @SerializedName("director")
+    val director: String?,
+    
+    @SerializedName("genre")
+    val genre: String?,
+    
+    @SerializedName("releaseDate")
+    val releaseDate: String?,
+    
+    @SerializedName("last_modified")
+    val lastModified: String?,
+    
+    @SerializedName("rating")
+    val rating: String?,
+    
+    @SerializedName("rating_5based")
+    val rating5based: Float?,
+    
+    @SerializedName("backdrop_path")
+    val backdropPath: List<String>?,
+    
+    @SerializedName("youtube_trailer")
+    val youtubeTrailer: String?,
+    
+    @SerializedName("episode_run_time")
+    val episodeRunTime: String?,
+    
+    @SerializedName("category_id")
+    val categoryId: String?
+)
+
+data class XtreamEpisode(
+    @SerializedName("id")
+    val id: String?,
+    
+    @SerializedName("episode_num")
+    val episodeNum: Int?,
+    
+    @SerializedName("title")
+    val title: String?,
+    
+    @SerializedName("container_extension")
+    val containerExtension: String?,
+    
+    @SerializedName("info")
+    val info: XtreamEpisodeInfo?,
+    
+    @SerializedName("custom_sid")
+    val customSid: String?,
+    
+    @SerializedName("added")
+    val added: String?,
+    
+    @SerializedName("season")
+    val season: Int?,
+    
+    @SerializedName("direct_source")
+    val directSource: String?
+)
+
+data class XtreamEpisodeInfo(
+    @SerializedName("movie_image")
+    val movieImage: String?,
+    
+    @SerializedName("plot")
+    val plot: String?,
+    
+    @SerializedName("duration_secs")
+    val durationSecs: Int?,
+    
+    @SerializedName("duration")
+    val duration: String?,
+    
+    @SerializedName("video")
+    val video: Map<String, Any>?,
+    
+    @SerializedName("audio")
+    val audio: Map<String, Any>?,
+    
+    @SerializedName("bitrate")
+    val bitrate: Int?,
+    
+    @SerializedName("rating")
+    val rating: String?,
+    
+    @SerializedName("releasedate")
+    val releasedate: String?,
+    
+    @SerializedName("subtitles")
+    val subtitles: List<String>?
+)

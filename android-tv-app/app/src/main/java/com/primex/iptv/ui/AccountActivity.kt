@@ -71,19 +71,19 @@ class AccountActivity : BaseActivity() {
                     if (userInfo != null) {
                         // Display Xtream account info
                         usernameText.text = userInfo.username ?: username
-                        emailText.text = userInfo.email ?: "N/A"
+                        emailText.text = "N/A" // Xtream API doesn't provide email
                         
                         // Status
                         statusText.text = userInfo.status ?: "Unknown"
                         when (userInfo.status) {
                             "Active" -> {
-                                statusBadge.setBackgroundResource(R.color.status_active)
+                                statusBadge.setBackgroundColor(android.graphics.Color.parseColor("#4CAF50"))
                             }
                             "Expired" -> {
-                                statusBadge.setBackgroundResource(R.color.status_expired)
+                                statusBadge.setBackgroundColor(android.graphics.Color.parseColor("#F44336"))
                             }
                             else -> {
-                                statusBadge.setBackgroundResource(R.color.status_inactive)
+                                statusBadge.setBackgroundColor(android.graphics.Color.parseColor("#9E9E9E"))
                             }
                         }
                         

@@ -70,6 +70,18 @@ interface XtreamApiService {
     ): Response<List<XtreamSeries>>
 
     /**
+     * Get series info (episodes)
+     * GET /player_api.php?username=xxx&password=xxx&action=get_series_info&series_id=xxx
+     */
+    @GET("player_api.php")
+    suspend fun getSeriesInfo(
+        @Query("username") username: String,
+        @Query("password") password: String,
+        @Query("action") action: String = "get_series_info",
+        @Query("series_id") seriesId: String
+    ): Response<XtreamSeriesInfo>
+
+    /**
      * Get live categories
      * GET /player_api.php?username=xxx&password=xxx&action=get_live_categories
      */

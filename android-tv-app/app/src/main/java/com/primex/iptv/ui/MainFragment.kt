@@ -78,53 +78,62 @@ class MainFragment : BrowseSupportFragment() {
                     android.util.Log.d("MainFragment", "Loading content for user: $username")
                     
                     // Load live streams (channels)
-                    val liveStreams = ApiClient.xtreamApiService.getLiveStreams(username, password)
-                    android.util.Log.d("MainFragment", "Loaded ${liveStreams.size} live streams")
-                    
-                    channels.clear()
-                    liveStreams.forEach { stream ->
-                        channels.add(Channel(
-                            id = stream.streamId?.toString() ?: stream.num?.toString() ?: "0",
-                            name = stream.name ?: "Unknown Channel",
-                            logo_url = stream.streamIcon,
-                            stream_url = buildXtreamStreamUrl(username, password, stream.streamId?.toString() ?: "0", "live"),
-                            category = stream.categoryId
-                        ))
+                    val liveStreamsResponse = ApiClient.xtreamApiService.getLiveStreams(username, password)
+                    if (liveStreamsResponse.isSuccessful && liveStreamsResponse.body() != null) {
+                        val liveStreams = liveStreamsResponse.body()!!
+                        android.util.Log.d("MainFragment", "Loaded ${liveStreams.size} live streams")
+                        
+                        channels.clear()
+                        liveStreams.forEach { stream ->
+                            channels.add(Channel(
+                                id = stream.streamId?.toString() ?: stream.num?.toString() ?: "0",
+                                name = stream.name ?: "Unknown Channel",
+                                logo_url = stream.streamIcon,
+                                stream_url = buildXtreamStreamUrl(username, password, stream.streamId?.toString() ?: "0", "live"),
+                                category = stream.categoryId
+                            ))
+                        }
                     }
                     
                     // Load VOD streams (movies)
-                    val vodStreams = ApiClient.xtreamApiService.getVodStreams(username, password)
-                    android.util.Log.d("MainFragment", "Loaded ${vodStreams.size} VOD streams")
-                    
-                    movies.clear()
-                    vodStreams.forEach { vod ->
-                        movies.add(Movie(
-                            id = vod.streamId?.toString() ?: vod.num?.toString() ?: "0",
-                            title = vod.name ?: "Unknown Movie",
-                            poster_url = vod.streamIcon,
-                            backdrop_url = vod.streamIcon,
-                            stream_url = buildXtreamStreamUrl(username, password, vod.streamId?.toString() ?: "0", "movie"),
-                            rating = vod.rating?.toFloatOrNull(),
-                            year = vod.added?.substring(0, 4)?.toIntOrNull(),
-                            description = vod.plot
-                        ))
+                    val vodStreamsResponse = ApiClient.xtreamApiService.getVodStreams(username, password)
+                    if (vodStreamsResponse.isSuccessful && vodStreamsResponse.body() != null) {
+                        val vodStreams = vodStreamsResponse.body()!!
+                        android.util.Log.d("MainFragment", "Loaded ${vodStreams.size} VOD streams")
+                        
+                        movies.clear()
+                        vodStreams.forEach { vod ->
+                            movies.add(Movie(
+                                id = vod.streamId?.toString() ?: vod.num?.toString() ?: "0",
+                                title = vod.name ?: "Unknown Movie",
+                                poster_url = vod.streamIcon,
+                                backdrop_url = vod.streamIcon,
+                                stream_url = buildXtreamStreamUrl(username, password, vod.streamId?.toString() ?: "0", "movie"),
+                                rating = vod.rating?.toFloatOrNull(),
+                                year = vod.added?.substring(0, 4)?.toIntOrNull(),
+                                description = vod.plot
+                            ))
+                        }
                     }
                     
                     // Load series
-                    val seriesStreams = ApiClient.xtreamApiService.getSeries(username, password)
-                    android.util.Log.d("MainFragment", "Loaded ${seriesStreams.size} series")
-                    
-                    series.clear()
-                    seriesStreams.forEach { seriesItem ->
-                        series.add(Series(
-                            id = seriesItem.seriesId?.toString() ?: seriesItem.num?.toString() ?: "0",
-                            title = seriesItem.name ?: "Unknown Series",
-                            poster_url = seriesItem.cover,
-                            backdrop_url = seriesItem.cover,
-                            rating = seriesItem.rating?.toFloatOrNull(),
-                            year = seriesItem.releaseDate?.substring(0, 4)?.toIntOrNull(),
-                            description = seriesItem.plot
-                        ))
+                    val seriesStreamsResponse = ApiClient.xtreamApiService.getSeries(username, password)
+                    if (seriesStreamsResponse.isSuccessful && seriesStreamsResponse.body() != null) {
+                        val seriesStreams = seriesStreamsResponse.body()!!
+                        android.util.Log.d("MainFragment", "Loaded ${seriesStreams.size} series")
+                        
+                        series.clear()
+                        seriesStreams.forEach { seriesItem ->
+                            series.add(Series(
+                                id = seriesItem.seriesId?.toString() ?: seriesItem.num?.toString() ?: "0",
+                                title = seriesItem.name ?: "Unknown Series",
+                                poster_url = seriesItem.cover,
+                                backdrop_url = seriesItem.cover,
+                                rating = seriesItem.rating?.toFloatOrNull(),
+                                year = seriesItem.releaseDate?.substring(0, 4)?.toIntOrNull(),
+                                description = seriesItem.plot
+                            ))
+                        }
                     }
                     
                     android.util.Log.d("MainFragment", "Content loaded - Channels: ${channels.size}, Movies: ${movies.size}, Series: ${series.size}")
