@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base Application Theme -->
-    <style name="Theme.PrimeX" parent="Theme.AppCompat.NoActionBar">
+    <!-- Base Application Theme - Android TV Compatible -->
+    <style name="Theme.PrimeX" parent="Theme.Leanback">
         <item name="android:windowBackground">@color/background_dark</item>
         <item name="android:colorPrimary">@color/primary_color</item>
         <item name="android:colorPrimaryDark">@color/primary_dark</item>
         <item name="android:colorAccent">@color/accent_color</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <!-- Leanback Theme -->
@@ -30,12 +31,12 @@
         <item name="android:background">@color/background_dark</item>
     </style>
 
-    <!-- AppCompat Theme for ActivationActivity -->
-    <style name="Theme.PrimeX.Activation" parent="Theme.AppCompat.NoActionBar">
+    <!-- Android TV Theme for Login/Activation -->
+    <style name="Theme.PrimeX.Activation" parent="Theme.Leanback">
         <item name="android:windowBackground">@color/background_dark</item>
-        <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent_color</item>
+        <item name="android:colorPrimary">@color/primary_color</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent_color</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
