@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Amarco</string>
+    
+    <!-- Login Screen -->
+    <string name="sign_in_title">تسجيل الدخول</string>
+    <string name="sign_in_subtitle">قم بتسجيل الدخول للمتابعة</string>
+    <string name="username_label">اسم المستخدم</string>
+    <string name="username_hint">أدخل اسم المستخدم</string>
+    <string name="password_label">كلمة المرور</string>
+    <string name="password_hint">أدخل كلمة المرور</string>
+    <string name="sign_in_button">تسجيل الدخول</string>
+    <string name="error_username_empty">الرجاء إدخال اسم المستخدم</string>
+    <string name="error_password_empty">الرجاء إدخال كلمة المرور</string>
+    <string name="error_login_failed">فشل تسجيل الدخول</string>
+    <string name="error_connection">خطأ في الاتصال</string>
+    
+    <!-- Main Screen -->
+    <string name="browse_title">Amarco</string>
+    <string name="live_tv">القنوات المباشرة</string>
+    <string name="movies">الأفلام</string>
+    <string name="series">المسلسلات</string>
+    <string name="settings">الإعدادات</string>
+    <string name="home">الرئيسية</string>
+    <string name="my_list">قائمتي</string>
+    <string name="continue_watching">متابعة المشاهدة</string>
+    <string name="trending_now">الأكثر رواجاً</string>
+    <string name="new_releases">إصدارات جديدة</string>
+    
+    <!-- Account Screen -->
+    <string name="account_title">الحساب</string>
+    <string name="account_info">معلومات الحساب</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="subscription">الاشتراك</string>
+    <string name="subscription_plan">خطة الاشتراك</string>
+    <string name="subscription_status">حالة الاشتراك</string>
+    <string name="subscription_active">نشط</string>
+    <string name="subscription_expired">منتهي</string>
+    <string name="expiry_date">تاريخ الانتهاء</string>
+    <string name="max_devices">الحد الأقصى للأجهزة</string>
+    <string name="devices">أجهزة</string>
+    <string name="member_since">عضو منذ</string>
+    
+    <!-- Settings Screen -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="general_settings">الإعدادات العامة</string>
+    <string name="language">اللغة</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_english">English</string>
+    <string name="video_quality">جودة الفيديو</string>
+    <string name="auto_quality">تلقائي</string>
+    <string name="high_quality">عالية</string>
+    <string name="medium_quality">متوسطة</string>
+    <string name="low_quality">منخفضة</string>
+    <string name="playback_settings">إعدادات التشغيل</string>
+    <string name="autoplay">التشغيل التلقائي</string>
+    <string name="subtitles">الترجمة</string>
+    <string name="parental_control">الرقابة الأبوية</string>
+    <string name="account_settings">إعدادات الحساب</string>
+    <string name="change_password">تغيير كلمة المرور</string>
+    <string name="manage_devices">إدارة الأجهزة</string>
+    <string name="app_settings">إعدادات التطبيق</string>
+    <string name="notifications">الإشعارات</string>
+    <string name="cache">ذاكرة التخزين المؤقت</string>
+    <string name="clear_cache">مسح الذاكرة المؤقتة</string>
+    <string name="about">حول</string>
+    <string name="version">الإصدار</string>
+    <string name="terms">الشروط والأحكام</string>
+    <string name="privacy">سياسة الخصوصية</string>
+    <string name="support">الدعم</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="logout_confirm">هل أنت متأكد من تسجيل الخروج؟</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    
+    <!-- Content -->
+    <string name="play">تشغيل</string>
+    <string name="resume">استئناف</string>
+    <string name="add_to_list">إضافة إلى القائمة</string>
+    <string name="remove_from_list">إزالة من القائمة</string>
+    <string name="share">مشاركة</string>
+    <string name="info">معلومات</string>
+    <string name="episodes">الحلقات</string>
+    <string name="seasons">المواسم</string>
+    <string name="season">الموسم</string>
+    <string name="episode">الحلقة</string>
+    <string name="duration">المدة</string>
+    <string name="year">السنة</string>
+    <string name="rating">التقييم</string>
+    <string name="genre">النوع</string>
+    <string name="cast">الممثلون</string>
+    <string name="director">المخرج</string>
+    
+    <!-- Player -->
+    <string name="player_error">خطأ في التشغيل</string>
+    <string name="network_error">خطأ في الشبكة</string>
+    <string name="loading">جاري التحميل...</string>
+    <string name="buffering">جاري التخزين المؤقت...</string>
+    
+    <!-- Messages -->
+    <string name="no_content">لا يوجد محتوى متاح</string>
+    <string name="error_loading_content">فشل تحميل المحتوى</string>
+    <string name="refresh">تحديث</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="ok">موافق</string>
+    <string name="save">حفظ</string>
+    <string name="close">إغلاق</string>
+</resources>
