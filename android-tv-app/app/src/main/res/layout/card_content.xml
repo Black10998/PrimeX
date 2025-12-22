@@ -5,7 +5,7 @@
     android:layout_margin="8dp"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:background="@drawable/card_selector">
+    android:background="@drawable/card_content_glass_selector">
 
     <ImageView
         android:id="@+id/card_image"
@@ -30,11 +30,12 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
+    <!-- Glass overlay for content info -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="#CC000000"
+        android:background="#B0000000"
         android:orientation="vertical"
         android:padding="12dp">
 
