@@ -13,7 +13,9 @@ import java.util.concurrent.TimeUnit
 object ApiClient {
 
     private const val TAG = "ApiClient"
-    private const val BASE_URL = BuildConfig.API_BASE_URL
+    
+    // Xtream Codes API Base URL
+    private const val XTREAM_BASE_URL = "https://prime-x.live/"
 
     /**
      * Custom DNS resolver for Android TV
@@ -104,11 +106,28 @@ object ApiClient {
         .followSslRedirects(true)
         .build()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+    /**
+     * Xtream Codes API Service
+     * Base URL: https://prime-x.live
+     */
+    private val xtreamRetrofit = Retrofit.Builder()
+        .baseUrl(XTREAM_BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val apiService: PrimeXApiService = retrofit.create(PrimeXApiService::class.java)
+    val xtreamApiService: XtreamApiService = xtreamRetrofit.create(XtreamApiService::class.java)
+    
+    /**
+     * Legacy PrimeX API Service (deprecated)
+     */
+    @Deprecated("Use xtreamApiService instead")
+    private val legacyRetrofit = Retrofit.Builder()
+        .baseUrl(XTREAM_BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    @Deprecated("Use xtreamApiService instead")
+    val apiService: PrimeXApiService = legacyRetrofit.create(PrimeXApiService::class.java)
 }

@@ -16,6 +16,11 @@ object PreferenceManager {
     private const val KEY_SUBSCRIPTION_PLAN = "subscription_plan"
     private const val KEY_SUBSCRIPTION_EXPIRES = "subscription_expires"
     private const val KEY_LANGUAGE = "app_language"
+    
+    // Xtream Codes credentials
+    private const val KEY_XTREAM_USERNAME = "xtream_username"
+    private const val KEY_XTREAM_PASSWORD = "xtream_password"
+    private const val KEY_XTREAM_EXP_DATE = "xtream_exp_date"
 
     private fun getPreferences(context: Context): SharedPreferences {
         // Use application context to ensure persistence across activities
@@ -176,5 +181,47 @@ object PreferenceManager {
         getPreferences(context).edit()
             .remove(KEY_AUTH_TOKEN)
             .apply()
+    }
+    
+    // Xtream Codes credential management
+    fun saveXtreamCredentials(context: Context, username: String, password: String, expDate: String?) {
+        saveWithCommit(context) {
+            putString(KEY_XTREAM_USERNAME, username)
+            putString(KEY_XTREAM_PASSWORD, password)
+            putBoolean(KEY_IS_LOGGED_IN, true)
+            expDate?.let { putString(KEY_XTREAM_EXP_DATE, it) }
+        }
+        
+        android.util.Log.d("PreferenceManager", "Xtream credentials saved for user: $username")
+    }
+    
+    fun getXtreamUsername(context: Context): String? {
+        return getPreferences(context).getString(KEY_XTREAM_USERNAME, null)
+    }
+    
+    fun getXtreamPassword(context: Context): String? {
+        return getPreferences(context).getString(KEY_XTREAM_PASSWORD, null)
+    }
+    
+    fun getXtreamExpDate(context: Context): String? {
+        return getPreferences(context).getString(KEY_XTREAM_EXP_DATE, null)
+    }
+    
+    fun isXtreamSubscriptionExpired(context: Context): Boolean {
+        val expDate = getXtreamExpDate(context) ?: return false
+        
+        return try {
+            // Xtream exp_date is Unix timestamp
+            val expiryTimestamp = expDate.toLongOrNull() ?: return false
+            val currentTimestamp = System.currentTimeMillis() / 1000
+            
+            val isExpired = currentTimestamp > expiryTimestamp
+            android.util.Log.d("PreferenceManager", "Xtream subscription - Expires: $expiryTimestamp, Now: $currentTimestamp, Expired: $isExpired")
+            
+            isExpired
+        } catch (e: Exception) {
+            android.util.Log.e("PreferenceManager", "Error checking Xtream expiry: ${e.message}")
+            false
+        }
     }
 }

@@ -83,39 +83,38 @@ class LoginActivity : BaseActivity() {
                 showLoading(true)
                 errorText.visibility = View.GONE
                 
-                android.util.Log.d("LoginActivity", "Starting login for user: $username")
+                android.util.Log.d("LoginActivity", "Starting Xtream login for user: $username")
 
-                val request = LoginRequest(username, password)
-                val response = ApiClient.apiService.login(request)
+                // Xtream Codes authentication
+                val response = ApiClient.xtreamApiService.authenticate(username, password)
                 
                 android.util.Log.d("LoginActivity", "Response code: ${response.code()}")
 
                 if (response.isSuccessful && response.body() != null) {
-                    val loginResponse = response.body()!!
-                    android.util.Log.d("LoginActivity", "Response success: ${loginResponse.success}")
+                    val authResponse = response.body()!!
+                    val userInfo = authResponse.userInfo
+                    
+                    android.util.Log.d("LoginActivity", "Auth: ${userInfo?.auth}, Status: ${userInfo?.status}")
 
-                    if (loginResponse.success && loginResponse.data != null) {
-                        val userData = loginResponse.data.user
-                        val token = loginResponse.data.token
-                        val expiresAt = userData.subscription?.expires_at
+                    // Check if authentication was successful
+                    if (userInfo?.auth == 1 && userInfo.status == "Active") {
+                        val expDate = userInfo.expDate
                         
-                        android.util.Log.d("LoginActivity", "Login successful - User: ${userData.username}, Token length: ${token?.length ?: 0}")
-                        android.util.Log.d("LoginActivity", "Subscription expires: $expiresAt")
+                        android.util.Log.d("LoginActivity", "Login successful - User: $username")
+                        android.util.Log.d("LoginActivity", "Expires: $expDate, Max connections: ${userInfo.maxConnections}")
                         
-                        // Save user credentials with subscription expiry
-                        PreferenceManager.saveUserCredentials(
+                        // Save Xtream credentials
+                        PreferenceManager.saveXtreamCredentials(
                             this@LoginActivity,
-                            userData.username,
-                            token,
-                            userData.id,
-                            expiresAt
+                            username,
+                            password,
+                            expDate
                         )
                         
-                        // Verify save was successful before navigating
-                        val savedToken = PreferenceManager.getAuthToken(this@LoginActivity)
-                        if (savedToken == token) {
+                        // Verify save was successful
+                        val savedUsername = PreferenceManager.getXtreamUsername(this@LoginActivity)
+                        if (savedUsername == username) {
                             android.util.Log.d("LoginActivity", "Credentials saved successfully - navigating to main")
-                            // Small delay to ensure preferences are fully written
                             kotlinx.coroutines.delay(500)
                             navigateToMain()
                         } else {
@@ -123,7 +122,13 @@ class LoginActivity : BaseActivity() {
                             showError("Failed to save login credentials. Please try again.")
                         }
                     } else {
-                        val errorMsg = loginResponse.message ?: "Login failed"
+                        val errorMsg = when {
+                            userInfo?.auth != 1 -> "Invalid username or password"
+                            userInfo.status == "Expired" -> "Your subscription has expired"
+                            userInfo.status == "Banned" -> "Your account has been banned"
+                            userInfo.status == "Disabled" -> "Your account has been disabled"
+                            else -> userInfo?.message ?: "Login failed"
+                        }
                         android.util.Log.e("LoginActivity", "Login failed: $errorMsg")
                         showError(errorMsg)
                     }

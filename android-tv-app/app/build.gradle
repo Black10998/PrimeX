@@ -15,8 +15,8 @@ android {
         versionCode 3
         versionName "3.0.0"
         
-        // PrimeX Production Server (Cloudflare Workers)
-        buildConfigField "String", "API_BASE_URL", "\"https://primex.black10998.workers.dev/api/v1/\""
+        // Xtream Codes API Base URL
+        buildConfigField "String", "XTREAM_BASE_URL", "\"https://prime-x.live/\""
     }
 
     buildTypes {
