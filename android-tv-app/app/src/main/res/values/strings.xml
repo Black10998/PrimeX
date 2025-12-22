@@ -16,6 +16,9 @@
     <string name="error_login_failed">Login failed</string>
     <string name="error_connection">Connection error</string>
     
+    <!-- Activation Screen -->
+    <string name="activation_instructions">Visit the activation website and enter the code above to activate your device</string>
+    
     <!-- Main Screen -->
     <string name="browse_title">Amarco</string>
     <string name="live_tv">Live TV</string>

@@ -16,6 +16,9 @@
     <string name="error_login_failed">فشل تسجيل الدخول</string>
     <string name="error_connection">خطأ في الاتصال</string>
     
+    <!-- Activation Screen -->
+    <string name="activation_instructions">قم بزيارة موقع التفعيل وأدخل الرمز أعلاه لتفعيل جهازك</string>
+    
     <!-- Main Screen -->
     <string name="browse_title">Amarco</string>
     <string name="live_tv">القنوات المباشرة</string>
