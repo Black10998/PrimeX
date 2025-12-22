@@ -18,20 +18,22 @@ object SessionManager {
             return false
         }
 
-        // Check if auth token exists
-        val token = PreferenceManager.getAuthToken(context)
-        android.util.Log.d(TAG, "Token exists: ${!token.isNullOrEmpty()}")
-        if (token.isNullOrEmpty()) {
-            android.util.Log.e(TAG, "Token is null or empty - session invalid")
+        // Check if Xtream credentials exist
+        val username = PreferenceManager.getXtreamUsername(context)
+        val password = PreferenceManager.getXtreamPassword(context)
+        android.util.Log.d(TAG, "Xtream credentials exist: ${!username.isNullOrEmpty() && !password.isNullOrEmpty()}")
+        
+        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
+            android.util.Log.e(TAG, "Xtream credentials missing - session invalid")
             return false
         }
 
-        // Check if subscription is expired
-        val isExpired = PreferenceManager.isSubscriptionExpired(context)
-        android.util.Log.d(TAG, "Subscription expired: $isExpired")
+        // Check if Xtream subscription is expired
+        val isExpired = PreferenceManager.isXtreamSubscriptionExpired(context)
+        android.util.Log.d(TAG, "Xtream subscription expired: $isExpired")
         
         if (isExpired) {
-            android.util.Log.w(TAG, "Subscription expired - logging out user")
+            android.util.Log.w(TAG, "Xtream subscription expired - logging out user")
             logoutUser(context, "Your subscription has expired")
             return false
         }

@@ -50,29 +50,85 @@ class AccountActivity : BaseActivity() {
     private fun loadUserData() {
         showLoading()
         
-        val token = PreferenceManager.getAuthToken(this)
-        if (token.isNullOrEmpty()) {
+        val username = PreferenceManager.getXtreamUsername(this)
+        val password = PreferenceManager.getXtreamPassword(this)
+        
+        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
             showError()
             return
         }
 
         lifecycleScope.launch {
             try {
-                val response = ApiClient.apiService.getUserProfile("Bearer $token")
+                // Get Xtream account info
+                val response = ApiClient.xtreamApiService.authenticate(username, password)
                 
                 if (response.isSuccessful && response.body() != null) {
-                    val userData = response.body()!!
-                    if (userData.success && userData.data != null) {
-                        // Update subscription expiry in preferences
-                        userData.data.subscription?.expires_at?.let { expiresAt ->
-                            PreferenceManager.saveSubscriptionInfo(
-                                this@AccountActivity,
-                                userData.data.subscription.plan_name ?: "Basic",
-                                expiresAt
-                            )
+                    val authResponse = response.body()!!
+                    val userInfo = authResponse.userInfo
+                    val serverInfo = authResponse.serverInfo
+                    
+                    if (userInfo != null) {
+                        // Display Xtream account info
+                        usernameText.text = userInfo.username ?: username
+                        emailText.text = userInfo.email ?: "N/A"
+                        
+                        // Status
+                        statusText.text = userInfo.status ?: "Unknown"
+                        when (userInfo.status) {
+                            "Active" -> {
+                                statusBadge.setBackgroundResource(R.color.status_active)
+                            }
+                            "Expired" -> {
+                                statusBadge.setBackgroundResource(R.color.status_expired)
+                            }
+                            else -> {
+                                statusBadge.setBackgroundResource(R.color.status_inactive)
+                            }
                         }
                         
-                        displayUserData(userData.data)
+                        // Expiry date
+                        userInfo.expDate?.let { expDate ->
+                            try {
+                                val timestamp = expDate.toLongOrNull()
+                                if (timestamp != null) {
+                                    val date = Date(timestamp * 1000)
+                                    val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                                    expiryDateText.text = formatter.format(date)
+                                } else {
+                                    expiryDateText.text = expDate
+                                }
+                            } catch (e: Exception) {
+                                expiryDateText.text = expDate
+                            }
+                        } ?: run {
+                            expiryDateText.text = "N/A"
+                        }
+                        
+                        // Max connections
+                        maxDevicesText.text = userInfo.maxConnections?.toString() ?: "N/A"
+                        
+                        // Server info
+                        planNameText.text = serverInfo?.serverProtocol ?: "Xtream Codes"
+                        
+                        // Member since (use created date if available)
+                        userInfo.createdAt?.let { createdAt ->
+                            try {
+                                val timestamp = createdAt.toLongOrNull()
+                                if (timestamp != null) {
+                                    val date = Date(timestamp * 1000)
+                                    val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                                    memberSinceText.text = formatter.format(date)
+                                } else {
+                                    memberSinceText.text = "N/A"
+                                }
+                            } catch (e: Exception) {
+                                memberSinceText.text = "N/A"
+                            }
+                        } ?: run {
+                            memberSinceText.text = "N/A"
+                        }
+                        
                         showContent()
                     } else {
                         showError()

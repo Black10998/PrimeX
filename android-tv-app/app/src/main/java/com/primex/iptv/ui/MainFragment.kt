@@ -65,47 +65,89 @@ class MainFragment : BrowseSupportFragment() {
         // Always show UI first - load content in background
         setupRows()
         
-        val authToken = PreferenceManager.getAuthToken(requireContext())
+        val username = PreferenceManager.getXtreamUsername(requireContext())
+        val password = PreferenceManager.getXtreamPassword(requireContext())
 
         // Load content if user is authenticated
-        if (!authToken.isNullOrEmpty()) {
+        if (!username.isNullOrEmpty() && !password.isNullOrEmpty()) {
             isLoading = true
             progressBarManager?.show()
             
             lifecycleScope.launch {
                 try {
-                    // Load channels
-                    val channelsResponse = ApiClient.apiService.getChannels("Bearer $authToken")
-                    if (channelsResponse.isSuccessful && channelsResponse.body() != null) {
-                        channels.clear()
-                        channels.addAll(channelsResponse.body()!!.channels)
+                    android.util.Log.d("MainFragment", "Loading content for user: $username")
+                    
+                    // Load live streams (channels)
+                    val liveStreams = ApiClient.xtreamApiService.getLiveStreams(username, password)
+                    android.util.Log.d("MainFragment", "Loaded ${liveStreams.size} live streams")
+                    
+                    channels.clear()
+                    liveStreams.forEach { stream ->
+                        channels.add(Channel(
+                            id = stream.streamId?.toString() ?: stream.num?.toString() ?: "0",
+                            name = stream.name ?: "Unknown Channel",
+                            logo_url = stream.streamIcon,
+                            stream_url = buildXtreamStreamUrl(username, password, stream.streamId?.toString() ?: "0", "live"),
+                            category = stream.categoryId
+                        ))
                     }
                     
-                    // Load movies
-                    val moviesResponse = ApiClient.apiService.getMovies("Bearer $authToken")
-                    if (moviesResponse.isSuccessful && moviesResponse.body() != null) {
-                        movies.clear()
-                        movies.addAll(moviesResponse.body()!!.movies)
+                    // Load VOD streams (movies)
+                    val vodStreams = ApiClient.xtreamApiService.getVodStreams(username, password)
+                    android.util.Log.d("MainFragment", "Loaded ${vodStreams.size} VOD streams")
+                    
+                    movies.clear()
+                    vodStreams.forEach { vod ->
+                        movies.add(Movie(
+                            id = vod.streamId?.toString() ?: vod.num?.toString() ?: "0",
+                            title = vod.name ?: "Unknown Movie",
+                            poster_url = vod.streamIcon,
+                            backdrop_url = vod.streamIcon,
+                            stream_url = buildXtreamStreamUrl(username, password, vod.streamId?.toString() ?: "0", "movie"),
+                            rating = vod.rating?.toFloatOrNull(),
+                            year = vod.added?.substring(0, 4)?.toIntOrNull(),
+                            description = vod.plot
+                        ))
                     }
                     
                     // Load series
-                    val seriesResponse = ApiClient.apiService.getSeries("Bearer $authToken")
-                    if (seriesResponse.isSuccessful && seriesResponse.body() != null) {
-                        series.clear()
-                        series.addAll(seriesResponse.body()!!.series)
+                    val seriesStreams = ApiClient.xtreamApiService.getSeries(username, password)
+                    android.util.Log.d("MainFragment", "Loaded ${seriesStreams.size} series")
+                    
+                    series.clear()
+                    seriesStreams.forEach { seriesItem ->
+                        series.add(Series(
+                            id = seriesItem.seriesId?.toString() ?: seriesItem.num?.toString() ?: "0",
+                            title = seriesItem.name ?: "Unknown Series",
+                            poster_url = seriesItem.cover,
+                            backdrop_url = seriesItem.cover,
+                            rating = seriesItem.rating?.toFloatOrNull(),
+                            year = seriesItem.releaseDate?.substring(0, 4)?.toIntOrNull(),
+                            description = seriesItem.plot
+                        ))
                     }
+                    
+                    android.util.Log.d("MainFragment", "Content loaded - Channels: ${channels.size}, Movies: ${movies.size}, Series: ${series.size}")
                     
                     // Refresh UI with loaded content
                     setupRows()
                 } catch (e: Exception) {
-                    // Silent fail - show empty state
-                    e.printStackTrace()
+                    android.util.Log.e("MainFragment", "Error loading content", e)
                     setupRows()
                 } finally {
                     isLoading = false
                     progressBarManager?.hide()
                 }
             }
+        }
+    }
+    
+    private fun buildXtreamStreamUrl(username: String, password: String, streamId: String, type: String): String {
+        val baseUrl = "https://prime-x.live"
+        return when (type) {
+            "live" -> "$baseUrl/live/$username/$password/$streamId.m3u8"
+            "movie" -> "$baseUrl/movie/$username/$password/$streamId.mp4"
+            else -> "$baseUrl/$type/$username/$password/$streamId"
         }
     }
 

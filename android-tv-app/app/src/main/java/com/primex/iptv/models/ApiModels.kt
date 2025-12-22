@@ -138,21 +138,14 @@ data class SubscriptionFeatures(
     val recording: Boolean = false
 )
 
-// Channels
+// Channels - Compatible with Xtream API
 data class Channel(
-    @SerializedName("id")
-    val id: Int,
-    @SerializedName("name")
+    val id: String,
     val name: String,
-    @SerializedName("stream_url")
     val stream_url: String,
-    @SerializedName("logo_url")
     val logo_url: String? = null,
-    @SerializedName("category")
     val category: String? = null,
-    @SerializedName("epg_channel_id")
     val epg_channel_id: String? = null,
-    @SerializedName("is_active")
     val is_active: Boolean = true
 )
 
@@ -171,30 +164,19 @@ data class VodContent(
     val series: List<Series>? = null
 )
 
+// Movie - Compatible with Xtream API
 data class Movie(
-    @SerializedName("id")
-    val id: Int,
-    @SerializedName("title")
+    val id: String,
     val title: String,
-    @SerializedName("description")
     val description: String? = null,
-    @SerializedName("stream_url")
     val stream_url: String,
-    @SerializedName("poster_url")
     val poster_url: String? = null,
-    @SerializedName("backdrop_url")
     val backdrop_url: String? = null,
-    @SerializedName("year")
     val year: Int? = null,
-    @SerializedName("rating")
     val rating: Float? = null,
-    @SerializedName("duration")
     val duration: Int? = null,
-    @SerializedName("genre")
     val genre: String? = null,
-    @SerializedName("category")
     val category: String? = null,
-    @SerializedName("quality")
     val quality: String? = null
 ) : java.io.Serializable
 
@@ -209,28 +191,18 @@ data class MoviesResponse(
     val pages: Int? = null
 )
 
+// Series - Compatible with Xtream API
 data class Series(
-    @SerializedName("id")
-    val id: Int,
-    @SerializedName("title")
+    val id: String,
     val title: String,
-    @SerializedName("description")
     val description: String? = null,
-    @SerializedName("poster_url")
     val poster_url: String? = null,
-    @SerializedName("backdrop_url")
     val backdrop_url: String? = null,
-    @SerializedName("year")
     val year: Int? = null,
-    @SerializedName("rating")
     val rating: Float? = null,
-    @SerializedName("genre")
     val genre: String? = null,
-    @SerializedName("category")
     val category: String? = null,
-    @SerializedName("seasons_count")
     val seasons_count: Int? = null,
-    @SerializedName("quality")
     val quality: String? = null
 ) : java.io.Serializable
 

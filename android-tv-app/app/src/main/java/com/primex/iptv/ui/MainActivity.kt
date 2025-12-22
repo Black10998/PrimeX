@@ -29,15 +29,18 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         super.onResume()
         
-        // Only check session validity if app was in background for a while
-        // Don't check on every resume to avoid false logouts on TV devices
-        android.util.Log.d("MainActivity", "onResume - checking session")
+        // Check if Xtream credentials exist
+        android.util.Log.d("MainActivity", "onResume - checking Xtream credentials")
         
-        // Check if token exists at minimum
-        val token = com.primex.iptv.utils.PreferenceManager.getAuthToken(this)
-        if (token.isNullOrEmpty()) {
-            android.util.Log.e("MainActivity", "No token found - redirecting to login")
+        val username = com.primex.iptv.utils.PreferenceManager.getXtreamUsername(this)
+        val password = com.primex.iptv.utils.PreferenceManager.getXtreamPassword(this)
+        
+        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
+            android.util.Log.e("MainActivity", "No Xtream credentials found - redirecting to login")
             SessionManager.logoutUser(this, "Session expired")
+        } else if (com.primex.iptv.utils.PreferenceManager.isXtreamSubscriptionExpired(this)) {
+            android.util.Log.e("MainActivity", "Xtream subscription expired - redirecting to login")
+            SessionManager.logoutUser(this, "Subscription expired")
         }
     }
 }
