@@ -37,6 +37,19 @@
 
 **Commit:** `04afa42`
 
+#### 5. Kotlin Compilation Errors ✅
+**Issues:**
+- Unresolved reference: `subscription` in UserInfo
+- Type mismatch in sorting (Float vs Double)
+- Unresolved reference: `requireContext()` in MovieDetailsFragment
+
+**Fixes Applied:**
+- Added `subscription` field to UserInfo model
+- Fixed Float comparison (0.0 → 0f)
+- Replaced `requireContext()` with `requireActivity()`
+
+**Commit:** `76a6868`
+
 ### Verification Results
 
 ```
@@ -64,6 +77,9 @@
 ### Git Commits
 
 ```
+d8cae29 - Add Kotlin compilation fixes documentation
+76a6868 - Fix Kotlin compilation errors
+d3f5058 - Update build verification with string resource fix
 94af639 - Add string resource fix documentation
 04afa42 - Add missing activation_instructions string resource
 1a397a1 - Update build verification with color resource fix
