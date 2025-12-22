@@ -62,7 +62,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Leanback" />
+            android:theme="@style/Theme.PrimeX.Player" />
 
         <!-- Details Activity -->
         <activity
