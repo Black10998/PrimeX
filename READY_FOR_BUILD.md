@@ -41,14 +41,16 @@
 **Issues:**
 - Unresolved reference: `subscription` in UserInfo
 - Type mismatch in sorting (Float vs Double)
-- Unresolved reference: `requireContext()` in MovieDetailsFragment
+- Fragment context access in MovieDetailsFragment
+- Glide overload ambiguity
 
 **Fixes Applied:**
 - Added `subscription` field to UserInfo model
 - Fixed Float comparison (0.0 → 0f)
-- Replaced `requireContext()` with `requireActivity()`
+- Replaced `requireActivity()` with `activity` property
+- Changed `Glide.with(context)` to `Glide.with(this)`
 
-**Commit:** `76a6868`
+**Commits:** `76a6868`, `4b87211`
 
 ### Verification Results
 
@@ -77,6 +79,9 @@
 ### Git Commits
 
 ```
+867d3da - Update Kotlin compilation fixes documentation with Fragment context fix
+4b87211 - Fix MovieDetailsFragment context access
+e8c67ff - Update build verification with Kotlin compilation fixes
 d8cae29 - Add Kotlin compilation fixes documentation
 76a6868 - Fix Kotlin compilation errors
 d3f5058 - Update build verification with string resource fix
