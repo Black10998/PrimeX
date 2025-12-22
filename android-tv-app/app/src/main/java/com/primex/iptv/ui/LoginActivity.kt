@@ -132,9 +132,26 @@ class LoginActivity : BaseActivity() {
                     android.util.Log.e("LoginActivity", errorMsg)
                     showError(errorMsg)
                 }
+            } catch (e: java.net.UnknownHostException) {
+                val errorMsg = "Cannot reach server. Check network connection."
+                android.util.Log.e("LoginActivity", "DNS/Network error: ${e.message}", e)
+                showError(errorMsg)
+            } catch (e: javax.net.ssl.SSLException) {
+                val errorMsg = "SSL/Certificate error. Server connection failed."
+                android.util.Log.e("LoginActivity", "SSL error: ${e.message}", e)
+                showError(errorMsg)
+            } catch (e: java.net.SocketTimeoutException) {
+                val errorMsg = "Connection timeout. Server not responding."
+                android.util.Log.e("LoginActivity", "Timeout error: ${e.message}", e)
+                showError(errorMsg)
+            } catch (e: java.io.IOException) {
+                val errorMsg = "Network I/O error: ${e.message}"
+                android.util.Log.e("LoginActivity", "I/O error: ${e.message}", e)
+                showError(errorMsg)
             } catch (e: Exception) {
-                val errorMsg = "Connection error: ${e.message}"
-                android.util.Log.e("LoginActivity", "Connection error", e)
+                val errorMsg = "Connection error: ${e.javaClass.simpleName} - ${e.message}"
+                android.util.Log.e("LoginActivity", "Unexpected error: ${e.javaClass.name}", e)
+                e.printStackTrace()
                 showError(errorMsg)
             } finally {
                 showLoading(false)

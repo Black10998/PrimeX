@@ -22,10 +22,24 @@ object ApiClient {
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
+        .addInterceptor { chain ->
+            val request = chain.request()
+            android.util.Log.d("ApiClient", "Request: ${request.method} ${request.url}")
+            try {
+                val response = chain.proceed(request)
+                android.util.Log.d("ApiClient", "Response: ${response.code} ${response.message}")
+                response
+            } catch (e: Exception) {
+                android.util.Log.e("ApiClient", "Network error: ${e.message}", e)
+                throw e
+            }
+        }
+        .connectTimeout(60, TimeUnit.SECONDS) // Increased for TV networks
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
+        .followRedirects(true)
+        .followSslRedirects(true)
         .build()
 
     private val retrofit = Retrofit.Builder()
