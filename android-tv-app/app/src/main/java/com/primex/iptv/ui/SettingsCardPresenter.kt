@@ -2,31 +2,30 @@ package com.primex.iptv.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.leanback.widget.ImageCardView
+import android.widget.TextView
 import androidx.leanback.widget.Presenter
 import com.primex.iptv.R
 
 class SettingsCardPresenter : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val cardView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_settings, parent, false) as ImageCardView
-        return ViewHolder(cardView)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.card_settings_item, parent, false)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
         val settingsItem = item as SettingsItem
-        val cardView = viewHolder.view as ImageCardView
+        val cardView = viewHolder.view
+        
+        val titleView = cardView.findViewById<TextView>(R.id.card_title)
+        val subtitleView = cardView.findViewById<TextView>(R.id.card_subtitle)
 
-        cardView.titleText = settingsItem.title
-        cardView.contentText = settingsItem.description
-        cardView.setMainImageDimensions(313, 176)
-        cardView.mainImage = viewHolder.view.context.getDrawable(R.drawable.ic_settings)
+        titleView.text = settingsItem.title
+        subtitleView.text = settingsItem.description
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
-        val cardView = viewHolder.view as ImageCardView
-        cardView.badgeImage = null
-        cardView.mainImage = null
+        // Nothing to unbind
     }
 }

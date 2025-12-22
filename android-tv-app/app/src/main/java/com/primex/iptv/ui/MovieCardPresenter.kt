@@ -2,7 +2,8 @@ package com.primex.iptv.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.leanback.widget.ImageCardView
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.leanback.widget.Presenter
 import com.bumptech.glide.Glide
 import com.primex.iptv.R
@@ -11,16 +12,20 @@ import com.primex.iptv.models.Movie
 class MovieCardPresenter : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val cardView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_movie, parent, false) as ImageCardView
-        return ViewHolder(cardView)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.card_content, parent, false)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
         val movie = item as Movie
-        val cardView = viewHolder.view as ImageCardView
+        val cardView = viewHolder.view
+        
+        val imageView = cardView.findViewById<ImageView>(R.id.card_image)
+        val titleView = cardView.findViewById<TextView>(R.id.card_title)
+        val subtitleView = cardView.findViewById<TextView>(R.id.card_subtitle)
 
-        cardView.titleText = movie.title
+        titleView.text = movie.title
         
         val contentText = buildString {
             movie.year?.let { append("$it") }
@@ -33,24 +38,21 @@ class MovieCardPresenter : Presenter() {
                 append("${it}min")
             }
         }
-        cardView.contentText = contentText.ifEmpty { movie.genre ?: "Movie" }
-        
-        cardView.setMainImageDimensions(200, 300)
+        subtitleView.text = contentText.ifEmpty { movie.genre ?: "Movie" }
 
         if (!movie.poster_url.isNullOrEmpty()) {
-            Glide.with(viewHolder.view.context)
+            Glide.with(cardView.context)
                 .load(movie.poster_url)
                 .centerCrop()
                 .error(R.drawable.default_movie_poster)
-                .into(cardView.mainImageView)
+                .into(imageView)
         } else {
-            cardView.mainImage = viewHolder.view.context.getDrawable(R.drawable.default_movie_poster)
+            imageView.setImageResource(R.drawable.default_movie_poster)
         }
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
-        val cardView = viewHolder.view as ImageCardView
-        cardView.badgeImage = null
-        cardView.mainImage = null
+        val imageView = viewHolder.view.findViewById<ImageView>(R.id.card_image)
+        imageView.setImageDrawable(null)
     }
 }

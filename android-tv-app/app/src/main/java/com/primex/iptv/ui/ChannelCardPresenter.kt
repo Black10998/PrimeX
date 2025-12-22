@@ -1,8 +1,10 @@
 package com.primex.iptv.ui
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.leanback.widget.ImageCardView
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.leanback.widget.Presenter
 import com.bumptech.glide.Glide
 import com.primex.iptv.R
@@ -11,33 +13,35 @@ import com.primex.iptv.models.Channel
 class ChannelCardPresenter : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val cardView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_channel, parent, false) as ImageCardView
-        return ViewHolder(cardView)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.card_channel_item, parent, false)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
         val channel = item as Channel
-        val cardView = viewHolder.view as ImageCardView
+        val cardView = viewHolder.view
+        
+        val imageView = cardView.findViewById<ImageView>(R.id.card_image)
+        val titleView = cardView.findViewById<TextView>(R.id.card_title)
+        val subtitleView = cardView.findViewById<TextView>(R.id.card_subtitle)
 
-        cardView.titleText = channel.name
-        cardView.contentText = channel.category ?: "Live TV"
-        cardView.setMainImageDimensions(313, 176)
+        titleView.text = channel.name
+        subtitleView.text = channel.category ?: "Live TV"
 
         if (!channel.logo_url.isNullOrEmpty()) {
-            Glide.with(viewHolder.view.context)
+            Glide.with(cardView.context)
                 .load(channel.logo_url)
                 .centerCrop()
                 .error(R.drawable.default_channel_logo)
-                .into(cardView.mainImageView)
+                .into(imageView)
         } else {
-            cardView.mainImage = viewHolder.view.context.getDrawable(R.drawable.default_channel_logo)
+            imageView.setImageResource(R.drawable.default_channel_logo)
         }
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
-        val cardView = viewHolder.view as ImageCardView
-        cardView.badgeImage = null
-        cardView.mainImage = null
+        val imageView = viewHolder.view.findViewById<ImageView>(R.id.card_image)
+        imageView.setImageDrawable(null)
     }
 }
