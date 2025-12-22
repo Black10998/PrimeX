@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.primex.iptv.R
 import com.primex.iptv.api.ApiClient
@@ -15,7 +14,7 @@ import com.primex.iptv.models.LoginRequest
 import com.primex.iptv.utils.PreferenceManager
 import kotlinx.coroutines.launch
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
     private lateinit var usernameInput: EditText
     private lateinit var passwordInput: EditText
@@ -25,10 +24,22 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Check if user is already logged in with valid session
+        if (com.primex.iptv.utils.SessionManager.checkSessionValidity(this)) {
+            navigateToMain()
+            return
+        }
+        
         setContentView(R.layout.activity_login)
 
         initViews()
         setupListeners()
+        
+        // Show logout reason if provided
+        intent.getStringExtra("logout_reason")?.let { reason ->
+            showError(reason)
+        }
     }
 
     private fun initViews() {
@@ -79,19 +90,18 @@ class LoginActivity : AppCompatActivity() {
                     val loginResponse = response.body()!!
 
                     if (loginResponse.success && loginResponse.data != null) {
-                        // Save user credentials
+                        // Save user credentials with subscription expiry
+                        val expiresAt = loginResponse.data.user.subscription?.expires_at
                         PreferenceManager.saveUserCredentials(
                             this@LoginActivity,
                             loginResponse.data.user.username,
                             loginResponse.data.token,
-                            loginResponse.data.user.id
+                            loginResponse.data.user.id,
+                            expiresAt
                         )
 
                         // Navigate to main screen
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
+                        navigateToMain()
                     } else {
                         showError(loginResponse.message ?: "Login failed")
                     }
@@ -116,5 +126,12 @@ class LoginActivity : AppCompatActivity() {
     private fun showError(message: String) {
         errorText.text = message
         errorText.visibility = View.VISIBLE
+    }
+
+    private fun navigateToMain() {
+        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 }

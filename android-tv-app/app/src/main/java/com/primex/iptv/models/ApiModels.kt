@@ -2,6 +2,42 @@ package com.primex.iptv.models
 
 import com.google.gson.annotations.SerializedName
 
+// User Profile
+data class UserProfileResponse(
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String? = null,
+    @SerializedName("data")
+    val data: UserProfileData? = null
+)
+
+data class UserProfileData(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("username")
+    val username: String,
+    @SerializedName("email")
+    val email: String? = null,
+    @SerializedName("created_at")
+    val created_at: String? = null,
+    @SerializedName("subscription")
+    val subscription: UserSubscription? = null
+)
+
+data class UserSubscription(
+    @SerializedName("plan_name")
+    val plan_name: String? = null,
+    @SerializedName("status")
+    val status: String? = null,
+    @SerializedName("expires_at")
+    val expires_at: String? = null,
+    @SerializedName("max_devices")
+    val max_devices: Int? = null,
+    @SerializedName("active_devices")
+    val active_devices: Int? = null
+)
+
 // Login - Matches PrimeX backend response format
 data class LoginRequest(
     @SerializedName("username")
@@ -155,8 +191,10 @@ data class Movie(
     @SerializedName("genre")
     val genre: String? = null,
     @SerializedName("category")
-    val category: String? = null
-)
+    val category: String? = null,
+    @SerializedName("quality")
+    val quality: String? = null
+) : java.io.Serializable
 
 data class MoviesResponse(
     @SerializedName("movies")
@@ -189,8 +227,10 @@ data class Series(
     @SerializedName("category")
     val category: String? = null,
     @SerializedName("seasons_count")
-    val seasons_count: Int? = null
-)
+    val seasons_count: Int? = null,
+    @SerializedName("quality")
+    val quality: String? = null
+) : java.io.Serializable
 
 data class SeriesResponse(
     @SerializedName("series")

@@ -32,6 +32,8 @@ class MainFragment : BrowseSupportFragment() {
     private val channels = mutableListOf<Channel>()
     private val movies = mutableListOf<Movie>()
     private val series = mutableListOf<Series>()
+    
+    private var isLoading = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -57,6 +59,9 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun loadContent() {
+        // Prevent multiple simultaneous loads
+        if (isLoading) return
+        
         // Always show UI first - load content in background
         setupRows()
         
@@ -64,6 +69,9 @@ class MainFragment : BrowseSupportFragment() {
 
         // Load content if user is authenticated
         if (!authToken.isNullOrEmpty()) {
+            isLoading = true
+            progressBarManager?.show()
+            
             lifecycleScope.launch {
                 try {
                     // Load channels
@@ -93,6 +101,9 @@ class MainFragment : BrowseSupportFragment() {
                     // Silent fail - show empty state
                     e.printStackTrace()
                     setupRows()
+                } finally {
+                    isLoading = false
+                    progressBarManager?.hide()
                 }
             }
         }
@@ -100,38 +111,72 @@ class MainFragment : BrowseSupportFragment() {
 
     private fun setupRows() {
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+        var rowId = 0L
 
-        // Live TV Row
+        // Featured/Trending Movies
+        if (movies.isNotEmpty()) {
+            val featuredMovies = movies.sortedByDescending { it.rating ?: 0.0 }.take(10)
+            if (featuredMovies.isNotEmpty()) {
+                val featuredHeader = HeaderItem(rowId++, getString(R.string.featured))
+                val featuredAdapter = ArrayObjectAdapter(MovieCardPresenter())
+                featuredMovies.forEach { featuredAdapter.add(it) }
+                rowsAdapter.add(ListRow(featuredHeader, featuredAdapter))
+            }
+        }
+
+        // Live TV Channels
         if (channels.isNotEmpty()) {
-            val channelsHeader = HeaderItem(0, "Live TV")
+            val channelsHeader = HeaderItem(rowId++, getString(R.string.live_tv))
             val channelsAdapter = ArrayObjectAdapter(ChannelCardPresenter())
             channels.take(20).forEach { channelsAdapter.add(it) }
             rowsAdapter.add(ListRow(channelsHeader, channelsAdapter))
         }
 
-        // Movies Row
+        // All Movies
         if (movies.isNotEmpty()) {
-            val moviesHeader = HeaderItem(1, "Movies")
+            val moviesHeader = HeaderItem(rowId++, getString(R.string.movies))
             val moviesAdapter = ArrayObjectAdapter(MovieCardPresenter())
-            movies.take(20).forEach { moviesAdapter.add(it) }
+            movies.take(30).forEach { moviesAdapter.add(it) }
             rowsAdapter.add(ListRow(moviesHeader, moviesAdapter))
         }
 
-        // Series Row
+        // New Releases (Movies from current year)
+        val currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
+        val newMovies = movies.filter { it.year == currentYear }
+        if (newMovies.isNotEmpty()) {
+            val newReleasesHeader = HeaderItem(rowId++, getString(R.string.new_releases))
+            val newReleasesAdapter = ArrayObjectAdapter(MovieCardPresenter())
+            newMovies.take(15).forEach { newReleasesAdapter.add(it) }
+            rowsAdapter.add(ListRow(newReleasesHeader, newReleasesAdapter))
+        }
+
+        // All Series
         if (series.isNotEmpty()) {
-            val seriesHeader = HeaderItem(2, "Series")
+            val seriesHeader = HeaderItem(rowId++, getString(R.string.series))
             val seriesAdapter = ArrayObjectAdapter(SeriesCardPresenter())
-            series.take(20).forEach { seriesAdapter.add(it) }
+            series.take(30).forEach { seriesAdapter.add(it) }
             rowsAdapter.add(ListRow(seriesHeader, seriesAdapter))
         }
 
+        // Trending Series
+        if (series.isNotEmpty()) {
+            val trendingSeries = series.sortedByDescending { it.rating ?: 0.0 }.take(10)
+            if (trendingSeries.isNotEmpty()) {
+                val trendingHeader = HeaderItem(rowId++, getString(R.string.trending_now))
+                val trendingAdapter = ArrayObjectAdapter(SeriesCardPresenter())
+                trendingSeries.forEach { trendingAdapter.add(it) }
+                rowsAdapter.add(ListRow(trendingHeader, trendingAdapter))
+            }
+        }
+
         // Settings Row - Always visible
-        val settingsHeader = HeaderItem(3, "Settings")
+        val settingsHeader = HeaderItem(rowId++, getString(R.string.settings))
         val settingsAdapter = ArrayObjectAdapter(SettingsCardPresenter())
         
-        settingsAdapter.add(SettingsItem("Account", "View account and subscription info"))
-        settingsAdapter.add(SettingsItem("Refresh", "Reload content"))
-        settingsAdapter.add(SettingsItem("Logout", "Sign out of your account"))
+        settingsAdapter.add(SettingsItem(getString(R.string.account), getString(R.string.account_description)))
+        settingsAdapter.add(SettingsItem(getString(R.string.settings), getString(R.string.settings_description)))
+        settingsAdapter.add(SettingsItem(getString(R.string.refresh), getString(R.string.refresh_description)))
+        settingsAdapter.add(SettingsItem(getString(R.string.logout), getString(R.string.logout_description)))
         rowsAdapter.add(ListRow(settingsHeader, settingsAdapter))
 
         adapter = rowsAdapter
@@ -166,10 +211,8 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun playMovie(movie: Movie) {
-        val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
-            putExtra(PlayerActivity.EXTRA_STREAM_URL, movie.stream_url)
-            putExtra(PlayerActivity.EXTRA_TITLE, movie.title)
-            putExtra(PlayerActivity.EXTRA_TYPE, "movie")
+        val intent = Intent(requireContext(), MovieDetailsActivity::class.java).apply {
+            putExtra(MovieDetailsActivity.EXTRA_MOVIE, movie)
         }
         startActivity(intent)
     }
@@ -183,16 +226,27 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun handleSettingsClick(item: SettingsItem) {
+        val accountStr = getString(R.string.account)
+        val settingsStr = getString(R.string.settings)
+        val refreshStr = getString(R.string.refresh)
+        val logoutStr = getString(R.string.logout)
+        
         when (item.title) {
-            "Account" -> showAccountInfo()
-            "Refresh" -> loadContent()
-            "Logout" -> performLogout()
+            accountStr -> showAccountInfo()
+            settingsStr -> showSettings()
+            refreshStr -> loadContent()
+            logoutStr -> performLogout()
         }
     }
     
     private fun showAccountInfo() {
-        val username = PreferenceManager.getUsername(requireContext())
-        // TODO: Show dialog with account info
+        val intent = Intent(requireContext(), AccountActivity::class.java)
+        startActivity(intent)
+    }
+    
+    private fun showSettings() {
+        val intent = Intent(requireContext(), SettingsActivity::class.java)
+        startActivity(intent)
     }
     
     private fun performLogout() {

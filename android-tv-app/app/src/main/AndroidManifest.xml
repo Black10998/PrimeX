@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
+        android:name=".PrimeXApplication"
         android:allowBackup="true"
         android:banner="@drawable/app_banner"
         android:icon="@drawable/app_icon"
@@ -72,6 +73,27 @@
         <!-- Browse Error Activity -->
         <activity
             android:name=".ui.BrowseErrorActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
+        <!-- Account Activity -->
+        <activity
+            android:name=".ui.AccountActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
+        <!-- Settings Activity -->
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
+        <!-- Movie Details Activity -->
+        <activity
+            android:name=".ui.MovieDetailsActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.Leanback" />

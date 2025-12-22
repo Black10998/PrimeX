@@ -27,6 +27,11 @@
     <string name="continue_watching">Continue Watching</string>
     <string name="trending_now">Trending Now</string>
     <string name="new_releases">New Releases</string>
+    <string name="featured">Featured</string>
+    <string name="account_description">View account and subscription info</string>
+    <string name="settings_description">App settings and preferences</string>
+    <string name="refresh_description">Reload content</string>
+    <string name="logout_description">Sign out of your account</string>
     
     <!-- Account Screen -->
     <string name="account_title">Account</string>
@@ -49,6 +54,10 @@
     <string name="language">Language</string>
     <string name="language_arabic">العربية</string>
     <string name="language_english">English</string>
+    <string name="english">English</string>
+    <string name="arabic">العربية</string>
+    <string name="app_info">App Information</string>
+    <string name="build">Build</string>
     <string name="video_quality">Video Quality</string>
     <string name="auto_quality">Auto</string>
     <string name="high_quality">High</string>
@@ -67,7 +76,7 @@
     <string name="clear_cache">Clear Cache</string>
     <string name="about">About</string>
     <string name="version">Version</string>
-    <string name="terms">Terms & Conditions</string>
+    <string name="terms">Terms &amp; Conditions</string>
     <string name="privacy">Privacy Policy</string>
     <string name="support">Support</string>
     <string name="logout">Logout</string>
@@ -108,4 +117,9 @@
     <string name="ok">OK</string>
     <string name="save">Save</string>
     <string name="close">Close</string>
+    <string name="no_email">No email provided</string>
+    <string name="basic_plan">Basic Plan</string>
+    <string name="no_subscription">No active subscription</string>
+    <string name="no_expiry">No expiration</string>
+    <string name="error_loading_profile">Failed to load profile</string>
 </resources>

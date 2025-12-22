@@ -7,7 +7,6 @@ import android.os.Looper
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.primex.iptv.R
 import com.primex.iptv.api.ApiClient
@@ -17,7 +16,7 @@ import com.primex.iptv.utils.DeviceUtils
 import com.primex.iptv.utils.PreferenceManager
 import kotlinx.coroutines.launch
 
-class ActivationActivity : AppCompatActivity() {
+class ActivationActivity : BaseActivity() {
 
     private lateinit var deviceKeyText: TextView
     private lateinit var statusText: TextView

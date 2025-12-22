@@ -24,8 +24,17 @@ class SeriesCardPresenter : Presenter() {
         val imageView = cardView.findViewById<ImageView>(R.id.card_image)
         val titleView = cardView.findViewById<TextView>(R.id.card_title)
         val subtitleView = cardView.findViewById<TextView>(R.id.card_subtitle)
+        val qualityBadge = cardView.findViewById<TextView>(R.id.card_quality_badge)
 
         titleView.text = series.title
+        
+        // Show quality badge if available
+        series.quality?.let { quality ->
+            qualityBadge.text = quality.uppercase()
+            qualityBadge.visibility = android.view.View.VISIBLE
+        } ?: run {
+            qualityBadge.visibility = android.view.View.GONE
+        }
         
         val contentText = buildString {
             series.year?.let { append("$it") }

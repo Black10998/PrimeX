@@ -27,6 +27,11 @@
     <string name="continue_watching">متابعة المشاهدة</string>
     <string name="trending_now">الأكثر رواجاً</string>
     <string name="new_releases">إصدارات جديدة</string>
+    <string name="featured">مميز</string>
+    <string name="account_description">عرض معلومات الحساب والاشتراك</string>
+    <string name="settings_description">إعدادات التطبيق والتفضيلات</string>
+    <string name="refresh_description">إعادة تحميل المحتوى</string>
+    <string name="logout_description">تسجيل الخروج من حسابك</string>
     
     <!-- Account Screen -->
     <string name="account_title">الحساب</string>
@@ -48,6 +53,12 @@
     <string name="general_settings">الإعدادات العامة</string>
     <string name="language">اللغة</string>
     <string name="language_arabic">العربية</string>
+    <string name="language_english">English</string>
+    <string name="english">English</string>
+    <string name="arabic">العربية</string>
+    <string name="app_info">معلومات التطبيق</string>
+    <string name="version">الإصدار</string>
+    <string name="build">البناء</string>
     <string name="language_english">English</string>
     <string name="video_quality">جودة الفيديو</string>
     <string name="auto_quality">تلقائي</string>
@@ -108,4 +119,9 @@
     <string name="ok">موافق</string>
     <string name="save">حفظ</string>
     <string name="close">إغلاق</string>
+    <string name="no_email">لا يوجد بريد إلكتروني</string>
+    <string name="basic_plan">الخطة الأساسية</string>
+    <string name="no_subscription">لا يوجد اشتراك نشط</string>
+    <string name="no_expiry">بدون انتهاء</string>
+    <string name="error_loading_profile">فشل تحميل الملف الشخصي</string>
 </resources>

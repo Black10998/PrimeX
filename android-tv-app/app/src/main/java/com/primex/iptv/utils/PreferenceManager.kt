@@ -15,6 +15,7 @@ object PreferenceManager {
     private const val KEY_IS_ACTIVATED = "is_activated"
     private const val KEY_SUBSCRIPTION_PLAN = "subscription_plan"
     private const val KEY_SUBSCRIPTION_EXPIRES = "subscription_expires"
+    private const val KEY_LANGUAGE = "app_language"
 
     private fun getPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -60,12 +61,15 @@ object PreferenceManager {
         return getPreferences(context).getString(KEY_SUBSCRIPTION_EXPIRES, null)
     }
 
-    fun saveUserCredentials(context: Context, username: String, token: String?, userId: Int?) {
+    fun saveUserCredentials(context: Context, username: String, token: String?, userId: Int?, expiresAt: String? = null) {
         getPreferences(context).edit()
             .putString(KEY_USERNAME, username)
             .putString(KEY_AUTH_TOKEN, token)
             .putInt(KEY_USER_ID, userId ?: 0)
             .putBoolean(KEY_IS_LOGGED_IN, true)
+            .apply {
+                expiresAt?.let { putString(KEY_SUBSCRIPTION_EXPIRES, it) }
+            }
             .apply()
     }
 
@@ -96,5 +100,33 @@ object PreferenceManager {
 
     fun clearAll(context: Context) {
         getPreferences(context).edit().clear().apply()
+    }
+
+    fun saveLanguage(context: Context, languageCode: String) {
+        getPreferences(context).edit().putString(KEY_LANGUAGE, languageCode).apply()
+    }
+
+    fun getLanguage(context: Context): String {
+        return getPreferences(context).getString(KEY_LANGUAGE, "en") ?: "en"
+    }
+
+    fun isSubscriptionExpired(context: Context): Boolean {
+        val expiresAt = getSubscriptionExpires(context) ?: return false
+        
+        return try {
+            val format = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.US)
+            format.timeZone = java.util.TimeZone.getTimeZone("UTC")
+            val expiryDate = format.parse(expiresAt)
+            val now = java.util.Date()
+            expiryDate?.before(now) ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun clearAuthToken(context: Context) {
+        getPreferences(context).edit()
+            .remove(KEY_AUTH_TOKEN)
+            .apply()
     }
 }

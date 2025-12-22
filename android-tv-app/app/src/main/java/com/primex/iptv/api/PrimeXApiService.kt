@@ -16,6 +16,15 @@ interface PrimeXApiService {
     ): Response<LoginResponse>
 
     /**
+     * Get user profile with subscription details
+     * Endpoint: GET /api/v1/user/profile
+     */
+    @GET("user/profile")
+    suspend fun getUserProfile(
+        @Header("Authorization") token: String
+    ): Response<UserProfileResponse>
+
+    /**
      * Register a new device with MAC address
      * Returns device_key for activation
      */
