@@ -10,6 +10,7 @@
     
     <!-- Background Colors - Rich Dark Theme -->
     <color name="background_primary">#0A0A0A</color>
+    <color name="background_dark">#0A0A0A</color>
     <color name="background_secondary">#141414</color>
     <color name="background_tertiary">#1F1F1F</color>
     <color name="background_elevated">#2A2A2A</color>
