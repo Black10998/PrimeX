@@ -217,26 +217,17 @@ data class SeriesResponse(
     val pages: Int? = null
 )
 
+// Episode - Compatible with Xtream API
 data class Episode(
-    @SerializedName("id")
     val id: Int,
-    @SerializedName("series_id")
     val series_id: Int,
-    @SerializedName("season_number")
     val season_number: Int,
-    @SerializedName("episode_number")
     val episode_number: Int,
-    @SerializedName("title")
     val title: String,
-    @SerializedName("description")
     val description: String? = null,
-    @SerializedName("stream_url")
     val stream_url: String,
-    @SerializedName("thumbnail_url")
     val thumbnail_url: String? = null,
-    @SerializedName("duration")
     val duration: Int? = null,
-    @SerializedName("air_date")
     val air_date: String? = null
 )
 

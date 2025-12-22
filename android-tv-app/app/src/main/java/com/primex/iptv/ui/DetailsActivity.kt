@@ -18,7 +18,7 @@ class DetailsActivity : FragmentActivity() {
         const val EXTRA_SERIES_TITLE = "series_title"
     }
 
-    private var seriesId: Int = -1
+    private var seriesId: String = ""
     private var seriesTitle: String = ""
     private val episodes = mutableListOf<Episode>()
 
@@ -26,33 +26,60 @@ class DetailsActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
-        seriesId = intent.getIntExtra(EXTRA_SERIES_ID, -1)
+        seriesId = intent.getStringExtra(EXTRA_SERIES_ID) ?: ""
         seriesTitle = intent.getStringExtra(EXTRA_SERIES_TITLE) ?: ""
 
-        if (seriesId != -1) {
+        if (seriesId.isNotEmpty()) {
             loadEpisodes()
         }
     }
 
     private fun loadEpisodes() {
-        val deviceKey = PreferenceManager.getDeviceKey(this) ?: return
+        val username = PreferenceManager.getXtreamUsername(this)
+        val password = PreferenceManager.getXtreamPassword(this)
+        
+        if (username.isNullOrEmpty() || password.isNullOrEmpty()) return
         
         lifecycleScope.launch {
             try {
-                val response = ApiClient.apiService.getSeriesEpisodes(
-                    "Bearer $deviceKey",
+                // Get series info from Xtream API
+                val seriesInfo = ApiClient.xtreamApiService.getSeriesInfo(
+                    username,
+                    password,
                     seriesId
                 )
                 
-                if (response.isSuccessful && response.body() != null) {
+                if (seriesInfo.isSuccessful && seriesInfo.body() != null) {
+                    val info = seriesInfo.body()!!
+                    
+                    // Convert Xtream episodes to app Episode model
                     episodes.clear()
-                    episodes.addAll(response.body()!!.episodes)
+                    info.episodes?.forEach { (seasonNum, seasonEpisodes) ->
+                        seasonEpisodes.forEach { xtreamEpisode ->
+                            episodes.add(Episode(
+                                id = xtreamEpisode.id?.toIntOrNull() ?: 0,
+                                series_id = seriesId.toIntOrNull() ?: 0,
+                                season_number = seasonNum.toIntOrNull() ?: 0,
+                                episode_number = xtreamEpisode.episodeNum ?: 0,
+                                title = xtreamEpisode.title ?: "Episode ${xtreamEpisode.episodeNum}",
+                                description = xtreamEpisode.plot,
+                                stream_url = buildSeriesStreamUrl(username, password, xtreamEpisode.id ?: "0"),
+                                thumbnail_url = xtreamEpisode.info?.movieImage,
+                                duration = xtreamEpisode.info?.duration?.toIntOrNull(),
+                                air_date = xtreamEpisode.info?.releasedate
+                            ))
+                        }
+                    }
                     // TODO: Display episodes in fragment
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                android.util.Log.e("DetailsActivity", "Error loading episodes", e)
             }
         }
+    }
+    
+    private fun buildSeriesStreamUrl(username: String, password: String, episodeId: String): String {
+        return "https://prime-x.live/series/$username/$password/$episodeId.mp4"
     }
 
     fun playEpisode(episode: Episode) {
