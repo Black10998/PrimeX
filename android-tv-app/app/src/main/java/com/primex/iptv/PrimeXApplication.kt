@@ -2,17 +2,32 @@ package com.primex.iptv
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
 import com.primex.iptv.utils.LocaleHelper
+import java.util.*
 
 class PrimeXApplication : Application() {
 
     override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(LocaleHelper.onAttach(base))
+        // DO NOT access SharedPreferences here - causes crash on Android TV
+        // Use default locale (English) at this stage
+        val locale = Locale("en")
+        Locale.setDefault(locale)
+        
+        val configuration = Configuration(base.resources.configuration)
+        configuration.setLocale(locale)
+        
+        val context = base.createConfigurationContext(configuration)
+        super.attachBaseContext(context)
     }
 
     override fun onCreate() {
         super.onCreate()
-        // Initialize locale on app start
-        LocaleHelper.onAttach(this)
+        // NOW it's safe to access SharedPreferences and apply saved locale
+        try {
+            LocaleHelper.applyLocale(this)
+        } catch (e: Exception) {
+            android.util.Log.e("PrimeXApplication", "Error applying locale: ${e.message}", e)
+        }
     }
 }
