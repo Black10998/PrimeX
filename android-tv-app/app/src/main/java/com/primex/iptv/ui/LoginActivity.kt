@@ -82,34 +82,60 @@ class LoginActivity : BaseActivity() {
             try {
                 showLoading(true)
                 errorText.visibility = View.GONE
+                
+                android.util.Log.d("LoginActivity", "Starting login for user: $username")
 
                 val request = LoginRequest(username, password)
                 val response = ApiClient.apiService.login(request)
+                
+                android.util.Log.d("LoginActivity", "Response code: ${response.code()}")
 
                 if (response.isSuccessful && response.body() != null) {
                     val loginResponse = response.body()!!
+                    android.util.Log.d("LoginActivity", "Response success: ${loginResponse.success}")
 
                     if (loginResponse.success && loginResponse.data != null) {
+                        val userData = loginResponse.data.user
+                        val token = loginResponse.data.token
+                        val expiresAt = userData.subscription?.expires_at
+                        
+                        android.util.Log.d("LoginActivity", "Login successful - User: ${userData.username}, Token length: ${token?.length ?: 0}")
+                        android.util.Log.d("LoginActivity", "Subscription expires: $expiresAt")
+                        
                         // Save user credentials with subscription expiry
-                        val expiresAt = loginResponse.data.user.subscription?.expires_at
                         PreferenceManager.saveUserCredentials(
                             this@LoginActivity,
-                            loginResponse.data.user.username,
-                            loginResponse.data.token,
-                            loginResponse.data.user.id,
+                            userData.username,
+                            token,
+                            userData.id,
                             expiresAt
                         )
-
-                        // Navigate to main screen
-                        navigateToMain()
+                        
+                        // Verify save was successful before navigating
+                        val savedToken = PreferenceManager.getAuthToken(this@LoginActivity)
+                        if (savedToken == token) {
+                            android.util.Log.d("LoginActivity", "Credentials saved successfully - navigating to main")
+                            // Small delay to ensure preferences are fully written
+                            kotlinx.coroutines.delay(500)
+                            navigateToMain()
+                        } else {
+                            android.util.Log.e("LoginActivity", "Credential save verification FAILED")
+                            showError("Failed to save login credentials. Please try again.")
+                        }
                     } else {
-                        showError(loginResponse.message ?: "Login failed")
+                        val errorMsg = loginResponse.message ?: "Login failed"
+                        android.util.Log.e("LoginActivity", "Login failed: $errorMsg")
+                        showError(errorMsg)
                     }
                 } else {
-                    showError("Login failed: ${response.message()}")
+                    val errorMsg = "Login failed: ${response.code()} - ${response.message()}"
+                    android.util.Log.e("LoginActivity", errorMsg)
+                    showError(errorMsg)
                 }
             } catch (e: Exception) {
-                showError("Connection error: ${e.message}")
+                val errorMsg = "Connection error: ${e.message}"
+                android.util.Log.e("LoginActivity", "Connection error", e)
+                showError(errorMsg)
             } finally {
                 showLoading(false)
             }

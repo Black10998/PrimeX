@@ -18,7 +18,15 @@ object PreferenceManager {
     private const val KEY_LANGUAGE = "app_language"
 
     private fun getPreferences(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        // Use application context to ensure persistence across activities
+        return context.applicationContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    }
+    
+    private fun saveWithCommit(context: Context, block: SharedPreferences.Editor.() -> Unit) {
+        // Use commit() instead of apply() for immediate persistence on TV devices
+        val editor = getPreferences(context).edit()
+        editor.block()
+        editor.commit() // Synchronous write - critical for TV devices
     }
 
     fun saveDeviceKey(context: Context, deviceKey: String) {
@@ -62,15 +70,21 @@ object PreferenceManager {
     }
 
     fun saveUserCredentials(context: Context, username: String, token: String?, userId: Int?, expiresAt: String? = null) {
-        getPreferences(context).edit()
-            .putString(KEY_USERNAME, username)
-            .putString(KEY_AUTH_TOKEN, token)
-            .putInt(KEY_USER_ID, userId ?: 0)
-            .putBoolean(KEY_IS_LOGGED_IN, true)
-            .apply {
-                expiresAt?.let { putString(KEY_SUBSCRIPTION_EXPIRES, it) }
-            }
-            .apply()
+        saveWithCommit(context) {
+            putString(KEY_USERNAME, username)
+            putString(KEY_AUTH_TOKEN, token)
+            putInt(KEY_USER_ID, userId ?: 0)
+            putBoolean(KEY_IS_LOGGED_IN, true)
+            expiresAt?.let { putString(KEY_SUBSCRIPTION_EXPIRES, it) }
+        }
+        
+        // Verify save was successful
+        val savedToken = getAuthToken(context)
+        if (savedToken != token) {
+            android.util.Log.e("PreferenceManager", "Token save verification FAILED")
+        } else {
+            android.util.Log.d("PreferenceManager", "Token saved and verified successfully")
+        }
     }
 
     fun isLoggedIn(context: Context): Boolean {
@@ -111,15 +125,49 @@ object PreferenceManager {
     }
 
     fun isSubscriptionExpired(context: Context): Boolean {
-        val expiresAt = getSubscriptionExpires(context) ?: return false
+        val expiresAt = getSubscriptionExpires(context)
+        
+        // If no expiry date, don't block the user
+        if (expiresAt.isNullOrEmpty()) {
+            android.util.Log.d("PreferenceManager", "No expiry date found - allowing access")
+            return false
+        }
         
         return try {
-            val format = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.US)
-            format.timeZone = java.util.TimeZone.getTimeZone("UTC")
-            val expiryDate = format.parse(expiresAt)
+            // Try multiple date formats to handle different server responses
+            val formats = listOf(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                "yyyy-MM-dd'T'HH:mm:ss'Z'",
+                "yyyy-MM-dd HH:mm:ss",
+                "yyyy-MM-dd"
+            )
+            
+            var expiryDate: java.util.Date? = null
+            for (formatStr in formats) {
+                try {
+                    val format = java.text.SimpleDateFormat(formatStr, java.util.Locale.US)
+                    format.timeZone = java.util.TimeZone.getTimeZone("UTC")
+                    expiryDate = format.parse(expiresAt)
+                    if (expiryDate != null) break
+                } catch (e: Exception) {
+                    continue
+                }
+            }
+            
+            if (expiryDate == null) {
+                android.util.Log.w("PreferenceManager", "Could not parse expiry date: $expiresAt - allowing access")
+                return false
+            }
+            
             val now = java.util.Date()
-            expiryDate?.before(now) ?: false
+            val isExpired = expiryDate.before(now)
+            
+            android.util.Log.d("PreferenceManager", "Subscription check - Expires: $expiryDate, Now: $now, Expired: $isExpired")
+            
+            isExpired
         } catch (e: Exception) {
+            android.util.Log.e("PreferenceManager", "Error checking expiry: ${e.message}")
+            // On error, don't block the user
             false
         }
     }

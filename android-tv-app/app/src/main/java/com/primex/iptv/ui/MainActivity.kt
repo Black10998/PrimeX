@@ -29,9 +29,15 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         super.onResume()
         
-        // Check session validity on resume
-        if (!SessionManager.checkSessionValidity(this)) {
-            return // SessionManager will handle navigation to login
+        // Only check session validity if app was in background for a while
+        // Don't check on every resume to avoid false logouts on TV devices
+        android.util.Log.d("MainActivity", "onResume - checking session")
+        
+        // Check if token exists at minimum
+        val token = com.primex.iptv.utils.PreferenceManager.getAuthToken(this)
+        if (token.isNullOrEmpty()) {
+            android.util.Log.e("MainActivity", "No token found - redirecting to login")
+            SessionManager.logoutUser(this, "Session expired")
         }
     }
 }
