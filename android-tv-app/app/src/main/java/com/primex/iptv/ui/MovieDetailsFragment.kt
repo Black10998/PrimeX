@@ -35,7 +35,7 @@ class MovieDetailsFragment : DetailsFragment() {
             DetailsDescriptionPresenter()
         )
         
-        val ctx = requireActivity()
+        val ctx = activity ?: return
         detailsPresenter.backgroundColor = ContextCompat.getColor(ctx, R.color.background_secondary)
         detailsPresenter.actionsBackgroundColor = ContextCompat.getColor(ctx, R.color.background_primary)
         
@@ -62,8 +62,8 @@ class MovieDetailsFragment : DetailsFragment() {
         adapter.add(detailsOverviewRow)
         
         // Load poster
-        val ctx = requireActivity()
-        Glide.with(ctx)
+        val ctx = activity ?: return
+        Glide.with(this)
             .asBitmap()
             .load(movie.poster_url)
             .into(object : SimpleTarget<Bitmap>() {
@@ -85,8 +85,8 @@ class MovieDetailsFragment : DetailsFragment() {
     private fun loadBackdrop() {
         val backdropUrl = movie.backdrop_url ?: movie.poster_url
         if (!backdropUrl.isNullOrEmpty()) {
-            val ctx = requireActivity()
-            Glide.with(ctx)
+            val ctx = activity ?: return
+            Glide.with(this)
                 .asBitmap()
                 .load(backdropUrl)
                 .into(object : SimpleTarget<Bitmap>() {
@@ -98,7 +98,8 @@ class MovieDetailsFragment : DetailsFragment() {
     }
 
     private fun playMovie() {
-        val intent = Intent(requireActivity(), PlayerActivity::class.java).apply {
+        val ctx = activity ?: return
+        val intent = Intent(ctx, PlayerActivity::class.java).apply {
             putExtra(PlayerActivity.EXTRA_STREAM_URL, movie.stream_url)
             putExtra(PlayerActivity.EXTRA_TITLE, movie.title)
             putExtra(PlayerActivity.EXTRA_TYPE, "movie")
