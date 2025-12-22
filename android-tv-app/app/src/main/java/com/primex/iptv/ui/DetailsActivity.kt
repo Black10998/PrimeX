@@ -44,9 +44,9 @@ class DetailsActivity : FragmentActivity() {
             try {
                 // Get series info from Xtream API
                 val seriesInfo = ApiClient.xtreamApiService.getSeriesInfo(
-                    username,
-                    password,
-                    seriesId
+                    username = username,
+                    password = password,
+                    seriesId = seriesId
                 )
                 
                 if (seriesInfo.isSuccessful && seriesInfo.body() != null) {
@@ -62,10 +62,10 @@ class DetailsActivity : FragmentActivity() {
                                 season_number = seasonNum.toIntOrNull() ?: 0,
                                 episode_number = xtreamEpisode.episodeNum ?: 0,
                                 title = xtreamEpisode.title ?: "Episode ${xtreamEpisode.episodeNum}",
-                                description = xtreamEpisode.plot,
+                                description = xtreamEpisode.info?.plot,
                                 stream_url = buildSeriesStreamUrl(username, password, xtreamEpisode.id ?: "0"),
                                 thumbnail_url = xtreamEpisode.info?.movieImage,
-                                duration = xtreamEpisode.info?.duration?.toIntOrNull(),
+                                duration = xtreamEpisode.info?.durationSecs,
                                 air_date = xtreamEpisode.info?.releasedate
                             ))
                         }

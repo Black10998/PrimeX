@@ -111,7 +111,7 @@ class MainFragment : BrowseSupportFragment() {
                                 stream_url = buildXtreamStreamUrl(username, password, vod.streamId?.toString() ?: "0", "movie"),
                                 rating = vod.rating?.toFloatOrNull(),
                                 year = vod.added?.substring(0, 4)?.toIntOrNull(),
-                                description = vod.plot
+                                description = null // VOD list doesn't include plot, need to call get_vod_info for details
                             ))
                         }
                     }
