@@ -115,7 +115,7 @@ class MainFragment : BrowseSupportFragment() {
 
         // Featured/Trending Movies
         if (movies.isNotEmpty()) {
-            val featuredMovies = movies.sortedByDescending { it.rating ?: 0.0 }.take(10)
+            val featuredMovies = movies.sortedByDescending { it.rating ?: 0f }.take(10)
             if (featuredMovies.isNotEmpty()) {
                 val featuredHeader = HeaderItem(rowId++, getString(R.string.featured))
                 val featuredAdapter = ArrayObjectAdapter(MovieCardPresenter())
@@ -160,7 +160,7 @@ class MainFragment : BrowseSupportFragment() {
 
         // Trending Series
         if (series.isNotEmpty()) {
-            val trendingSeries = series.sortedByDescending { it.rating ?: 0.0 }.take(10)
+            val trendingSeries = series.sortedByDescending { it.rating ?: 0f }.take(10)
             if (trendingSeries.isNotEmpty()) {
                 val trendingHeader = HeaderItem(rowId++, getString(R.string.trending_now))
                 val trendingAdapter = ArrayObjectAdapter(SeriesCardPresenter())

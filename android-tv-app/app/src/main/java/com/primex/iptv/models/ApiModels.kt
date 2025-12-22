@@ -78,7 +78,9 @@ data class UserInfo(
     @SerializedName("subscription_end")
     val subscription_end: String? = null,
     @SerializedName("max_devices")
-    val max_devices: Int? = null
+    val max_devices: Int? = null,
+    @SerializedName("subscription")
+    val subscription: UserSubscription? = null
 )
 
 // Device Registration

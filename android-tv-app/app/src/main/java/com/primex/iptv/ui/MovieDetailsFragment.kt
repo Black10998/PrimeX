@@ -35,8 +35,9 @@ class MovieDetailsFragment : DetailsFragment() {
             DetailsDescriptionPresenter()
         )
         
-        detailsPresenter.backgroundColor = ContextCompat.getColor(requireContext(), R.color.background_secondary)
-        detailsPresenter.actionsBackgroundColor = ContextCompat.getColor(requireContext(), R.color.background_primary)
+        val ctx = requireActivity()
+        detailsPresenter.backgroundColor = ContextCompat.getColor(ctx, R.color.background_secondary)
+        detailsPresenter.actionsBackgroundColor = ContextCompat.getColor(ctx, R.color.background_primary)
         
         presenterSelector.addClassPresenter(DetailsOverviewRow::class.java, detailsPresenter)
         presenterSelector.addClassPresenter(ListRow::class.java, ListRowPresenter())
@@ -61,12 +62,13 @@ class MovieDetailsFragment : DetailsFragment() {
         adapter.add(detailsOverviewRow)
         
         // Load poster
-        Glide.with(requireContext())
+        val ctx = requireActivity()
+        Glide.with(ctx)
             .asBitmap()
             .load(movie.poster_url)
             .into(object : SimpleTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    detailsOverviewRow.setImageBitmap(requireContext(), resource)
+                    detailsOverviewRow.setImageBitmap(ctx, resource)
                 }
             })
         
@@ -83,19 +85,20 @@ class MovieDetailsFragment : DetailsFragment() {
     private fun loadBackdrop() {
         val backdropUrl = movie.backdrop_url ?: movie.poster_url
         if (!backdropUrl.isNullOrEmpty()) {
-            Glide.with(requireContext())
+            val ctx = requireActivity()
+            Glide.with(ctx)
                 .asBitmap()
                 .load(backdropUrl)
                 .into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        detailsOverviewRow.setImageBitmap(requireContext(), resource)
+                        detailsOverviewRow.setImageBitmap(ctx, resource)
                     }
                 })
         }
     }
 
     private fun playMovie() {
-        val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
+        val intent = Intent(requireActivity(), PlayerActivity::class.java).apply {
             putExtra(PlayerActivity.EXTRA_STREAM_URL, movie.stream_url)
             putExtra(PlayerActivity.EXTRA_TITLE, movie.title)
             putExtra(PlayerActivity.EXTRA_TYPE, "movie")
