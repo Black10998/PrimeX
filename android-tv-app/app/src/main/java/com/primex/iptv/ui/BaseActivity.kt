@@ -1,11 +1,11 @@
 package com.primex.iptv.ui
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import com.primex.iptv.utils.LocaleHelper
 
-abstract class BaseActivity : Activity() {
+abstract class BaseActivity : ComponentActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleHelper.onAttach(newBase))
