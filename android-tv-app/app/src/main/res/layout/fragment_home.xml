@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/amarco_black">
+
+    <!-- Top Navigation Bar -->
+    <LinearLayout
+        android:id="@+id/top_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="48dp"
+        android:paddingEnd="48dp"
+        android:background="@color/amarco_black">
+
+        <!-- Logo/Brand -->
+        <TextView
+            android:id="@+id/brand_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AMARCO"
+            android:textColor="@color/amarco_text_primary"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.1"
+            android:layout_marginEnd="48dp" />
+
+        <!-- Navigation Items -->
+        <TextView
+            android:id="@+id/nav_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home"
+            android:textColor="@color/amarco_text_primary"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginEnd="24dp"
+            android:focusable="true"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/nav_live_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Live TV"
+            android:textColor="#80FFFFFF"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginEnd="24dp"
+            android:focusable="true"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/nav_movies"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Movies"
+            android:textColor="#80FFFFFF"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginEnd="24dp"
+            android:focusable="true"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/nav_series"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Series"
+            android:textColor="#80FFFFFF"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:focusable="true"
+            android:clickable="true" />
+
+    </LinearLayout>
+
+    <!-- Content Area -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/content_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp" />
+
+</LinearLayout>

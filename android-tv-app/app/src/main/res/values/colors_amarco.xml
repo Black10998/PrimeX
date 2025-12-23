@@ -2,10 +2,10 @@
 <resources>
     <!-- Amarco Premium Color Palette -->
     
-    <!-- Primary Brand Colors -->
-    <color name="amarco_gold">#D4AF37</color>
-    <color name="amarco_gold_light">#E8C968</color>
-    <color name="amarco_gold_dark">#B8941F</color>
+    <!-- Primary Brand Colors - NO YELLOW/GOLD -->
+    <color name="amarco_gold">#FFFFFF</color>
+    <color name="amarco_gold_light">#FFFFFF</color>
+    <color name="amarco_gold_dark">#B0B0B0</color>
     
     <!-- Dark Theme Base -->
     <color name="amarco_black">#0A0A0A</color>
@@ -13,10 +13,10 @@
     <color name="amarco_medium_gray">#2A2A2A</color>
     <color name="amarco_light_gray">#3A3A3A</color>
     
-    <!-- Accent Colors -->
-    <color name="amarco_accent">#D4AF37</color>
-    <color name="amarco_accent_light">#FFD700</color>
-    <color name="amarco_accent_dark">#B8941F</color>
+    <!-- Accent Colors - NO YELLOW/GOLD -->
+    <color name="amarco_accent">#FFFFFF</color>
+    <color name="amarco_accent_light">#FFFFFF</color>
+    <color name="amarco_accent_dark">#B0B0B0</color>
     
     <!-- Text Colors -->
     <color name="amarco_text_primary">#FFFFFF</color>
@@ -37,10 +37,10 @@
     <color name="amarco_error">#F44336</color>
     <color name="amarco_info">#2196F3</color>
     
-    <!-- Focus States -->
-    <color name="amarco_focus_border">#D4AF37</color>
-    <color name="amarco_focus_glow">#40D4AF37</color>
-    <color name="amarco_focus_background">#30D4AF37</color>
+    <!-- Focus States - NO YELLOW/GOLD -->
+    <color name="amarco_focus_border">#FFFFFF</color>
+    <color name="amarco_focus_glow">#40FFFFFF</color>
+    <color name="amarco_focus_background">#30FFFFFF</color>
     
     <!-- Card Backgrounds -->
     <color name="amarco_card_normal">#1A1A1A</color>
