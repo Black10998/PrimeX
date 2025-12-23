@@ -10,9 +10,17 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.primex.iptv.R
+import com.primex.iptv.adapters.ContentRow
+import com.primex.iptv.adapters.ContentRowAdapter
+import com.primex.iptv.api.ApiClient
+import com.primex.iptv.models.Channel
+import com.primex.iptv.player.PlayerActivity
+import com.primex.iptv.utils.PreferenceManager
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -22,6 +30,7 @@ class HomeFragment : Fragment() {
     private lateinit var navLiveTV: TextView
     private lateinit var navMovies: TextView
     private lateinit var navSeries: TextView
+    private lateinit var navSearch: ImageView
     private lateinit var navSettings: TextView
 
     override fun onCreateView(
@@ -50,6 +59,7 @@ class HomeFragment : Fragment() {
         navLiveTV = view.findViewById(R.id.nav_live_tv)
         navMovies = view.findViewById(R.id.nav_movies)
         navSeries = view.findViewById(R.id.nav_series)
+        navSearch = view.findViewById(R.id.nav_search)
         navSettings = view.findViewById(R.id.nav_settings)
     }
 
@@ -105,6 +115,18 @@ class HomeFragment : Fragment() {
         }
         navSeries.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) selectNav(navSeries)
+        }
+        
+        navSearch.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
+        }
+        navSearch.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                navSearch.setColorFilter(0xFFFFFFFF.toInt())
+            } else {
+                navSearch.setColorFilter(0x80FFFFFF.toInt())
+            }
         }
         
         navSettings.setOnClickListener {
@@ -164,8 +186,71 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadLiveTVContent() {
-        // TODO: Load live TV content rows
-        android.widget.Toast.makeText(requireContext(), "Live TV", android.widget.Toast.LENGTH_SHORT).show()
+        val username = PreferenceManager.getXtreamUsername(requireContext())
+        val password = PreferenceManager.getXtreamPassword(requireContext())
+
+        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
+            android.widget.Toast.makeText(requireContext(), "No credentials found", android.widget.Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                // Load live streams
+                val response = ApiClient.xtreamApiService.getLiveStreams(username, password)
+                if (response.isSuccessful && response.body() != null) {
+                    val streams = response.body()!!
+                    
+                    // Group channels by category
+                    val channelsByCategory = mutableMapOf<String, MutableList<Channel>>()
+                    
+                    streams.forEach { stream ->
+                        val channel = Channel(
+                            id = stream.streamId?.toString() ?: "0",
+                            name = stream.name ?: "Unknown Channel",
+                            logo_url = stream.streamIcon,
+                            stream_url = buildStreamUrl(username, password, stream.streamId?.toString() ?: "0"),
+                            category = stream.categoryId
+                        )
+                        
+                        val categoryId = stream.categoryId ?: "0"
+                        if (!channelsByCategory.containsKey(categoryId)) {
+                            channelsByCategory[categoryId] = mutableListOf()
+                        }
+                        channelsByCategory[categoryId]?.add(channel)
+                    }
+                    
+                    // Create content rows
+                    val rows = channelsByCategory.map { (categoryId, channels) ->
+                        ContentRow(
+                            title = "Category $categoryId",
+                            channels = channels
+                        )
+                    }
+                    
+                    // Update RecyclerView
+                    contentRecyclerView.adapter = ContentRowAdapter(rows) { channel ->
+                        playChannel(channel)
+                    }
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("HomeFragment", "Error loading channels", e)
+                android.widget.Toast.makeText(requireContext(), "Error loading channels", android.widget.Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun buildStreamUrl(username: String, password: String, streamId: String): String {
+        return "https://prime-x.live/live/$username/$password/$streamId.m3u8"
+    }
+
+    private fun playChannel(channel: Channel) {
+        val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
+            putExtra(PlayerActivity.EXTRA_STREAM_URL, channel.stream_url)
+            putExtra(PlayerActivity.EXTRA_TITLE, channel.name)
+            putExtra(PlayerActivity.EXTRA_TYPE, "channel")
+        }
+        startActivity(intent)
     }
 
     private fun loadMoviesContent() {
