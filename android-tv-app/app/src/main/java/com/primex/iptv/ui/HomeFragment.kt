@@ -225,7 +225,7 @@ class HomeFragment : Fragment() {
         navHome.setOnClickListener {
             selectNav(navHome)
             changeBackground(R.drawable.bg_home_space)
-            loadHomeContent()
+            showHomeContent()
         }
         navHome.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -249,7 +249,7 @@ class HomeFragment : Fragment() {
         navMovies.setOnClickListener {
             selectNav(navMovies)
             changeBackground(R.drawable.bg_movies_space)
-            loadMoviesContent()
+            showMoviesFragment()
         }
         navMovies.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -261,7 +261,7 @@ class HomeFragment : Fragment() {
         navSeries.setOnClickListener {
             selectNav(navSeries)
             changeBackground(R.drawable.bg_series_space)
-            loadSeriesContent()
+            showSeriesFragment()
         }
         navSeries.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -273,7 +273,7 @@ class HomeFragment : Fragment() {
         navCategories.setOnClickListener {
             selectNav(navCategories)
             changeBackground(R.drawable.bg_categories_space)
-            loadCategoriesContent()
+            showCategoriesFragment()
         }
         navCategories.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -285,7 +285,7 @@ class HomeFragment : Fragment() {
         navFavorites.setOnClickListener {
             selectNav(navFavorites)
             changeBackground(R.drawable.bg_favorites_space)
-            loadFavoritesContent()
+            showFavoritesFragment()
         }
         navFavorites.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -356,6 +356,19 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadContent() {
+        loadHomeContent()
+    }
+
+    private fun showHomeContent() {
+        // Clear any child fragments
+        childFragmentManager.fragments.forEach {
+            childFragmentManager.beginTransaction().remove(it).commit()
+        }
+        
+        // Show welcome section
+        view?.findViewById<View>(R.id.welcome_section)?.visibility = View.VISIBLE
+        
+        // Load home content
         loadHomeContent()
     }
 
@@ -506,91 +519,38 @@ class HomeFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun loadMoviesContent() {
-        // TODO: Load movies content rows
-        android.widget.Toast.makeText(requireContext(), "Movies", android.widget.Toast.LENGTH_SHORT).show()
+    private fun showMoviesFragment() {
+        childFragmentManager.beginTransaction()
+            .replace(R.id.content_container, MoviesFragment())
+            .commit()
+        
+        // Hide welcome section when showing other fragments
+        view?.findViewById<View>(R.id.welcome_section)?.visibility = View.GONE
     }
 
-    private fun loadSeriesContent() {
-        // TODO: Load series content rows
-        android.widget.Toast.makeText(requireContext(), "Series", android.widget.Toast.LENGTH_SHORT).show()
+    private fun showSeriesFragment() {
+        childFragmentManager.beginTransaction()
+            .replace(R.id.content_container, SeriesFragment())
+            .commit()
+        
+        view?.findViewById<View>(R.id.welcome_section)?.visibility = View.GONE
     }
 
-    private fun loadCategoriesContent() {
-        val username = PreferenceManager.getXtreamUsername(requireContext())
-        val password = PreferenceManager.getXtreamPassword(requireContext())
-
-        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
-            return
-        }
-
-        lifecycleScope.launch {
-            try {
-                val response = ApiClient.xtreamApiService.getLiveStreams(username, password)
-                if (response.isSuccessful && response.body() != null) {
-                    val streams = response.body()!!
-                    
-                    // Group by category
-                    val channelsByCategory = streams.groupBy { it.categoryId ?: "0" }
-                    
-                    val rows = channelsByCategory.map { (categoryId, streams) ->
-                        val channels = streams.map { stream ->
-                            Channel(
-                                id = stream.streamId?.toString() ?: "0",
-                                name = stream.name ?: "Unknown",
-                                logo_url = stream.streamIcon,
-                                stream_url = buildStreamUrl(username, password, stream.streamId?.toString() ?: "0"),
-                                category = stream.categoryId
-                            )
-                        }
-                        ContentRow("Category $categoryId", channels)
-                    }
-                    
-                    contentRecyclerView.adapter = ContentRowAdapter(rows) { channel ->
-                        playChannel(channel)
-                    }
-                }
-            } catch (e: Exception) {
-                android.util.Log.e("HomeFragment", "Error loading categories", e)
-            }
-        }
+    private fun showCategoriesFragment() {
+        childFragmentManager.beginTransaction()
+            .replace(R.id.content_container, CategoriesFragment())
+            .commit()
+        
+        view?.findViewById<View>(R.id.welcome_section)?.visibility = View.GONE
     }
 
-    private fun loadFavoritesContent() {
-        val username = PreferenceManager.getXtreamUsername(requireContext())
-        val password = PreferenceManager.getXtreamPassword(requireContext())
-
-        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
-            return
-        }
-
-        lifecycleScope.launch {
-            try {
-                val response = ApiClient.xtreamApiService.getLiveStreams(username, password)
-                if (response.isSuccessful && response.body() != null) {
-                    val streams = response.body()!!
-                    
-                    val channels = streams.take(20).map { stream ->
-                        Channel(
-                            id = stream.streamId?.toString() ?: "0",
-                            name = stream.name ?: "Unknown",
-                            logo_url = stream.streamIcon,
-                            stream_url = buildStreamUrl(username, password, stream.streamId?.toString() ?: "0"),
-                            category = stream.categoryId
-                        )
-                    }
-                    
-                    val rows = listOf(
-                        ContentRow("Your Favorites", channels)
-                    )
-                    
-                    contentRecyclerView.adapter = ContentRowAdapter(rows) { channel ->
-                        playChannel(channel)
-                    }
-                }
-            } catch (e: Exception) {
-                android.util.Log.e("HomeFragment", "Error loading favorites", e)
-            }
-        }
+    private fun showFavoritesFragment() {
+        childFragmentManager.beginTransaction()
+            .replace(R.id.content_container, FavoritesFragment())
+            .commit()
+        
+        view?.findViewById<View>(R.id.welcome_section)?.visibility = View.GONE
     }
+
+
 }

@@ -231,13 +231,21 @@
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/content_recycler"
+        <!-- Content Container for Fragment Switching -->
+        <FrameLayout
+            android:id="@+id/content_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="140dp"
-            android:paddingBottom="24dp" />
+            android:paddingTop="140dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/content_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="24dp" />
+
+        </FrameLayout>
 
         <!-- Developer Info (subtle, bottom left) -->
         <TextView
