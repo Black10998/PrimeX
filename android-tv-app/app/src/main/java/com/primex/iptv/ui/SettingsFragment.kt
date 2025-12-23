@@ -162,7 +162,7 @@ class SettingsFragment : GuidedStepSupportFragment() {
     }
 
     private fun logout() {
-        PreferenceManager.clearCredentials(requireContext())
+        PreferenceManager.logout(requireContext())
         requireActivity().finish()
     }
 }
