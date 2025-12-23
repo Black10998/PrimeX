@@ -129,7 +129,8 @@ class SettingsFragment : VerticalGridSupportFragment() {
     }
 
     private fun showAccount() {
-        android.widget.Toast.makeText(requireContext(), "Account Settings", android.widget.Toast.LENGTH_SHORT).show()
+        val intent = Intent(requireContext(), AccountActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showPlaybackSettings() {
@@ -138,31 +139,41 @@ class SettingsFragment : VerticalGridSupportFragment() {
     }
 
     private fun showParentalControls() {
-        android.widget.Toast.makeText(requireContext(), "Parental Controls", android.widget.Toast.LENGTH_SHORT).show()
+        showSimpleDialog("Parental Controls", "Set up content restrictions and PIN protection.")
     }
 
     private fun showLanguageSettings() {
-        android.widget.Toast.makeText(requireContext(), "Language & Subtitles", android.widget.Toast.LENGTH_SHORT).show()
+        showSimpleDialog("Language & Subtitles", "Configure audio and subtitle preferences.")
     }
 
     private fun showNotifications() {
-        android.widget.Toast.makeText(requireContext(), "Notifications", android.widget.Toast.LENGTH_SHORT).show()
+        showSimpleDialog("Notifications", "Manage app notifications and alerts.")
     }
 
     private fun showStorage() {
-        android.widget.Toast.makeText(requireContext(), "Storage Management", android.widget.Toast.LENGTH_SHORT).show()
+        showSimpleDialog("Storage", "Clear cache and manage downloads to free up space.")
     }
 
     private fun showHelp() {
-        android.widget.Toast.makeText(requireContext(), "Help & Support", android.widget.Toast.LENGTH_SHORT).show()
+        showSimpleDialog(
+            "Help & Support",
+            "Developer: PAX\nSupport: info@paxdes.com\n\nFor assistance, please contact support."
+        )
     }
 
     private fun showAbout() {
-        android.widget.Toast.makeText(
-            requireContext(),
-            "Amarco v${BuildConfig.VERSION_NAME}",
-            android.widget.Toast.LENGTH_SHORT
-        ).show()
+        showSimpleDialog(
+            "About Amarco",
+            "Version: ${BuildConfig.VERSION_NAME}\nBuild: ${BuildConfig.VERSION_CODE}\n\nDeveloper: PAX\nSupport: info@paxdes.com"
+        )
+    }
+
+    private fun showSimpleDialog(title: String, message: String) {
+        android.app.AlertDialog.Builder(requireContext())
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     private fun logout() {

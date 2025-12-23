@@ -133,13 +133,33 @@
     </LinearLayout>
 
     <!-- Content Area -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/content_recycler"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingTop="24dp"
-        android:paddingBottom="24dp" />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/content_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp" />
+
+        <!-- Developer Info (subtle, bottom left) -->
+        <TextView
+            android:id="@+id/developer_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="48dp"
+            android:layout_marginBottom="24dp"
+            android:text="Developer: PAX | info@paxdes.com"
+            android:textColor="#40FFFFFF"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif"
+            android:alpha="0.6" />
+
+    </FrameLayout>
 
 </LinearLayout>
