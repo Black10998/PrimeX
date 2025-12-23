@@ -2,8 +2,8 @@
 <resources>
     <!-- Amarco Leanback Theme Customization -->
     
-    <!-- Browse Fragment Styling -->
-    <style name="Widget.Leanback.BrowseTitle" parent="Widget.Leanback.Title">
+    <!-- Browse Fragment Styling - Simplified without invalid parents -->
+    <style name="Amarco.BrowseTitle">
         <item name="android:textColor">@color/amarco_gold</item>
         <item name="android:textSize">32sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -11,13 +11,13 @@
     </style>
     
     <!-- Headers (Sidebar) Styling -->
-    <style name="Widget.Leanback.Header" parent="Widget.Leanback.Header">
+    <style name="Amarco.Header">
         <item name="android:textColor">@color/amarco_text_primary</item>
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
     
-    <style name="Widget.Leanback.Header.Section" parent="Widget.Leanback.Header">
+    <style name="Amarco.Header.Section">
         <item name="android:textColor">@color/amarco_gold</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">true</item>
@@ -25,7 +25,7 @@
     </style>
     
     <!-- Row Header Styling -->
-    <style name="Widget.Leanback.Row.Header" parent="Widget.Leanback.Row.Header">
+    <style name="Amarco.Row.Header">
         <item name="android:textColor">@color/amarco_text_primary</item>
         <item name="android:textSize">22sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -34,30 +34,23 @@
         <item name="android:paddingBottom">16dp</item>
     </style>
     
-    <!-- Search Orb Styling -->
-    <style name="Widget.Leanback.SearchOrbViewStyle" parent="Widget.Leanback.SearchOrbViewStyle">
-        <item name="searchOrbColor">@color/amarco_gold</item>
-        <item name="searchOrbColorBright">@color/amarco_gold_light</item>
-    </style>
+    <!-- Search Orb Styling - Removed invalid attributes -->
     
-    <!-- Playback Controls -->
-    <style name="Widget.Leanback.PlaybackControlsActionIcons" parent="Widget.Leanback.PlaybackControlsActionIcons">
-        <item name="android:tint">@color/amarco_gold</item>
-    </style>
+    <!-- Playback Controls - Removed invalid parent -->
     
     <!-- Details Description -->
-    <style name="Widget.Leanback.DetailsDescriptionTitleStyle" parent="Widget.Leanback.DetailsDescriptionTitleStyle">
+    <style name="Amarco.DetailsDescriptionTitle">
         <item name="android:textColor">@color/amarco_text_primary</item>
         <item name="android:textSize">24sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
     
-    <style name="Widget.Leanback.DetailsDescriptionSubtitleStyle" parent="Widget.Leanback.DetailsDescriptionSubtitleStyle">
+    <style name="Amarco.DetailsDescriptionSubtitle">
         <item name="android:textColor">@color/amarco_text_secondary</item>
         <item name="android:textSize">16sp</item>
     </style>
     
-    <style name="Widget.Leanback.DetailsDescriptionBodyStyle" parent="Widget.Leanback.DetailsDescriptionBodyStyle">
+    <style name="Amarco.DetailsDescriptionBody">
         <item name="android:textColor">@color/amarco_text_secondary</item>
         <item name="android:textSize">14sp</item>
         <item name="android:lineSpacingMultiplier">1.5</item>
