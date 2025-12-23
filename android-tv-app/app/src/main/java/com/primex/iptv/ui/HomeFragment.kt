@@ -37,9 +37,7 @@ class HomeFragment : Fragment() {
     private lateinit var welcomeMessage: TextView
     private lateinit var welcomeSubtitle: TextView
     private lateinit var socialMessage: TextView
-    private lateinit var animatedBackground1: View
-    private lateinit var animatedBackground2: View
-    private var currentBackground = 1
+    private lateinit var spaceBackground: View
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,8 +75,7 @@ class HomeFragment : Fragment() {
         welcomeMessage = view.findViewById(R.id.welcome_message)
         welcomeSubtitle = view.findViewById(R.id.welcome_subtitle)
         socialMessage = view.findViewById(R.id.social_message)
-        animatedBackground1 = view.findViewById(R.id.animated_background_1)
-        animatedBackground2 = view.findViewById(R.id.animated_background_2)
+        spaceBackground = view.findViewById(R.id.space_background)
     }
 
     private fun animateLogo() {
@@ -108,12 +105,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun startLogoRotation() {
-        // Subtle continuous rotation (very slow)
-        val rotation = ObjectAnimator.ofFloat(brandLogo, "rotation", 0f, 360f)
-        rotation.duration = 60000 // 60 seconds for one full rotation
-        rotation.repeatCount = ObjectAnimator.INFINITE
-        rotation.interpolator = android.view.animation.LinearInterpolator()
-        rotation.start()
+        // Note: Since logo is a single image, we can't rotate only the circular part
+        // For now, disable rotation to keep logo fixed
+        // To implement circular-only rotation, logo would need to be split into layers
+        // (background circle + foreground text as separate views)
     }
 
     private fun setupLogoInteraction() {
@@ -201,94 +196,102 @@ class HomeFragment : Fragment() {
     }
 
     private fun animateBackground() {
-        // Subtle continuous animation for background 1
-        val animator1 = ObjectAnimator.ofFloat(animatedBackground1, "alpha", 0.2f, 0.4f)
-        animator1.duration = 3000
-        animator1.repeatCount = ObjectAnimator.INFINITE
-        animator1.repeatMode = ObjectAnimator.REVERSE
-        animator1.interpolator = DecelerateInterpolator()
-        animator1.start()
+        // Subtle continuous pulse for space background
+        val animator = ObjectAnimator.ofFloat(spaceBackground, "alpha", 0.7f, 0.9f)
+        animator.duration = 4000
+        animator.repeatCount = ObjectAnimator.INFINITE
+        animator.repeatMode = ObjectAnimator.REVERSE
+        animator.interpolator = DecelerateInterpolator()
+        animator.start()
     }
 
-    private fun transitionBackground() {
-        // Smooth transition between backgrounds
-        if (currentBackground == 1) {
-            animatedBackground2.animate()
-                .alpha(0.3f)
-                .setDuration(1000)
-                .setInterpolator(DecelerateInterpolator())
-                .start()
-            animatedBackground1.animate()
-                .alpha(0f)
-                .setDuration(1000)
-                .setInterpolator(DecelerateInterpolator())
-                .start()
-            currentBackground = 2
-        } else {
-            animatedBackground1.animate()
-                .alpha(0.3f)
-                .setDuration(1000)
-                .setInterpolator(DecelerateInterpolator())
-                .start()
-            animatedBackground2.animate()
-                .alpha(0f)
-                .setDuration(1000)
-                .setInterpolator(DecelerateInterpolator())
-                .start()
-            currentBackground = 1
-        }
+    private fun changeBackground(backgroundRes: Int) {
+        // Smooth transition to new space background
+        spaceBackground.animate()
+            .alpha(0f)
+            .setDuration(500)
+            .withEndAction {
+                spaceBackground.setBackgroundResource(backgroundRes)
+                spaceBackground.animate()
+                    .alpha(0.8f)
+                    .setDuration(500)
+                    .start()
+            }
+            .start()
     }
 
     private fun setupNavigation() {
         // Setup click and focus listeners
         navHome.setOnClickListener {
             selectNav(navHome)
-            transitionBackground()
+            changeBackground(R.drawable.bg_home_space)
             loadHomeContent()
         }
         navHome.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) selectNav(navHome)
+            if (hasFocus) {
+                selectNav(navHome)
+                changeBackground(R.drawable.bg_home_space)
+            }
         }
         
         navLiveTV.setOnClickListener {
             selectNav(navLiveTV)
-            transitionBackground()
+            changeBackground(R.drawable.bg_livetv_space)
             loadLiveTVContent()
         }
         navLiveTV.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) selectNav(navLiveTV)
+            if (hasFocus) {
+                selectNav(navLiveTV)
+                changeBackground(R.drawable.bg_livetv_space)
+            }
         }
         
         navMovies.setOnClickListener {
             selectNav(navMovies)
+            changeBackground(R.drawable.bg_movies_space)
             loadMoviesContent()
         }
         navMovies.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) selectNav(navMovies)
+            if (hasFocus) {
+                selectNav(navMovies)
+                changeBackground(R.drawable.bg_movies_space)
+            }
         }
         
         navSeries.setOnClickListener {
             selectNav(navSeries)
+            changeBackground(R.drawable.bg_series_space)
             loadSeriesContent()
         }
         navSeries.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) selectNav(navSeries)
+            if (hasFocus) {
+                selectNav(navSeries)
+                changeBackground(R.drawable.bg_series_space)
+            }
         }
         
         navCategories.setOnClickListener {
             selectNav(navCategories)
+            changeBackground(R.drawable.bg_categories_space)
             loadCategoriesContent()
         }
         navCategories.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) selectNav(navCategories)
+            if (hasFocus) {
+                selectNav(navCategories)
+                changeBackground(R.drawable.bg_categories_space)
+            }
         }
         
         navFavorites.setOnClickListener {
             selectNav(navFavorites)
+            changeBackground(R.drawable.bg_favorites_space)
             loadFavoritesContent()
         }
         navFavorites.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) selectNav(navFavorites)
+            if (hasFocus) {
+                selectNav(navFavorites)
+                changeBackground(R.drawable.bg_favorites_space)
+            }
         }
         
         navSearch.setOnClickListener {
