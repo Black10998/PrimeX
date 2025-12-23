@@ -45,8 +45,8 @@ class LoginActivity : BaseActivity() {
     private fun initViews() {
         usernameInput = findViewById(R.id.username_input)
         passwordInput = findViewById(R.id.password_input)
-        loginButton = findViewById(R.id.login_button)
-        progressBar = findViewById(R.id.progress_bar)
+        loginButton = findViewById(R.id.sign_in_button)
+        progressBar = findViewById(R.id.loading_indicator)
         errorText = findViewById(R.id.error_text)
     }
 
