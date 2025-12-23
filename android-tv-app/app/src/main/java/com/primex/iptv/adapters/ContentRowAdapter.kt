@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.primex.iptv.R
 import com.primex.iptv.models.Channel
-import com.primex.iptv.models.ContentRow
 
 data class ContentRow(
     val title: String,
