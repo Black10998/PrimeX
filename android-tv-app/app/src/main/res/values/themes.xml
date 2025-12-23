@@ -10,6 +10,20 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:statusBarColor">@color/amarco_black</item>
         <item name="android:navigationBarColor">@color/amarco_black</item>
+        
+        <!-- Leanback Customizations -->
+        <item name="browseTitleTextStyle">@style/Widget.Leanback.BrowseTitle</item>
+        <item name="headerStyle">@style/Widget.Leanback.Header</item>
+        <item name="rowHeaderStyle">@style/Widget.Leanback.Row.Header</item>
+        <item name="searchOrbViewStyle">@style/Widget.Leanback.SearchOrbViewStyle</item>
+        <item name="playbackControlsActionIconsStyle">@style/Widget.Leanback.PlaybackControlsActionIcons</item>
+        <item name="detailsDescriptionTitleStyle">@style/Widget.Leanback.DetailsDescriptionTitleStyle</item>
+        <item name="detailsDescriptionSubtitleStyle">@style/Widget.Leanback.DetailsDescriptionSubtitleStyle</item>
+        <item name="detailsDescriptionBodyStyle">@style/Widget.Leanback.DetailsDescriptionBodyStyle</item>
+        
+        <!-- Default background for browse -->
+        <item name="defaultBrandColor">@color/amarco_gold</item>
+        <item name="defaultSearchColor">@color/amarco_gold</item>
     </style>
     
     <!-- Amarco Splash Theme -->

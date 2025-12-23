@@ -64,8 +64,14 @@ class MainFragment : BrowseSupportFragment() {
         brandColor = ContextCompat.getColor(requireContext(), R.color.amarco_gold)
         searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.amarco_gold)
         
-        // Set badge drawable (optional - can be logo)
+        // Set badge drawable
         badgeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.amarco_logo)
+        
+        // Enable search
+        setOnSearchClickedListener {
+            // TODO: Implement search activity
+            android.widget.Toast.makeText(requireContext(), "Search coming soon", android.widget.Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupBackgroundManager() {
@@ -292,6 +298,11 @@ class MainFragment : BrowseSupportFragment() {
         
         rowsAdapter.add(ListRow(settingsHeader, settingsAdapter))
 
+        // Section Header: Live TV
+        val liveTvSection = HeaderItem(rowId++, "📺 LIVE TV")
+        val emptyLiveTvAdapter = ArrayObjectAdapter()
+        rowsAdapter.add(ListRow(liveTvSection, emptyLiveTvAdapter))
+
         // Live TV Channels - Organized by Categories
         if (channelsByCategory.isNotEmpty()) {
             // Sort categories by name
@@ -318,6 +329,11 @@ class MainFragment : BrowseSupportFragment() {
             rowsAdapter.add(ListRow(channelsHeader, channelsAdapter))
         }
 
+        // Section Header: Movies
+        val moviesSection = HeaderItem(rowId++, "🎬 MOVIES")
+        val emptyMoviesAdapter = ArrayObjectAdapter()
+        rowsAdapter.add(ListRow(moviesSection, emptyMoviesAdapter))
+
         // Movies - Organized by Categories
         if (moviesByCategory.isNotEmpty()) {
             val sortedCategories = moviesByCategory.keys.sortedBy { categoryId ->
@@ -342,6 +358,11 @@ class MainFragment : BrowseSupportFragment() {
             movies.forEach { moviesAdapter.add(it) }
             rowsAdapter.add(ListRow(moviesHeader, moviesAdapter))
         }
+
+        // Section Header: Series
+        val seriesSection = HeaderItem(rowId++, "📺 SERIES")
+        val emptySeriesAdapter = ArrayObjectAdapter()
+        rowsAdapter.add(ListRow(seriesSection, emptySeriesAdapter))
 
         // Series - Organized by Categories
         if (seriesByCategory.isNotEmpty()) {

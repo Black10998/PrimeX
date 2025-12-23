@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Amarco Leanback Theme Customization -->
+    
+    <!-- Browse Fragment Styling -->
+    <style name="Widget.Leanback.BrowseTitle" parent="Widget.Leanback.Title">
+        <item name="android:textColor">@color/amarco_gold</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+    
+    <!-- Headers (Sidebar) Styling -->
+    <style name="Widget.Leanback.Header" parent="Widget.Leanback.Header">
+        <item name="android:textColor">@color/amarco_text_primary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    
+    <style name="Widget.Leanback.Header.Section" parent="Widget.Leanback.Header">
+        <item name="android:textColor">@color/amarco_gold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.1</item>
+    </style>
+    
+    <!-- Row Header Styling -->
+    <style name="Widget.Leanback.Row.Header" parent="Widget.Leanback.Row.Header">
+        <item name="android:textColor">@color/amarco_text_primary</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:paddingStart">48dp</item>
+        <item name="android:paddingTop">24dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+    
+    <!-- Search Orb Styling -->
+    <style name="Widget.Leanback.SearchOrbViewStyle" parent="Widget.Leanback.SearchOrbViewStyle">
+        <item name="searchOrbColor">@color/amarco_gold</item>
+        <item name="searchOrbColorBright">@color/amarco_gold_light</item>
+    </style>
+    
+    <!-- Playback Controls -->
+    <style name="Widget.Leanback.PlaybackControlsActionIcons" parent="Widget.Leanback.PlaybackControlsActionIcons">
+        <item name="android:tint">@color/amarco_gold</item>
+    </style>
+    
+    <!-- Details Description -->
+    <style name="Widget.Leanback.DetailsDescriptionTitleStyle" parent="Widget.Leanback.DetailsDescriptionTitleStyle">
+        <item name="android:textColor">@color/amarco_text_primary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    
+    <style name="Widget.Leanback.DetailsDescriptionSubtitleStyle" parent="Widget.Leanback.DetailsDescriptionSubtitleStyle">
+        <item name="android:textColor">@color/amarco_text_secondary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    
+    <style name="Widget.Leanback.DetailsDescriptionBodyStyle" parent="Widget.Leanback.DetailsDescriptionBodyStyle">
+        <item name="android:textColor">@color/amarco_text_secondary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+    </style>
+</resources>
