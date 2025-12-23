@@ -24,7 +24,7 @@
             android:src="@drawable/amarco_logo"
             android:scaleType="fitStart"
             android:contentDescription="Amarco Logo"
-            android:layout_marginEnd="48dp"
+            android:layout_marginEnd="24dp"
             android:alpha="0" />
 
         <!-- Navigation Items -->
@@ -40,7 +40,7 @@
             android:paddingEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
@@ -57,7 +57,7 @@
             android:paddingEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
@@ -74,7 +74,7 @@
             android:paddingEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
@@ -91,7 +91,7 @@
             android:paddingEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
@@ -108,7 +108,7 @@
             android:paddingEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
@@ -125,7 +125,7 @@
             android:paddingEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
@@ -142,7 +142,7 @@
             android:src="@drawable/ic_search"
             android:tint="#80FFFFFF"
             android:padding="8dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true"
@@ -172,13 +172,20 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- Animated Background (subtle gradient) -->
+        <!-- Animated Backgrounds (subtle gradients with variation) -->
         <View
-            android:id="@+id/animated_background"
+            android:id="@+id/animated_background_1"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:background="@drawable/home_gradient_background"
+            android:background="@drawable/home_gradient_background_1"
             android:alpha="0.3" />
+
+        <View
+            android:id="@+id/animated_background_2"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:background="@drawable/home_gradient_background_2"
+            android:alpha="0" />
 
         <!-- Welcome Section -->
         <LinearLayout

@@ -118,6 +118,10 @@ class LoginActivity : BaseActivity() {
                         val savedUsername = PreferenceManager.getXtreamUsername(this@LoginActivity)
                         if (savedUsername == username) {
                             android.util.Log.d("LoginActivity", "Credentials saved successfully - navigating to main")
+                            
+                            // Play login success sound
+                            com.primex.iptv.utils.SoundManager.playLoginSound()
+                            
                             kotlinx.coroutines.delay(500)
                             navigateToMain()
                         } else {

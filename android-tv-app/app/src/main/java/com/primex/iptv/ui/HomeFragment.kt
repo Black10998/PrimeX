@@ -37,7 +37,9 @@ class HomeFragment : Fragment() {
     private lateinit var welcomeMessage: TextView
     private lateinit var welcomeSubtitle: TextView
     private lateinit var socialMessage: TextView
-    private lateinit var animatedBackground: View
+    private lateinit var animatedBackground1: View
+    private lateinit var animatedBackground2: View
+    private var currentBackground = 1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,7 +77,8 @@ class HomeFragment : Fragment() {
         welcomeMessage = view.findViewById(R.id.welcome_message)
         welcomeSubtitle = view.findViewById(R.id.welcome_subtitle)
         socialMessage = view.findViewById(R.id.social_message)
-        animatedBackground = view.findViewById(R.id.animated_background)
+        animatedBackground1 = view.findViewById(R.id.animated_background_1)
+        animatedBackground2 = view.findViewById(R.id.animated_background_2)
     }
 
     private fun animateLogo() {
@@ -99,6 +102,18 @@ class HomeFragment : Fragment() {
         
         // Add interactive animation on click/focus
         setupLogoInteraction()
+        
+        // Start continuous subtle rotation
+        startLogoRotation()
+    }
+
+    private fun startLogoRotation() {
+        // Subtle continuous rotation (very slow)
+        val rotation = ObjectAnimator.ofFloat(brandLogo, "rotation", 0f, 360f)
+        rotation.duration = 60000 // 60 seconds for one full rotation
+        rotation.repeatCount = ObjectAnimator.INFINITE
+        rotation.interpolator = android.view.animation.LinearInterpolator()
+        rotation.start()
     }
 
     private fun setupLogoInteraction() {
@@ -186,19 +201,49 @@ class HomeFragment : Fragment() {
     }
 
     private fun animateBackground() {
-        // Subtle continuous animation for background
-        val animator = ObjectAnimator.ofFloat(animatedBackground, "alpha", 0.2f, 0.4f)
-        animator.duration = 3000
-        animator.repeatCount = ObjectAnimator.INFINITE
-        animator.repeatMode = ObjectAnimator.REVERSE
-        animator.interpolator = DecelerateInterpolator()
-        animator.start()
+        // Subtle continuous animation for background 1
+        val animator1 = ObjectAnimator.ofFloat(animatedBackground1, "alpha", 0.2f, 0.4f)
+        animator1.duration = 3000
+        animator1.repeatCount = ObjectAnimator.INFINITE
+        animator1.repeatMode = ObjectAnimator.REVERSE
+        animator1.interpolator = DecelerateInterpolator()
+        animator1.start()
+    }
+
+    private fun transitionBackground() {
+        // Smooth transition between backgrounds
+        if (currentBackground == 1) {
+            animatedBackground2.animate()
+                .alpha(0.3f)
+                .setDuration(1000)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+            animatedBackground1.animate()
+                .alpha(0f)
+                .setDuration(1000)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+            currentBackground = 2
+        } else {
+            animatedBackground1.animate()
+                .alpha(0.3f)
+                .setDuration(1000)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+            animatedBackground2.animate()
+                .alpha(0f)
+                .setDuration(1000)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+            currentBackground = 1
+        }
     }
 
     private fun setupNavigation() {
         // Setup click and focus listeners
         navHome.setOnClickListener {
             selectNav(navHome)
+            transitionBackground()
             loadHomeContent()
         }
         navHome.setOnFocusChangeListener { _, hasFocus ->
@@ -207,6 +252,7 @@ class HomeFragment : Fragment() {
         
         navLiveTV.setOnClickListener {
             selectNav(navLiveTV)
+            transitionBackground()
             loadLiveTVContent()
         }
         navLiveTV.setOnFocusChangeListener { _, hasFocus ->
