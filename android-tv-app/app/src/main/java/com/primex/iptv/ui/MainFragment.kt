@@ -299,6 +299,10 @@ class MainFragment : BrowseSupportFragment() {
         
         rowsAdapter.add(ListRow(settingsHeader, settingsAdapter))
 
+        // Premium Features Section
+        addPremiumSections(rowsAdapter, rowId)
+        rowId += 10 // Reserve IDs for premium sections
+
         // Section Header: Live TV
         val liveTvSection = HeaderItem(rowId++, "📺 LIVE TV")
         val emptyLiveTvAdapter = ArrayObjectAdapter()
@@ -393,6 +397,58 @@ class MainFragment : BrowseSupportFragment() {
         adapter = rowsAdapter
     }
 
+    private fun addPremiumSections(rowsAdapter: ArrayObjectAdapter, startRowId: Long) {
+        var rowId = startRowId
+        
+        // Continue Watching
+        if (movies.isNotEmpty() || series.isNotEmpty()) {
+            val continueHeader = HeaderItem(rowId++, "Continue Watching")
+            val continueAdapter = ArrayObjectAdapter(MovieCardPresenter())
+            
+            // Add first few items as "continue watching" (placeholder logic)
+            movies.take(5).forEach { continueAdapter.add(it) }
+            
+            if (continueAdapter.size() > 0) {
+                rowsAdapter.add(ListRow(continueHeader, continueAdapter))
+            }
+        }
+        
+        // Trending Now
+        if (movies.isNotEmpty()) {
+            val trendingHeader = HeaderItem(rowId++, "Trending Now")
+            val trendingAdapter = ArrayObjectAdapter(MovieCardPresenter())
+            
+            // Add movies with highest ratings as trending (placeholder logic)
+            movies.sortedByDescending { it.rating ?: 0f }
+                .take(10)
+                .forEach { trendingAdapter.add(it) }
+            
+            if (trendingAdapter.size() > 0) {
+                rowsAdapter.add(ListRow(trendingHeader, trendingAdapter))
+            }
+        }
+        
+        // My List / Favorites
+        val favoritesHeader = HeaderItem(rowId++, "My List")
+        val favoritesAdapter = ArrayObjectAdapter(SettingsCardPresenter())
+        
+        favoritesAdapter.add(com.primex.iptv.models.SettingsItem(
+            id = "favorites",
+            title = "Favorites",
+            description = "Your saved content",
+            icon = R.drawable.ic_favorites
+        ))
+        
+        favoritesAdapter.add(com.primex.iptv.models.SettingsItem(
+            id = "history",
+            title = "Watch History",
+            description = "Recently watched",
+            icon = R.drawable.ic_history
+        ))
+        
+        rowsAdapter.add(ListRow(favoritesHeader, favoritesAdapter))
+    }
+
     private fun setupEventListeners() {
         onItemViewClickedListener = OnItemViewClickedListener { _, item, _, _ ->
             when (item) {
@@ -445,6 +501,8 @@ class MainFragment : BrowseSupportFragment() {
                 loadContent()
             }
             "logout" -> performLogout()
+            "favorites" -> showFavorites()
+            "history" -> showHistory()
         }
     }
     
@@ -456,6 +514,22 @@ class MainFragment : BrowseSupportFragment() {
     private fun showSettings() {
         val intent = Intent(requireContext(), SettingsActivity::class.java)
         startActivity(intent)
+    }
+    
+    private fun showFavorites() {
+        android.widget.Toast.makeText(
+            requireContext(),
+            "Favorites feature coming soon",
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
+    }
+    
+    private fun showHistory() {
+        android.widget.Toast.makeText(
+            requireContext(),
+            "Watch history feature coming soon",
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
     }
     
     private fun performLogout() {
