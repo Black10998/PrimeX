@@ -13,7 +13,7 @@ class MovieCardPresenter : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_content, parent, false)
+            .inflate(R.layout.card_content_premium, parent, false)
         return ViewHolder(view)
     }
 
@@ -23,8 +23,12 @@ class MovieCardPresenter : Presenter() {
         
         val imageView = cardView.findViewById<ImageView>(R.id.card_image)
         val titleView = cardView.findViewById<TextView>(R.id.card_title)
-        val subtitleView = cardView.findViewById<TextView>(R.id.card_subtitle)
         val qualityBadge = cardView.findViewById<TextView>(R.id.card_quality_badge)
+        val ratingContainer = cardView.findViewById<android.view.View>(R.id.card_rating_container)
+        val ratingText = cardView.findViewById<TextView>(R.id.card_rating)
+        val yearText = cardView.findViewById<TextView>(R.id.card_year)
+        val genreText = cardView.findViewById<TextView>(R.id.card_genre)
+        val separator = cardView.findViewById<android.view.View>(R.id.card_separator1)
 
         titleView.text = movie.title
         
@@ -36,18 +40,31 @@ class MovieCardPresenter : Presenter() {
             qualityBadge.visibility = android.view.View.GONE
         }
         
-        val contentText = buildString {
-            movie.year?.let { append("$it") }
-            movie.rating?.let { 
-                if (isNotEmpty()) append(" • ")
-                append("★ %.1f".format(it))
-            }
-            movie.duration?.let {
-                if (isNotEmpty()) append(" • ")
-                append("${it}min")
-            }
+        // Show rating if available
+        movie.rating?.let { rating ->
+            ratingText.text = "%.1f".format(rating)
+            ratingContainer.visibility = android.view.View.VISIBLE
+        } ?: run {
+            ratingContainer.visibility = android.view.View.GONE
         }
-        subtitleView.text = contentText.ifEmpty { movie.genre ?: "Movie" }
+        
+        // Show year if available
+        movie.year?.let { year ->
+            yearText.text = year.toString()
+            yearText.visibility = android.view.View.VISIBLE
+            separator.visibility = android.view.View.VISIBLE
+        } ?: run {
+            yearText.visibility = android.view.View.GONE
+            separator.visibility = android.view.View.GONE
+        }
+        
+        // Show genre if available
+        movie.genre?.let { genre ->
+            genreText.text = genre
+            genreText.visibility = android.view.View.VISIBLE
+        } ?: run {
+            genreText.visibility = android.view.View.GONE
+        }
 
         if (!movie.poster_url.isNullOrEmpty()) {
             Glide.with(cardView.context)

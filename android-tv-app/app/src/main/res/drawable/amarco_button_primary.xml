@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pressed State -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/amarco_gold_dark" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+    
+    <!-- Focused State -->
+    <item android:state_focused="true">
+        <layer-list>
+            <!-- Glow -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/amarco_focus_glow" />
+                    <corners android:radius="10dp" />
+                </shape>
+            </item>
+            <!-- Button -->
+            <item android:top="2dp" android:left="2dp" android:right="2dp" android:bottom="2dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/amarco_gold_light" />
+                    <corners android:radius="8dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    
+    <!-- Normal State -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/amarco_gold" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+</selector>

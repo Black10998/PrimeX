@@ -10,7 +10,7 @@ class SettingsCardPresenter : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_settings_item, parent, false)
+            .inflate(R.layout.card_settings_premium, parent, false)
         return ViewHolder(view)
     }
 

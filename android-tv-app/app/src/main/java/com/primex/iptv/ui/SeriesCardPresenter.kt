@@ -13,7 +13,7 @@ class SeriesCardPresenter : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_content, parent, false)
+            .inflate(R.layout.card_content_premium, parent, false)
         return ViewHolder(view)
     }
 

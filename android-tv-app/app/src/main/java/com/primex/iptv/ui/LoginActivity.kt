@@ -31,7 +31,7 @@ class LoginActivity : BaseActivity() {
             return
         }
         
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_login_premium)
 
         initViews()
         setupListeners()

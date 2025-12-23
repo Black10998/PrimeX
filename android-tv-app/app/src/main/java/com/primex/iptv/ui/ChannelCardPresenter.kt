@@ -14,7 +14,7 @@ class ChannelCardPresenter : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_channel_item, parent, false)
+            .inflate(R.layout.card_channel_premium, parent, false)
         return ViewHolder(view)
     }
 

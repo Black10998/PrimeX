@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/amarco_splash_background">
+
+    <!-- Logo and Branding - Top Left -->
+    <LinearLayout
+        android:id="@+id/login_branding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/amarco_logo"
+            android:contentDescription="Amarco Logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="AMARCO"
+            android:textSize="24sp"
+            android:textColor="@color/amarco_gold"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.15" />
+    </LinearLayout>
+
+    <!-- Login Form - Center -->
+    <LinearLayout
+        android:layout_width="480dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:background="@drawable/amarco_login_card"
+        android:padding="48dp">
+
+        <!-- Welcome Text -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Welcome Back"
+            style="@style/Amarco.Text.Headline.Large"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Sign in to continue"
+            style="@style/Amarco.Text.Body.Medium"
+            android:gravity="center" />
+
+        <!-- Username Input -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                style="@style/Amarco.Text.Label.Medium"
+                android:textColor="@color/amarco_gold" />
+
+            <EditText
+                android:id="@+id/username_input"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/amarco_input_field"
+                android:paddingHorizontal="20dp"
+                android:hint="Enter your username"
+                android:textColorHint="@color/amarco_text_tertiary"
+                android:textColor="@color/amarco_text_primary"
+                android:textSize="16sp"
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <!-- Password Input -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password"
+                style="@style/Amarco.Text.Label.Medium"
+                android:textColor="@color/amarco_gold" />
+
+            <EditText
+                android:id="@+id/password_input"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/amarco_input_field"
+                android:paddingHorizontal="20dp"
+                android:hint="Enter your password"
+                android:textColorHint="@color/amarco_text_tertiary"
+                android:textColor="@color/amarco_text_primary"
+                android:textSize="16sp"
+                android:inputType="textPassword"
+                android:imeOptions="actionDone"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <!-- Error Message -->
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/amarco_error"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:visibility="gone" />
+
+        <!-- Sign In Button -->
+        <Button
+            android:id="@+id/sign_in_button"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/amarco_button_primary"
+            android:text="Sign In"
+            android:textColor="@color/amarco_black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.05"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+        <!-- Loading Indicator -->
+        <ProgressBar
+            android:id="@+id/loading_indicator"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:indeterminateTint="@color/amarco_gold"
+            android:visibility="gone"
+            style="?android:attr/progressBarStyle" />
+
+    </LinearLayout>
+
+    <!-- Footer Info -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:text="Premium IPTV Experience"
+        android:textSize="12sp"
+        android:textColor="@color/amarco_text_tertiary"
+        android:fontFamily="sans-serif" />
+
+</RelativeLayout>
