@@ -133,7 +133,8 @@ class SettingsFragment : VerticalGridSupportFragment() {
     }
 
     private fun showPlaybackSettings() {
-        android.widget.Toast.makeText(requireContext(), "Playback Settings", android.widget.Toast.LENGTH_SHORT).show()
+        val intent = Intent(requireContext(), PlaybackSettingsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showParentalControls() {

@@ -106,6 +106,13 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.Leanback" />
 
+        <!-- Playback Settings Activity -->
+        <activity
+            android:name=".ui.PlaybackSettingsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
         <!-- Movie Details Activity -->
         <activity
             android:name=".ui.MovieDetailsActivity"
