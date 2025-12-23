@@ -56,13 +56,13 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun setupUI() {
-        // Set Amarco branding
-        title = "AMARCO"
+        // Set Amarco branding with elegant styling
+        title = "Amarco"
         headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true
         
-        // Use Amarco gold for brand color
-        brandColor = ContextCompat.getColor(requireContext(), R.color.amarco_gold)
+        // Use subtle gold accent
+        brandColor = ContextCompat.getColor(requireContext(), R.color.amarco_gold_dark)
         searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.amarco_gold)
         
         // Set badge drawable

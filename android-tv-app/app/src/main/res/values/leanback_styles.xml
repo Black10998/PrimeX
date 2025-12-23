@@ -59,7 +59,11 @@
         <item name="android:letterSpacing">0.1</item>
     </style>
     
-    <!-- Search Orb Styling - Removed invalid attributes -->
+    <!-- Search Orb Styling -->
+    <style name="Amarco.SearchOrb">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+    </style>
     
     <!-- Playback Controls - Removed invalid parent -->
     
