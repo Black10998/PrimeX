@@ -81,6 +81,54 @@ class HomeFragment : Fragment() {
         fadeIn.start()
         scaleX.start()
         scaleY.start()
+        
+        // Add interactive animation on click/focus
+        setupLogoInteraction()
+    }
+
+    private fun setupLogoInteraction() {
+        brandLogo.isFocusable = true
+        brandLogo.isClickable = true
+        
+        // Subtle pulse animation on click
+        brandLogo.setOnClickListener {
+            animateLogoPulse()
+        }
+        
+        // Subtle glow on focus
+        brandLogo.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                brandLogo.animate()
+                    .scaleX(1.05f)
+                    .scaleY(1.05f)
+                    .alpha(1.0f)
+                    .setDuration(200)
+                    .start()
+            } else {
+                brandLogo.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .alpha(1.0f)
+                    .setDuration(200)
+                    .start()
+            }
+        }
+    }
+
+    private fun animateLogoPulse() {
+        // Elegant pulse animation
+        brandLogo.animate()
+            .scaleX(1.1f)
+            .scaleY(1.1f)
+            .setDuration(150)
+            .withEndAction {
+                brandLogo.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .setDuration(150)
+                    .start()
+            }
+            .start()
     }
 
     private fun setupNavigation() {
@@ -181,8 +229,82 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadHomeContent() {
-        // TODO: Load home content rows
-        android.widget.Toast.makeText(requireContext(), "Home", android.widget.Toast.LENGTH_SHORT).show()
+        val username = PreferenceManager.getXtreamUsername(requireContext())
+        val password = PreferenceManager.getXtreamPassword(requireContext())
+
+        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                // Load live streams for home sections
+                val response = ApiClient.xtreamApiService.getLiveStreams(username, password)
+                if (response.isSuccessful && response.body() != null) {
+                    val streams = response.body()!!
+                    
+                    val allChannels = streams.map { stream ->
+                        Channel(
+                            id = stream.streamId?.toString() ?: "0",
+                            name = stream.name ?: "Unknown Channel",
+                            logo_url = stream.streamIcon,
+                            stream_url = buildStreamUrl(username, password, stream.streamId?.toString() ?: "0"),
+                            category = stream.categoryId
+                        )
+                    }
+                    
+                    // Create premium home sections
+                    val rows = mutableListOf<ContentRow>()
+                    
+                    // Continue Watching (placeholder - would come from watch history)
+                    if (allChannels.isNotEmpty()) {
+                        rows.add(ContentRow(
+                            title = "Continue Watching",
+                            channels = allChannels.take(8)
+                        ))
+                    }
+                    
+                    // Featured / Recommended
+                    if (allChannels.size > 8) {
+                        rows.add(ContentRow(
+                            title = "Featured Channels",
+                            channels = allChannels.shuffled().take(10)
+                        ))
+                    }
+                    
+                    // Live TV Preview
+                    if (allChannels.size > 18) {
+                        rows.add(ContentRow(
+                            title = "Live TV",
+                            channels = allChannels.drop(8).take(10)
+                        ))
+                    }
+                    
+                    // Favorites (placeholder - would come from user favorites)
+                    if (allChannels.size > 28) {
+                        rows.add(ContentRow(
+                            title = "Favorites",
+                            channels = allChannels.drop(18).take(8)
+                        ))
+                    }
+                    
+                    // Recently Added
+                    if (allChannels.size > 36) {
+                        rows.add(ContentRow(
+                            title = "Recently Added",
+                            channels = allChannels.takeLast(10)
+                        ))
+                    }
+                    
+                    // Update RecyclerView
+                    contentRecyclerView.adapter = ContentRowAdapter(rows) { channel ->
+                        playChannel(channel)
+                    }
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("HomeFragment", "Error loading home content", e)
+            }
+        }
     }
 
     private fun loadLiveTVContent() {
