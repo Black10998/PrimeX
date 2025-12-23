@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+    
+    <!-- Outer Circle - Gold Ring -->
+    <path
+        android:pathData="M80,20 A60,60 0 1,1 80,140 A60,60 0 1,1 80,20 Z"
+        android:strokeWidth="4"
+        android:strokeColor="@color/amarco_gold"
+        android:fillColor="@android:color/transparent" />
+    
+    <!-- Inner Circle - Subtle -->
+    <path
+        android:pathData="M80,30 A50,50 0 1,1 80,130 A50,50 0 1,1 80,30 Z"
+        android:strokeWidth="1"
+        android:strokeColor="@color/amarco_gold_light"
+        android:fillColor="@android:color/transparent" />
+    
+    <!-- Letter A - Stylized -->
+    <path
+        android:pathData="M80,50 L60,110 L70,110 L75,95 L85,95 L90,110 L100,110 L80,50 Z M77,87 L80,75 L83,87 Z"
+        android:fillColor="@color/amarco_gold" />
+    
+    <!-- Accent Lines - Top -->
+    <path
+        android:pathData="M70,45 L90,45"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold_light"
+        android:strokeLineCap="round" />
+    
+    <!-- Accent Lines - Bottom -->
+    <path
+        android:pathData="M70,115 L90,115"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold_light"
+        android:strokeLineCap="round" />
+    
+    <!-- Corner Accents - Top Left -->
+    <path
+        android:pathData="M35,35 L45,35 L45,45"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold"
+        android:fillColor="@android:color/transparent"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    
+    <!-- Corner Accents - Top Right -->
+    <path
+        android:pathData="M125,35 L115,35 L115,45"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold"
+        android:fillColor="@android:color/transparent"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    
+    <!-- Corner Accents - Bottom Left -->
+    <path
+        android:pathData="M35,125 L45,125 L45,115"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold"
+        android:fillColor="@android:color/transparent"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    
+    <!-- Corner Accents - Bottom Right -->
+    <path
+        android:pathData="M125,125 L115,125 L115,115"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold"
+        android:fillColor="@android:color/transparent"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

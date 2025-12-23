@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/amarco_splash_background">
+
+    <!-- Center Logo and Brand -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Logo Container with Glow -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            
+            <!-- Glow effect -->
+            <View
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:background="@drawable/amarco_logo_glow" />
+            
+            <!-- Logo -->
+            <ImageView
+                android:id="@+id/splash_logo"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:src="@drawable/amarco_logo"
+                android:contentDescription="Amarco Logo"
+                android:scaleType="fitCenter" />
+        </FrameLayout>
+
+        <!-- App Name -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="AMARCO"
+            android:textSize="48sp"
+            android:textColor="@color/amarco_gold"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.15" />
+
+        <!-- Tagline -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Premium IPTV Experience"
+            android:textSize="16sp"
+            android:textColor="@color/amarco_text_secondary"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.05" />
+
+        <!-- Loading Indicator -->
+        <ProgressBar
+            android:id="@+id/splash_progress"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="48dp"
+            android:indeterminateTint="@color/amarco_gold"
+            style="?android:attr/progressBarStyle" />
+
+    </LinearLayout>
+
+    <!-- Version Info -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="48dp"
+        android:text="Version 1.0.0"
+        android:textSize="12sp"
+        android:textColor="@color/amarco_text_tertiary"
+        android:fontFamily="sans-serif" />
+
+</RelativeLayout>

@@ -1,14 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base Application Theme - Android TV Compatible -->
-    <style name="Theme.PrimeX" parent="Theme.Leanback">
-        <item name="android:windowBackground">@color/background_dark</item>
-        <item name="android:colorPrimary">@color/primary_color</item>
-        <item name="android:colorPrimaryDark">@color/primary_dark</item>
-        <item name="android:colorAccent">@color/accent_color</item>
+    <!-- Amarco Base Theme -->
+    <style name="Theme.Amarco" parent="Theme.Leanback">
+        <item name="android:windowBackground">@color/amarco_black</item>
+        <item name="android:colorPrimary">@color/amarco_gold</item>
+        <item name="android:colorPrimaryDark">@color/amarco_gold_dark</item>
+        <item name="android:colorAccent">@color/amarco_gold</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:statusBarColor">@color/amarco_black</item>
+        <item name="android:navigationBarColor">@color/amarco_black</item>
     </style>
+    
+    <!-- Amarco Splash Theme -->
+    <style name="Theme.Amarco.Splash" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/amarco_splash_background</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/amarco_black</item>
+        <item name="android:navigationBarColor">@color/amarco_black</item>
+    </style>
+    
+    <!-- Amarco Login Theme -->
+    <style name="Theme.Amarco.Login" parent="Theme.Amarco">
+        <item name="android:windowBackground">@drawable/amarco_splash_background</item>
+    </style>
+    
+    <!-- Legacy PrimeX Theme (for compatibility) -->
+    <style name="Theme.PrimeX" parent="Theme.Amarco" />
 
     <!-- Leanback Theme -->
     <style name="Theme.Leanback" parent="Theme.Leanback.Browse">
