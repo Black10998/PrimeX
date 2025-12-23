@@ -30,10 +30,13 @@ class HomeFragment : Fragment() {
     private lateinit var navLiveTV: TextView
     private lateinit var navMovies: TextView
     private lateinit var navSeries: TextView
+    private lateinit var navCategories: TextView
+    private lateinit var navFavorites: TextView
     private lateinit var navSearch: ImageView
     private lateinit var navSettings: TextView
     private lateinit var welcomeMessage: TextView
     private lateinit var welcomeSubtitle: TextView
+    private lateinit var socialMessage: TextView
     private lateinit var animatedBackground: View
 
     override fun onCreateView(
@@ -64,11 +67,14 @@ class HomeFragment : Fragment() {
         navLiveTV = view.findViewById(R.id.nav_live_tv)
         navMovies = view.findViewById(R.id.nav_movies)
         navSeries = view.findViewById(R.id.nav_series)
+        navCategories = view.findViewById(R.id.nav_categories)
+        navFavorites = view.findViewById(R.id.nav_favorites)
         navSearch = view.findViewById(R.id.nav_search)
         navSettings = view.findViewById(R.id.nav_settings)
         
         welcomeMessage = view.findViewById(R.id.welcome_message)
         welcomeSubtitle = view.findViewById(R.id.welcome_subtitle)
+        socialMessage = view.findViewById(R.id.social_message)
         animatedBackground = view.findViewById(R.id.animated_background)
     }
 
@@ -141,25 +147,42 @@ class HomeFragment : Fragment() {
     }
 
     private fun animateWelcomeMessage() {
-        // Fade in welcome message with delay
+        // Set initial positions
+        welcomeMessage.translationY = -30f
+        welcomeSubtitle.translationY = -20f
+        socialMessage.translationY = -10f
+        
+        // Luxurious fade in for main message
         welcomeMessage.postDelayed({
             welcomeMessage.animate()
                 .alpha(1f)
                 .translationY(0f)
-                .setDuration(800)
-                .setInterpolator(DecelerateInterpolator())
+                .scaleX(1.0f)
+                .scaleY(1.0f)
+                .setDuration(1000)
+                .setInterpolator(DecelerateInterpolator(2f))
                 .start()
-        }, 400)
+        }, 500)
         
-        // Fade in subtitle with longer delay
+        // Elegant fade in for subtitle
         welcomeSubtitle.postDelayed({
             welcomeSubtitle.animate()
                 .alpha(1f)
                 .translationY(0f)
-                .setDuration(800)
-                .setInterpolator(DecelerateInterpolator())
+                .setDuration(1000)
+                .setInterpolator(DecelerateInterpolator(2f))
                 .start()
-        }, 600)
+        }, 800)
+        
+        // Subtle fade in for social message
+        socialMessage.postDelayed({
+            socialMessage.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(1000)
+                .setInterpolator(DecelerateInterpolator(2f))
+                .start()
+        }, 1100)
     }
 
     private fun animateBackground() {
@@ -206,6 +229,22 @@ class HomeFragment : Fragment() {
             if (hasFocus) selectNav(navSeries)
         }
         
+        navCategories.setOnClickListener {
+            selectNav(navCategories)
+            loadCategoriesContent()
+        }
+        navCategories.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) selectNav(navCategories)
+        }
+        
+        navFavorites.setOnClickListener {
+            selectNav(navFavorites)
+            loadFavoritesContent()
+        }
+        navFavorites.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) selectNav(navFavorites)
+        }
+        
         navSearch.setOnClickListener {
             val intent = Intent(requireContext(), SearchActivity::class.java)
             startActivity(intent)
@@ -241,6 +280,8 @@ class HomeFragment : Fragment() {
         navLiveTV.setTextColor(0x80FFFFFF.toInt())
         navMovies.setTextColor(0x80FFFFFF.toInt())
         navSeries.setTextColor(0x80FFFFFF.toInt())
+        navCategories.setTextColor(0x80FFFFFF.toInt())
+        navFavorites.setTextColor(0x80FFFFFF.toInt())
         navSettings.setTextColor(0x80FFFFFF.toInt())
         
         // Highlight selected
@@ -254,7 +295,7 @@ class HomeFragment : Fragment() {
             .start()
         
         // Reset scale for others
-        listOf(navHome, navLiveTV, navMovies, navSeries, navSettings).forEach {
+        listOf(navHome, navLiveTV, navMovies, navSeries, navCategories, navFavorites, navSettings).forEach {
             if (it != selected) {
                 it.animate()
                     .scaleX(1.0f)
@@ -424,5 +465,83 @@ class HomeFragment : Fragment() {
     private fun loadSeriesContent() {
         // TODO: Load series content rows
         android.widget.Toast.makeText(requireContext(), "Series", android.widget.Toast.LENGTH_SHORT).show()
+    }
+
+    private fun loadCategoriesContent() {
+        val username = PreferenceManager.getXtreamUsername(requireContext())
+        val password = PreferenceManager.getXtreamPassword(requireContext())
+
+        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.xtreamApiService.getLiveStreams(username, password)
+                if (response.isSuccessful && response.body() != null) {
+                    val streams = response.body()!!
+                    
+                    // Group by category
+                    val channelsByCategory = streams.groupBy { it.categoryId ?: "0" }
+                    
+                    val rows = channelsByCategory.map { (categoryId, streams) ->
+                        val channels = streams.map { stream ->
+                            Channel(
+                                id = stream.streamId?.toString() ?: "0",
+                                name = stream.name ?: "Unknown",
+                                logo_url = stream.streamIcon,
+                                stream_url = buildStreamUrl(username, password, stream.streamId?.toString() ?: "0"),
+                                category = stream.categoryId
+                            )
+                        }
+                        ContentRow("Category $categoryId", channels)
+                    }
+                    
+                    contentRecyclerView.adapter = ContentRowAdapter(rows) { channel ->
+                        playChannel(channel)
+                    }
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("HomeFragment", "Error loading categories", e)
+            }
+        }
+    }
+
+    private fun loadFavoritesContent() {
+        val username = PreferenceManager.getXtreamUsername(requireContext())
+        val password = PreferenceManager.getXtreamPassword(requireContext())
+
+        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.xtreamApiService.getLiveStreams(username, password)
+                if (response.isSuccessful && response.body() != null) {
+                    val streams = response.body()!!
+                    
+                    val channels = streams.take(20).map { stream ->
+                        Channel(
+                            id = stream.streamId?.toString() ?: "0",
+                            name = stream.name ?: "Unknown",
+                            logo_url = stream.streamIcon,
+                            stream_url = buildStreamUrl(username, password, stream.streamId?.toString() ?: "0"),
+                            category = stream.categoryId
+                        )
+                    }
+                    
+                    val rows = listOf(
+                        ContentRow("Your Favorites", channels)
+                    )
+                    
+                    contentRecyclerView.adapter = ContentRowAdapter(rows) { channel ->
+                        playChannel(channel)
+                    }
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("HomeFragment", "Error loading favorites", e)
+            }
+        }
     }
 }

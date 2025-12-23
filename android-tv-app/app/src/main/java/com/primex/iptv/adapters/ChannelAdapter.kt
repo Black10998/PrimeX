@@ -34,7 +34,14 @@ class ChannelAdapter(
             }
 
             itemView.setOnClickListener {
+                com.primex.iptv.utils.SoundManager.playClickSound()
                 onChannelClick(channel)
+            }
+            
+            itemView.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    com.primex.iptv.utils.SoundManager.playFocusSound()
+                }
             }
         }
     }
