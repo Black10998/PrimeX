@@ -262,188 +262,68 @@ class MainFragment : BrowseSupportFragment() {
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
         var rowId = 0L
 
-        // Settings/Menu Row
-        val settingsHeader = HeaderItem(rowId++, "Menu")
-        val settingsAdapter = ArrayObjectAdapter(SettingsCardPresenter())
-        
-        settingsAdapter.add(com.primex.iptv.models.SettingsItem(
-            id = "account",
-            title = "Account",
-            description = "View your profile",
-            icon = R.drawable.ic_account
+        // Home
+        val homeHeader = HeaderItem(rowId++, "Home")
+        val homeAdapter = ArrayObjectAdapter(SettingsCardPresenter())
+        homeAdapter.add(com.primex.iptv.models.SettingsItem(
+            id = "home",
+            title = "Home",
+            description = "",
+            icon = R.drawable.ic_home
         ))
-        
+        rowsAdapter.add(ListRow(homeHeader, homeAdapter))
+
+        // Live TV
+        val liveTvHeader = HeaderItem(rowId++, "Live TV")
+        val liveTvAdapter = ArrayObjectAdapter(SettingsCardPresenter())
+        liveTvAdapter.add(com.primex.iptv.models.SettingsItem(
+            id = "livetv",
+            title = "Live TV",
+            description = "",
+            icon = R.drawable.ic_tv
+        ))
+        rowsAdapter.add(ListRow(liveTvHeader, liveTvAdapter))
+
+        // Movies
+        val moviesHeader = HeaderItem(rowId++, "Movies")
+        val moviesAdapter = ArrayObjectAdapter(SettingsCardPresenter())
+        moviesAdapter.add(com.primex.iptv.models.SettingsItem(
+            id = "movies",
+            title = "Movies",
+            description = "",
+            icon = R.drawable.ic_movie
+        ))
+        rowsAdapter.add(ListRow(moviesHeader, moviesAdapter))
+
+        // Series
+        val seriesHeader = HeaderItem(rowId++, "Series")
+        val seriesAdapter = ArrayObjectAdapter(SettingsCardPresenter())
+        seriesAdapter.add(com.primex.iptv.models.SettingsItem(
+            id = "series",
+            title = "Series",
+            description = "",
+            icon = R.drawable.ic_series
+        ))
+        rowsAdapter.add(ListRow(seriesHeader, seriesAdapter))
+
+        // Settings
+        val settingsHeader = HeaderItem(rowId++, "Settings")
+        val settingsAdapter = ArrayObjectAdapter(SettingsCardPresenter())
         settingsAdapter.add(com.primex.iptv.models.SettingsItem(
             id = "settings",
             title = "Settings",
-            description = "App preferences",
+            description = "",
             icon = R.drawable.ic_settings
         ))
-        
-        settingsAdapter.add(com.primex.iptv.models.SettingsItem(
-            id = "refresh",
-            title = "Refresh",
-            description = "Reload content",
-            icon = R.drawable.ic_refresh
-        ))
-        
-        settingsAdapter.add(com.primex.iptv.models.SettingsItem(
-            id = "logout",
-            title = "Sign Out",
-            description = "Exit your account",
-            icon = R.drawable.ic_logout
-        ))
-        
         rowsAdapter.add(ListRow(settingsHeader, settingsAdapter))
 
-        // Premium Features Section
-        addPremiumSections(rowsAdapter, rowId)
-        rowId += 10 // Reserve IDs for premium sections
-
-        // Section Header: Live TV
-        val liveTvSection = HeaderItem(rowId++, "📺 LIVE TV")
-        val emptyLiveTvAdapter = ArrayObjectAdapter()
-        rowsAdapter.add(ListRow(liveTvSection, emptyLiveTvAdapter))
-
-        // Live TV Channels - Organized by Categories
-        if (channelsByCategory.isNotEmpty()) {
-            // Sort categories by name
-            val sortedCategories = channelsByCategory.keys.sortedBy { categoryId ->
-                liveCategories[categoryId] ?: "Unknown"
-            }
-            
-            sortedCategories.forEach { categoryId ->
-                val categoryChannels = channelsByCategory[categoryId]
-                if (!categoryChannels.isNullOrEmpty()) {
-                    val categoryName = liveCategories[categoryId] ?: "Live TV"
-                    val channelsHeader = HeaderItem(rowId++, categoryName)
-                    val channelsAdapter = ArrayObjectAdapter(ChannelCardPresenter())
-                    // Show ALL channels in category, no limit
-                    categoryChannels.forEach { channelsAdapter.add(it) }
-                    rowsAdapter.add(ListRow(channelsHeader, channelsAdapter))
-                }
-            }
-        } else if (channels.isNotEmpty()) {
-            // Fallback: show all channels in one row if no categories
-            val channelsHeader = HeaderItem(rowId++, getString(R.string.live_tv))
-            val channelsAdapter = ArrayObjectAdapter(ChannelCardPresenter())
-            channels.forEach { channelsAdapter.add(it) }
-            rowsAdapter.add(ListRow(channelsHeader, channelsAdapter))
-        }
-
-        // Section Header: Movies
-        val moviesSection = HeaderItem(rowId++, "🎬 MOVIES")
-        val emptyMoviesAdapter = ArrayObjectAdapter()
-        rowsAdapter.add(ListRow(moviesSection, emptyMoviesAdapter))
-
-        // Movies - Organized by Categories
-        if (moviesByCategory.isNotEmpty()) {
-            val sortedCategories = moviesByCategory.keys.sortedBy { categoryId ->
-                vodCategories[categoryId] ?: "Unknown"
-            }
-            
-            sortedCategories.forEach { categoryId ->
-                val categoryMovies = moviesByCategory[categoryId]
-                if (!categoryMovies.isNullOrEmpty()) {
-                    val categoryName = vodCategories[categoryId] ?: "Movies"
-                    val moviesHeader = HeaderItem(rowId++, categoryName)
-                    val moviesAdapter = ArrayObjectAdapter(MovieCardPresenter())
-                    // Show ALL movies in category
-                    categoryMovies.forEach { moviesAdapter.add(it) }
-                    rowsAdapter.add(ListRow(moviesHeader, moviesAdapter))
-                }
-            }
-        } else if (movies.isNotEmpty()) {
-            // Fallback: show all movies in one row if no categories
-            val moviesHeader = HeaderItem(rowId++, getString(R.string.movies))
-            val moviesAdapter = ArrayObjectAdapter(MovieCardPresenter())
-            movies.forEach { moviesAdapter.add(it) }
-            rowsAdapter.add(ListRow(moviesHeader, moviesAdapter))
-        }
-
-        // Section Header: Series
-        val seriesSection = HeaderItem(rowId++, "📺 SERIES")
-        val emptySeriesAdapter = ArrayObjectAdapter()
-        rowsAdapter.add(ListRow(seriesSection, emptySeriesAdapter))
-
-        // Series - Organized by Categories
-        if (seriesByCategory.isNotEmpty()) {
-            val sortedCategories = seriesByCategory.keys.sortedBy { categoryId ->
-                seriesCategories[categoryId] ?: "Unknown"
-            }
-            
-            sortedCategories.forEach { categoryId ->
-                val categorySeries = seriesByCategory[categoryId]
-                if (!categorySeries.isNullOrEmpty()) {
-                    val categoryName = seriesCategories[categoryId] ?: "Series"
-                    val seriesHeader = HeaderItem(rowId++, categoryName)
-                    val seriesAdapter = ArrayObjectAdapter(SeriesCardPresenter())
-                    // Show ALL series in category
-                    categorySeries.forEach { seriesAdapter.add(it) }
-                    rowsAdapter.add(ListRow(seriesHeader, seriesAdapter))
-                }
-            }
-        } else if (series.isNotEmpty()) {
-            // Fallback: show all series in one row if no categories
-            val seriesHeader = HeaderItem(rowId++, getString(R.string.series))
+        // Content will be loaded when user selects a category from sidebar
             val seriesAdapter = ArrayObjectAdapter(SeriesCardPresenter())
             series.forEach { seriesAdapter.add(it) }
             rowsAdapter.add(ListRow(seriesHeader, seriesAdapter))
         }
 
         adapter = rowsAdapter
-    }
-
-    private fun addPremiumSections(rowsAdapter: ArrayObjectAdapter, startRowId: Long) {
-        var rowId = startRowId
-        
-        // Continue Watching
-        if (movies.isNotEmpty() || series.isNotEmpty()) {
-            val continueHeader = HeaderItem(rowId++, "Continue Watching")
-            val continueAdapter = ArrayObjectAdapter(MovieCardPresenter())
-            
-            // Add first few items as "continue watching" (placeholder logic)
-            movies.take(5).forEach { continueAdapter.add(it) }
-            
-            if (continueAdapter.size() > 0) {
-                rowsAdapter.add(ListRow(continueHeader, continueAdapter))
-            }
-        }
-        
-        // Trending Now
-        if (movies.isNotEmpty()) {
-            val trendingHeader = HeaderItem(rowId++, "Trending Now")
-            val trendingAdapter = ArrayObjectAdapter(MovieCardPresenter())
-            
-            // Add movies with highest ratings as trending (placeholder logic)
-            movies.sortedByDescending { it.rating ?: 0f }
-                .take(10)
-                .forEach { trendingAdapter.add(it) }
-            
-            if (trendingAdapter.size() > 0) {
-                rowsAdapter.add(ListRow(trendingHeader, trendingAdapter))
-            }
-        }
-        
-        // My List / Favorites
-        val favoritesHeader = HeaderItem(rowId++, "My List")
-        val favoritesAdapter = ArrayObjectAdapter(SettingsCardPresenter())
-        
-        favoritesAdapter.add(com.primex.iptv.models.SettingsItem(
-            id = "favorites",
-            title = "Favorites",
-            description = "Your saved content",
-            icon = R.drawable.ic_favorites
-        ))
-        
-        favoritesAdapter.add(com.primex.iptv.models.SettingsItem(
-            id = "history",
-            title = "Watch History",
-            description = "Recently watched",
-            icon = R.drawable.ic_history
-        ))
-        
-        rowsAdapter.add(ListRow(favoritesHeader, favoritesAdapter))
     }
 
     private fun setupEventListeners() {
@@ -491,50 +371,26 @@ class MainFragment : BrowseSupportFragment() {
 
     private fun handleSettingsClick(item: SettingsItem) {
         when (item.id) {
-            "account" -> showAccountInfo()
-            "settings" -> showSettings()
-            "refresh" -> {
-                // Reload content
-                loadContent()
+            "home" -> {
+                // Already on home
+                android.widget.Toast.makeText(requireContext(), "Home", android.widget.Toast.LENGTH_SHORT).show()
             }
-            "logout" -> performLogout()
-            "favorites" -> showFavorites()
-            "history" -> showHistory()
+            "livetv" -> {
+                android.widget.Toast.makeText(requireContext(), "Live TV coming soon", android.widget.Toast.LENGTH_SHORT).show()
+            }
+            "movies" -> {
+                android.widget.Toast.makeText(requireContext(), "Movies coming soon", android.widget.Toast.LENGTH_SHORT).show()
+            }
+            "series" -> {
+                android.widget.Toast.makeText(requireContext(), "Series coming soon", android.widget.Toast.LENGTH_SHORT).show()
+            }
+            "settings" -> showSettings()
         }
-    }
-    
-    private fun showAccountInfo() {
-        val intent = Intent(requireContext(), AccountActivity::class.java)
-        startActivity(intent)
     }
     
     private fun showSettings() {
         val intent = Intent(requireContext(), SettingsActivity::class.java)
         startActivity(intent)
-    }
-    
-    private fun showFavorites() {
-        android.widget.Toast.makeText(
-            requireContext(),
-            "Favorites feature coming soon",
-            android.widget.Toast.LENGTH_SHORT
-        ).show()
-    }
-    
-    private fun showHistory() {
-        android.widget.Toast.makeText(
-            requireContext(),
-            "Watch history feature coming soon",
-            android.widget.Toast.LENGTH_SHORT
-        ).show()
-    }
-    
-    private fun performLogout() {
-        PreferenceManager.logout(requireContext())
-        val intent = Intent(requireContext(), LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        requireActivity().finish()
     }
 
     private fun showDeviceInfo() {
