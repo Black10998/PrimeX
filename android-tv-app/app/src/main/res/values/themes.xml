@@ -34,25 +34,40 @@
     <!-- Legacy PrimeX Theme (for compatibility) -->
     <style name="Theme.PrimeX" parent="Theme.Amarco" />
 
-    <!-- Leanback Theme -->
+    <!-- Leanback Theme - Amarco Dark Premium -->
     <style name="Theme.Leanback" parent="Theme.Leanback.Browse">
-        <item name="android:windowBackground">@color/background_dark</item>
-        <item name="android:colorPrimary">@color/primary_color</item>
-        <item name="android:colorAccent">@color/accent_color</item>
+        <item name="android:windowBackground">@color/amarco_black</item>
+        <item name="android:colorPrimary">@color/amarco_gold</item>
+        <item name="android:colorAccent">@color/amarco_gold</item>
         <item name="browseTitleTextStyle">@style/BrowseTitleTextStyle</item>
         <item name="browseTitleViewStyle">@style/BrowseTitleViewStyle</item>
-        <item name="defaultBrandColor">@color/accent_color</item>
-        <item name="defaultSearchColor">@color/accent_color</item>
+        <item name="defaultBrandColor">@color/amarco_gold</item>
+        <item name="defaultSearchColor">@color/amarco_gold</item>
+        
+        <!-- Sidebar/Headers styling -->
+        <item name="browsePaddingStart">0dp</item>
+        <item name="browsePaddingEnd">0dp</item>
+        <item name="browsePaddingTop">0dp</item>
+        <item name="browsePaddingBottom">0dp</item>
+        
+        <!-- Header item styling (sidebar items) -->
+        <item name="browseRowsMarginTop">0dp</item>
+        <item name="browseRowsMarginStart">0dp</item>
     </style>
 
     <style name="BrowseTitleTextStyle" parent="Widget.Leanback.Title.Text">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">32sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/amarco_gold</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.05</item>
     </style>
 
     <style name="BrowseTitleViewStyle" parent="Widget.Leanback.Title">
-        <item name="android:background">@color/background_dark</item>
+        <item name="android:background">@color/amarco_black</item>
+        <item name="android:paddingStart">48dp</item>
+        <item name="android:paddingTop">32dp</item>
+        <item name="android:paddingBottom">16dp</item>
     </style>
 
     <!-- Android TV Theme for Login/Activation -->
