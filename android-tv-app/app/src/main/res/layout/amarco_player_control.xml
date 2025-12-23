@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/amarco_player_overlay">
+
+    <!-- Top Bar - Title and Info -->
+    <LinearLayout
+        android:id="@+id/player_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:background="@drawable/amarco_player_gradient_top"
+        android:padding="32dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/player_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Amarco.Text.Headline.Medium"
+            android:shadowColor="@color/amarco_black"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="4" />
+
+        <!-- Subtitle/Info -->
+        <TextView
+            android:id="@+id/player_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            style="@style/Amarco.Text.Body.Medium"
+            android:shadowColor="@color/amarco_black"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="2" />
+
+    </LinearLayout>
+
+    <!-- Bottom Controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:background="@drawable/amarco_player_gradient_bottom"
+        android:padding="32dp">
+
+        <!-- Progress Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <!-- Current Time -->
+            <TextView
+                android:id="@id/exo_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Amarco.Text.Body.Medium"
+                android:fontFamily="sans-serif-medium"
+                android:shadowColor="@color/amarco_black"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="2" />
+
+            <!-- Progress Bar -->
+            <androidx.media3.ui.DefaultTimeBar
+                android:id="@id/exo_progress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="16dp" />
+
+            <!-- Duration -->
+            <TextView
+                android:id="@id/exo_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Amarco.Text.Body.Medium"
+                android:fontFamily="sans-serif-medium"
+                android:shadowColor="@color/amarco_black"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="2" />
+
+        </LinearLayout>
+
+        <!-- Control Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <!-- Rewind -->
+            <ImageButton
+                android:id="@+id/player_rewind"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/amarco_player_button"
+                android:src="@drawable/ic_rewind"
+                android:tint="@color/amarco_text_primary"
+                android:contentDescription="Rewind"
+                android:focusable="true" />
+
+            <!-- Play/Pause -->
+            <ImageButton
+                android:id="@id/exo_play_pause"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/amarco_player_button_primary"
+                android:src="@drawable/ic_play"
+                android:tint="@color/amarco_black"
+                android:contentDescription="Play/Pause"
+                android:focusable="true" />
+
+            <!-- Forward -->
+            <ImageButton
+                android:id="@+id/player_forward"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/amarco_player_button"
+                android:src="@drawable/ic_forward"
+                android:tint="@color/amarco_text_primary"
+                android:contentDescription="Forward"
+                android:focusable="true" />
+
+            <!-- Spacer -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- Subtitles -->
+            <ImageButton
+                android:id="@+id/player_subtitles"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/amarco_player_button_small"
+                android:src="@drawable/ic_subtitles"
+                android:tint="@color/amarco_text_primary"
+                android:contentDescription="Subtitles"
+                android:focusable="true" />
+
+            <!-- Volume -->
+            <ImageButton
+                android:id="@+id/player_volume"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/amarco_player_button_small"
+                android:src="@drawable/ic_volume"
+                android:tint="@color/amarco_text_primary"
+                android:contentDescription="Volume"
+                android:focusable="true" />
+
+            <!-- Fullscreen -->
+            <ImageButton
+                android:id="@+id/player_fullscreen"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/amarco_player_button_small"
+                android:src="@drawable/ic_fullscreen"
+                android:tint="@color/amarco_text_primary"
+                android:contentDescription="Fullscreen"
+                android:focusable="true" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Buffering Indicator -->
+    <ProgressBar
+        android:id="@id/exo_buffering"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="@color/amarco_gold"
+        style="?android:attr/progressBarStyle" />
+
+</RelativeLayout>

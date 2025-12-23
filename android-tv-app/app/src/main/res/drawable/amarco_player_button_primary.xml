@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Focused State -->
+    <item android:state_focused="true">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/amarco_focus_glow" />
+                </shape>
+            </item>
+            <item android:top="3dp" android:left="3dp" android:right="3dp" android:bottom="3dp">
+                <shape android:shape="oval">
+                    <solid android:color="@color/amarco_gold_light" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    
+    <!-- Normal State -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/amarco_gold" />
+        </shape>
+    </item>
+</selector>

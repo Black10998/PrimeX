@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         app:show_buffering="when_playing"
         app:use_controller="true"
-        app:controller_layout_id="@layout/custom_player_control"
+        app:controller_layout_id="@layout/amarco_player_control"
         app:surface_type="surface_view" />
 
 </FrameLayout>

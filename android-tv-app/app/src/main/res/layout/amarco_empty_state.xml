@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="48dp"
+    android:background="@color/amarco_black">
+
+    <!-- Icon -->
+    <ImageView
+        android:id="@+id/empty_icon"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/ic_tv"
+        android:tint="@color/amarco_text_tertiary"
+        android:alpha="0.5"
+        android:contentDescription="Empty state" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/empty_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="No Content Available"
+        style="@style/Amarco.Text.Headline.Medium"
+        android:gravity="center" />
+
+    <!-- Message -->
+    <TextView
+        android:id="@+id/empty_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Check back later for new content"
+        style="@style/Amarco.Text.Body.Large"
+        android:gravity="center"
+        android:maxWidth="600dp" />
+
+    <!-- Action Button -->
+    <Button
+        android:id="@+id/empty_action"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_marginTop="32dp"
+        android:paddingHorizontal="48dp"
+        android:background="@drawable/amarco_button_primary"
+        android:text="Refresh"
+        android:textColor="@color/amarco_black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:focusable="true"
+        android:visibility="gone" />
+
+</LinearLayout>
