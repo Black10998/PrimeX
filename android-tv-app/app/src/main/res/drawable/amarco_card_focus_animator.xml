@@ -3,29 +3,45 @@
     <item android:state_focused="true">
         <set>
             <objectAnimator
-                android:duration="150"
+                android:duration="200"
                 android:propertyName="scaleX"
                 android:valueTo="1.08"
-                android:valueType="floatType" />
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
             <objectAnimator
-                android:duration="150"
+                android:duration="200"
                 android:propertyName="scaleY"
                 android:valueTo="1.08"
-                android:valueType="floatType" />
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
+            <objectAnimator
+                android:duration="200"
+                android:propertyName="translationZ"
+                android:valueTo="8dp"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
         </set>
     </item>
     <item>
         <set>
             <objectAnimator
-                android:duration="150"
+                android:duration="200"
                 android:propertyName="scaleX"
                 android:valueTo="1.0"
-                android:valueType="floatType" />
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
             <objectAnimator
-                android:duration="150"
+                android:duration="200"
                 android:propertyName="scaleY"
                 android:valueTo="1.0"
-                android:valueType="floatType" />
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
+            <objectAnimator
+                android:duration="200"
+                android:propertyName="translationZ"
+                android:valueTo="0dp"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in" />
         </set>
     </item>
 </selector>
