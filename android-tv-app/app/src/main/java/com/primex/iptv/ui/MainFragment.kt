@@ -55,17 +55,24 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun setupUI() {
-        title = getString(R.string.app_name)
+        // Set Amarco branding
+        title = "AMARCO"
         headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true
-        brandColor = ContextCompat.getColor(requireContext(), R.color.accent_color)
-        searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.accent_color)
+        
+        // Use Amarco gold for brand color
+        brandColor = ContextCompat.getColor(requireContext(), R.color.amarco_gold)
+        searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.amarco_gold)
+        
+        // Set badge drawable (optional - can be logo)
+        badgeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.amarco_logo)
     }
 
     private fun setupBackgroundManager() {
         backgroundManager = BackgroundManager.getInstance(requireActivity())
         backgroundManager.attach(requireActivity().window)
-        backgroundManager.color = Color.parseColor("#1a1a1a")
+        // Use Amarco dark background
+        backgroundManager.color = Color.parseColor("#0A0A0A")
     }
 
     private fun loadContent() {
@@ -251,6 +258,40 @@ class MainFragment : BrowseSupportFragment() {
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
         var rowId = 0L
 
+        // Settings/Menu Row
+        val settingsHeader = HeaderItem(rowId++, "Menu")
+        val settingsAdapter = ArrayObjectAdapter(SettingsCardPresenter())
+        
+        settingsAdapter.add(com.primex.iptv.models.SettingsItem(
+            id = "account",
+            title = "Account",
+            description = "View your profile",
+            icon = R.drawable.ic_account
+        ))
+        
+        settingsAdapter.add(com.primex.iptv.models.SettingsItem(
+            id = "settings",
+            title = "Settings",
+            description = "App preferences",
+            icon = R.drawable.ic_settings
+        ))
+        
+        settingsAdapter.add(com.primex.iptv.models.SettingsItem(
+            id = "refresh",
+            title = "Refresh",
+            description = "Reload content",
+            icon = R.drawable.ic_refresh
+        ))
+        
+        settingsAdapter.add(com.primex.iptv.models.SettingsItem(
+            id = "logout",
+            title = "Sign Out",
+            description = "Exit your account",
+            icon = R.drawable.ic_logout
+        ))
+        
+        rowsAdapter.add(ListRow(settingsHeader, settingsAdapter))
+
         // Live TV Channels - Organized by Categories
         if (channelsByCategory.isNotEmpty()) {
             // Sort categories by name
@@ -384,16 +425,14 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun handleSettingsClick(item: SettingsItem) {
-        val accountStr = getString(R.string.account)
-        val settingsStr = getString(R.string.settings)
-        val refreshStr = getString(R.string.refresh)
-        val logoutStr = getString(R.string.logout)
-        
-        when (item.title) {
-            accountStr -> showAccountInfo()
-            settingsStr -> showSettings()
-            refreshStr -> loadContent()
-            logoutStr -> performLogout()
+        when (item.id) {
+            "account" -> showAccountInfo()
+            "settings" -> showSettings()
+            "refresh" -> {
+                // Reload content
+                loadContent()
+            }
+            "logout" -> performLogout()
         }
     }
     
