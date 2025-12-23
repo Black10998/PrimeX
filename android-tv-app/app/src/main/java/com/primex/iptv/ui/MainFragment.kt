@@ -70,8 +70,8 @@ class MainFragment : BrowseSupportFragment() {
         
         // Enable search
         setOnSearchClickedListener {
-            // TODO: Implement search activity
-            android.widget.Toast.makeText(requireContext(), "Search coming soon", android.widget.Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
         }
     }
 

@@ -99,6 +99,13 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.Leanback" />
 
+        <!-- Search Activity -->
+        <activity
+            android:name=".ui.SearchActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
         <!-- Movie Details Activity -->
         <activity
             android:name=".ui.MovieDetailsActivity"
