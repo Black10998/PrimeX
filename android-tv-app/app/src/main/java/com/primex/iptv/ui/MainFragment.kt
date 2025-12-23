@@ -389,16 +389,6 @@ class MainFragment : BrowseSupportFragment() {
             rowsAdapter.add(ListRow(seriesHeader, seriesAdapter))
         }
 
-        // Settings Row - Always visible
-        val settingsHeader = HeaderItem(rowId++, getString(R.string.settings))
-        val settingsAdapter = ArrayObjectAdapter(SettingsCardPresenter())
-        
-        settingsAdapter.add(SettingsItem(getString(R.string.account), getString(R.string.account_description)))
-        settingsAdapter.add(SettingsItem(getString(R.string.settings), getString(R.string.settings_description)))
-        settingsAdapter.add(SettingsItem(getString(R.string.refresh), getString(R.string.refresh_description)))
-        settingsAdapter.add(SettingsItem(getString(R.string.logout), getString(R.string.logout_description)))
-        rowsAdapter.add(ListRow(settingsHeader, settingsAdapter))
-
         adapter = rowsAdapter
     }
 
@@ -515,6 +505,3 @@ class MainFragment : BrowseSupportFragment() {
         backgroundTimer?.let { handler.removeCallbacks(it) }
     }
 }
-
-// Settings item data class
-data class SettingsItem(val title: String, val description: String)
