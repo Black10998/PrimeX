@@ -3,20 +3,14 @@
     <item android:state_focused="true" android:state_enabled="true">
         <set>
             <objectAnimator
-                android:duration="180"
+                android:duration="200"
                 android:propertyName="scaleX"
-                android:valueTo="1.02"
+                android:valueTo="1.0"
                 android:valueType="floatType"
                 android:interpolator="@android:interpolator/fast_out_slow_in" />
             <objectAnimator
-                android:duration="180"
+                android:duration="200"
                 android:propertyName="scaleY"
-                android:valueTo="1.02"
-                android:valueType="floatType"
-                android:interpolator="@android:interpolator/fast_out_slow_in" />
-            <objectAnimator
-                android:duration="180"
-                android:propertyName="alpha"
                 android:valueTo="1.0"
                 android:valueType="floatType"
                 android:interpolator="@android:interpolator/fast_out_slow_in" />
@@ -25,21 +19,15 @@
     <item>
         <set>
             <objectAnimator
-                android:duration="180"
+                android:duration="200"
                 android:propertyName="scaleX"
                 android:valueTo="1.0"
                 android:valueType="floatType"
                 android:interpolator="@android:interpolator/fast_out_slow_in" />
             <objectAnimator
-                android:duration="180"
+                android:duration="200"
                 android:propertyName="scaleY"
                 android:valueTo="1.0"
-                android:valueType="floatType"
-                android:interpolator="@android:interpolator/fast_out_slow_in" />
-            <objectAnimator
-                android:duration="180"
-                android:propertyName="alpha"
-                android:valueTo="0.7"
                 android:valueType="floatType"
                 android:interpolator="@android:interpolator/fast_out_slow_in" />
         </set>
