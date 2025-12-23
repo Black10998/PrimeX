@@ -9,56 +9,59 @@
     <!-- Display Styles -->
     <style name="Amarco.Text.Display" />
     <style name="Amarco.Text.Display.Large">
-        <item name="android:textSize">48sp</item>
+        <item name="android:textSize">40sp</item>
         <item name="android:textColor">@color/amarco_text_primary</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:letterSpacing">0.02</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:letterSpacing">0.05</item>
     </style>
     
     <style name="Amarco.Text.Display.Medium">
-        <item name="android:textSize">36sp</item>
+        <item name="android:textSize">32sp</item>
         <item name="android:textColor">@color/amarco_text_primary</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:letterSpacing">0.02</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:letterSpacing">0.05</item>
     </style>
     
     <!-- Headline Styles -->
     <style name="Amarco.Text.Headline" />
     <style name="Amarco.Text.Headline.Large">
-        <item name="android:textSize">32sp</item>
+        <item name="android:textSize">28sp</item>
         <item name="android:textColor">@color/amarco_text_primary</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:letterSpacing">0.01</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:letterSpacing">0.02</item>
     </style>
     
     <style name="Amarco.Text.Headline.Medium">
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">22sp</item>
         <item name="android:textColor">@color/amarco_text_primary</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:letterSpacing">0.01</item>
     </style>
     
     <style name="Amarco.Text.Headline.Small">
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/amarco_text_primary</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-    </style>
-    
-    <!-- Title Styles -->
-    <style name="Amarco.Text.Title" />
-    <style name="Amarco.Text.Title.Large">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/amarco_text_primary</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>
     
-    <style name="Amarco.Text.Title.Medium">
+    <!-- Title Styles -->
+    <style name="Amarco.Text.Title" />
+    <style name="Amarco.Text.Title.Large">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/amarco_text_primary</item>
         <item name="android:fontFamily">sans-serif</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+    
+    <style name="Amarco.Text.Title.Medium">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/amarco_text_primary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
     </style>
     
     <style name="Amarco.Text.Title.Small">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">13sp</item>
         <item name="android:textColor">@color/amarco_text_primary</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>
@@ -119,12 +122,12 @@
     
     <!-- Category Header Style -->
     <style name="Amarco.Text.CategoryHeader">
-        <item name="android:textSize">22sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/amarco_text_primary</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:letterSpacing">0.02</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:letterSpacing">0.03</item>
         <item name="android:paddingStart">48dp</item>
-        <item name="android:paddingTop">24dp</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingBottom">12dp</item>
     </style>
 </resources>
