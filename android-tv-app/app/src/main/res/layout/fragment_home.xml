@@ -17,16 +17,15 @@
         android:background="@color/amarco_black">
 
         <!-- Logo/Brand -->
-        <TextView
-            android:id="@+id/brand_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="AMARCO"
-            android:textColor="@color/amarco_text_primary"
-            android:textSize="24sp"
-            android:fontFamily="sans-serif-light"
-            android:letterSpacing="0.1"
-            android:layout_marginEnd="48dp" />
+        <ImageView
+            android:id="@+id/brand_logo"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:src="@drawable/amarco_logo"
+            android:scaleType="fitStart"
+            android:contentDescription="Amarco Logo"
+            android:layout_marginEnd="48dp"
+            android:alpha="0" />
 
         <!-- Navigation Items -->
         <TextView
@@ -42,6 +41,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:layout_marginEnd="24dp"
+            android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
 
@@ -58,6 +58,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:layout_marginEnd="24dp"
+            android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
 
@@ -74,6 +75,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:layout_marginEnd="24dp"
+            android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
 
@@ -90,6 +92,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:layout_marginEnd="24dp"
+            android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
 
@@ -110,6 +113,7 @@
             android:paddingEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
+            android:background="@drawable/nav_item_background"
             android:focusable="true"
             android:clickable="true" />
 
