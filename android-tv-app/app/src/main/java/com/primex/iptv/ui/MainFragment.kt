@@ -56,8 +56,8 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun setupUI() {
-        // Set Amarco branding with elegant styling
-        title = "Amarco"
+        // Minimal header - no title to save space
+        title = null
         headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true
         
@@ -65,14 +65,11 @@ class MainFragment : BrowseSupportFragment() {
         brandColor = ContextCompat.getColor(requireContext(), R.color.amarco_gold_dark)
         searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.amarco_gold)
         
-        // Set badge drawable
-        badgeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.amarco_logo)
+        // Disable badge to save space
+        badgeDrawable = null
         
-        // Enable search
-        setOnSearchClickedListener {
-            val intent = Intent(requireContext(), SearchActivity::class.java)
-            startActivity(intent)
-        }
+        // Disable search orb for now - will add proper search later
+        // setOnSearchClickedListener { }
     }
 
     private fun setupBackgroundManager() {

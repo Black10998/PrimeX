@@ -37,12 +37,12 @@
     <!-- Leanback Theme - Amarco Dark Premium -->
     <style name="Theme.Leanback" parent="Theme.Leanback.Browse">
         <item name="android:windowBackground">@color/amarco_black</item>
-        <item name="android:colorPrimary">@color/amarco_gold</item>
-        <item name="android:colorAccent">@color/amarco_gold</item>
+        <item name="android:colorPrimary">@color/amarco_gold_dark</item>
+        <item name="android:colorAccent">@color/amarco_gold_dark</item>
         <item name="browseTitleTextStyle">@style/BrowseTitleTextStyle</item>
         <item name="browseTitleViewStyle">@style/BrowseTitleViewStyle</item>
-        <item name="defaultBrandColor">@color/amarco_gold</item>
-        <item name="defaultSearchColor">@color/amarco_gold</item>
+        <item name="defaultBrandColor">@color/amarco_gold_dark</item>
+        <item name="defaultSearchColor">@color/amarco_gold_dark</item>
         
         <!-- Sidebar/Headers styling -->
         <item name="browsePaddingStart">0dp</item>
@@ -53,6 +53,11 @@
         <!-- Header item styling (sidebar items) -->
         <item name="browseRowsMarginTop">0dp</item>
         <item name="browseRowsMarginStart">0dp</item>
+        
+        <!-- Override Leanback header colors to prevent yellow -->
+        <item name="android:colorControlHighlight">@color/amarco_medium_gray</item>
+        <item name="android:colorControlActivated">@color/amarco_gold_dark</item>
+        <item name="android:colorControlNormal">@color/amarco_text_secondary</item>
     </style>
 
     <style name="BrowseTitleTextStyle" parent="Widget.Leanback.Title.Text">

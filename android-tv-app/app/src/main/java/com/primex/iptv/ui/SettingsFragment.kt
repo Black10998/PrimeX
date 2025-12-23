@@ -1,156 +1,67 @@
 package com.primex.iptv.ui
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.leanback.app.GuidedStepSupportFragment
-import androidx.leanback.widget.GuidanceStylist
-import androidx.leanback.widget.GuidedAction
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.widget.ItemBridgeAdapter
+import androidx.leanback.widget.OnItemViewClickedListener
+import androidx.leanback.widget.VerticalGridPresenter
+import androidx.leanback.app.VerticalGridSupportFragment
 import com.primex.iptv.BuildConfig
 import com.primex.iptv.R
-import com.primex.iptv.utils.LocaleHelper
+import com.primex.iptv.models.SettingsItem
 import com.primex.iptv.utils.PreferenceManager
 
-class SettingsFragment : GuidedStepSupportFragment() {
+class SettingsFragment : VerticalGridSupportFragment() {
 
-    companion object {
-        private const val ACTION_LANGUAGE = 1L
-        private const val ACTION_QUALITY = 2L
-        private const val ACTION_AUTOPLAY = 3L
-        private const val ACTION_NOTIFICATIONS = 4L
-        private const val ACTION_CACHE = 5L
-        private const val ACTION_ABOUT = 6L
-        private const val ACTION_LOGOUT = 7L
+    private lateinit var adapter: ArrayObjectAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        setupAdapter()
+        setupEventListeners()
     }
 
-    override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance {
-        return GuidanceStylist.Guidance(
-            "Settings",
-            "Configure your Amarco experience",
-            "",
-            null
-        )
+    private fun setupAdapter() {
+        val gridPresenter = VerticalGridPresenter()
+        gridPresenter.numberOfColumns = 1
+        setGridPresenter(gridPresenter)
+        
+        adapter = ArrayObjectAdapter(SettingsCardPresenter())
+        
+        // Add settings items
+        adapter.add(SettingsItem(
+            id = "about",
+            title = "About",
+            description = "Version ${BuildConfig.VERSION_NAME}",
+            icon = R.drawable.ic_info
+        ))
+        
+        adapter.add(SettingsItem(
+            id = "logout",
+            title = "Sign Out",
+            description = "Exit your account",
+            icon = R.drawable.ic_logout
+        ))
+        
+        setAdapter(adapter)
     }
 
-    override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
-        val context = requireContext()
-        
-        // Language
-        addAction(
-            actions,
-            ACTION_LANGUAGE,
-            "Language",
-            getCurrentLanguageDescription(),
-            GuidedAction.DEFAULT_CHECK_SET_ID
-        )
-        
-        // Video Quality
-        addAction(
-            actions,
-            ACTION_QUALITY,
-            "Video Quality",
-            "Auto (Recommended)",
-            GuidedAction.DEFAULT_CHECK_SET_ID
-        )
-        
-        // Autoplay
-        addAction(
-            actions,
-            ACTION_AUTOPLAY,
-            "Autoplay Next Episode",
-            "Enabled",
-            GuidedAction.DEFAULT_CHECK_SET_ID
-        )
-        
-        // Notifications
-        addAction(
-            actions,
-            ACTION_NOTIFICATIONS,
-            "Notifications",
-            "Enabled",
-            GuidedAction.DEFAULT_CHECK_SET_ID
-        )
-        
-        // Clear Cache
-        addAction(
-            actions,
-            ACTION_CACHE,
-            "Clear Cache",
-            "Free up storage space"
-        )
-        
-        // About
-        addAction(
-            actions,
-            ACTION_ABOUT,
-            "About",
-            "Version ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
-        )
-        
-        // Logout
-        addAction(
-            actions,
-            ACTION_LOGOUT,
-            "Sign Out",
-            "Exit your account"
-        )
-    }
-
-    override fun onGuidedActionClicked(action: GuidedAction) {
-        when (action.id) {
-            ACTION_LANGUAGE -> showLanguageOptions()
-            ACTION_QUALITY -> showQualityOptions()
-            ACTION_AUTOPLAY -> toggleAutoplay()
-            ACTION_NOTIFICATIONS -> toggleNotifications()
-            ACTION_CACHE -> clearCache()
-            ACTION_ABOUT -> showAbout()
-            ACTION_LOGOUT -> logout()
+    private fun setupEventListeners() {
+        onItemViewClickedListener = OnItemViewClickedListener { _, item, _, _ ->
+            if (item is SettingsItem) {
+                when (item.id) {
+                    "about" -> showAbout()
+                    "logout" -> logout()
+                }
+            }
         }
-    }
-
-    private fun addAction(
-        actions: MutableList<GuidedAction>,
-        id: Long,
-        title: String,
-        description: String,
-        checkSetId: Int = GuidedAction.NO_CHECK_SET
-    ) {
-        actions.add(
-            GuidedAction.Builder(requireContext())
-                .id(id)
-                .title(title)
-                .description(description)
-                .checkSetId(checkSetId)
-                .build()
-        )
-    }
-
-    private fun getCurrentLanguageDescription(): String {
-        val currentLang = LocaleHelper.getCurrentLanguage(requireContext())
-        return when (currentLang) {
-            "ar" -> "العربية"
-            else -> "English"
-        }
-    }
-
-    private fun showLanguageOptions() {
-        // TODO: Show language selection dialog
-        android.widget.Toast.makeText(requireContext(), "Language selection", android.widget.Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showQualityOptions() {
-        // TODO: Show quality selection dialog
-        android.widget.Toast.makeText(requireContext(), "Quality selection", android.widget.Toast.LENGTH_SHORT).show()
-    }
-
-    private fun toggleAutoplay() {
-        android.widget.Toast.makeText(requireContext(), "Autoplay toggled", android.widget.Toast.LENGTH_SHORT).show()
-    }
-
-    private fun toggleNotifications() {
-        android.widget.Toast.makeText(requireContext(), "Notifications toggled", android.widget.Toast.LENGTH_SHORT).show()
-    }
-
-    private fun clearCache() {
-        android.widget.Toast.makeText(requireContext(), "Cache cleared", android.widget.Toast.LENGTH_SHORT).show()
     }
 
     private fun showAbout() {
@@ -163,6 +74,9 @@ class SettingsFragment : GuidedStepSupportFragment() {
 
     private fun logout() {
         PreferenceManager.logout(requireContext())
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
         requireActivity().finish()
     }
 }
