@@ -317,12 +317,6 @@ class MainFragment : BrowseSupportFragment() {
         ))
         rowsAdapter.add(ListRow(settingsHeader, settingsAdapter))
 
-        // Content will be loaded when user selects a category from sidebar
-            val seriesAdapter = ArrayObjectAdapter(SeriesCardPresenter())
-            series.forEach { seriesAdapter.add(it) }
-            rowsAdapter.add(ListRow(seriesHeader, seriesAdapter))
-        }
-
         adapter = rowsAdapter
     }
 
