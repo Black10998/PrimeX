@@ -25,6 +25,8 @@
     </style>
     
     <!-- Row Header Styling -->
+    <style name="Amarco.Row" />
+    
     <style name="Amarco.Row.Header">
         <item name="android:textColor">@color/amarco_text_primary</item>
         <item name="android:textSize">22sp</item>
