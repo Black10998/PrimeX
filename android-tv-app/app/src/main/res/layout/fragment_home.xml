@@ -138,12 +138,55 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
+        <!-- Animated Background (subtle gradient) -->
+        <View
+            android:id="@+id/animated_background"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:background="@drawable/home_gradient_background"
+            android:alpha="0.3" />
+
+        <!-- Welcome Section -->
+        <LinearLayout
+            android:id="@+id/welcome_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="48dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="48dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:id="@+id/welcome_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome back"
+                android:textColor="#E0FFFFFF"
+                android:textSize="28sp"
+                android:fontFamily="sans-serif-light"
+                android:letterSpacing="0.05"
+                android:alpha="0" />
+
+            <TextView
+                android:id="@+id/welcome_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discover your favorite content"
+                android:textColor="#80FFFFFF"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif"
+                android:layout_marginTop="8dp"
+                android:alpha="0" />
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/content_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="24dp"
+            android:paddingTop="140dp"
             android:paddingBottom="24dp" />
 
         <!-- Developer Info (subtle, bottom left) -->

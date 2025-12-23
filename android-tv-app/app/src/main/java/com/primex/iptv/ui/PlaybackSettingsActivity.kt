@@ -12,6 +12,7 @@ class PlaybackSettingsActivity : FragmentActivity() {
 
     private lateinit var qualityGroup: RadioGroup
     private lateinit var autoplaySwitch: Switch
+    private lateinit var soundSwitch: Switch
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +25,7 @@ class PlaybackSettingsActivity : FragmentActivity() {
     private fun setupViews() {
         qualityGroup = findViewById(R.id.quality_group)
         autoplaySwitch = findViewById(R.id.autoplay_switch)
+        soundSwitch = findViewById(R.id.sound_switch)
         
         qualityGroup.setOnCheckedChangeListener { _, checkedId ->
             saveQualitySetting(checkedId)
@@ -31,6 +33,10 @@ class PlaybackSettingsActivity : FragmentActivity() {
         
         autoplaySwitch.setOnCheckedChangeListener { _, isChecked ->
             saveAutoplaySetting(isChecked)
+        }
+        
+        soundSwitch.setOnCheckedChangeListener { _, isChecked ->
+            saveSoundSetting(isChecked)
         }
     }
 
@@ -47,6 +53,9 @@ class PlaybackSettingsActivity : FragmentActivity() {
         }
         
         autoplaySwitch.isChecked = prefs.getBoolean("autoplay", true)
+        
+        val appPrefs = getSharedPreferences("app_settings", MODE_PRIVATE)
+        soundSwitch.isChecked = appPrefs.getBoolean("sound_enabled", true)
     }
 
     private fun saveQualitySetting(checkedId: Int) {
@@ -68,5 +77,15 @@ class PlaybackSettingsActivity : FragmentActivity() {
             .edit()
             .putBoolean("autoplay", enabled)
             .apply()
+    }
+
+    private fun saveSoundSetting(enabled: Boolean) {
+        getSharedPreferences("app_settings", MODE_PRIVATE)
+            .edit()
+            .putBoolean("sound_enabled", enabled)
+            .apply()
+        
+        // Update SoundManager
+        com.primex.iptv.utils.SoundManager.setEnabled(enabled, this)
     }
 }

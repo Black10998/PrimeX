@@ -32,6 +32,9 @@ class HomeFragment : Fragment() {
     private lateinit var navSeries: TextView
     private lateinit var navSearch: ImageView
     private lateinit var navSettings: TextView
+    private lateinit var welcomeMessage: TextView
+    private lateinit var welcomeSubtitle: TextView
+    private lateinit var animatedBackground: View
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +49,8 @@ class HomeFragment : Fragment() {
         
         setupViews(view)
         animateLogo()
+        animateWelcomeMessage()
+        animateBackground()
         setupNavigation()
         loadContent()
     }
@@ -61,6 +66,10 @@ class HomeFragment : Fragment() {
         navSeries = view.findViewById(R.id.nav_series)
         navSearch = view.findViewById(R.id.nav_search)
         navSettings = view.findViewById(R.id.nav_settings)
+        
+        welcomeMessage = view.findViewById(R.id.welcome_message)
+        welcomeSubtitle = view.findViewById(R.id.welcome_subtitle)
+        animatedBackground = view.findViewById(R.id.animated_background)
     }
 
     private fun animateLogo() {
@@ -129,6 +138,38 @@ class HomeFragment : Fragment() {
                     .start()
             }
             .start()
+    }
+
+    private fun animateWelcomeMessage() {
+        // Fade in welcome message with delay
+        welcomeMessage.postDelayed({
+            welcomeMessage.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(800)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+        }, 400)
+        
+        // Fade in subtitle with longer delay
+        welcomeSubtitle.postDelayed({
+            welcomeSubtitle.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(800)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+        }, 600)
+    }
+
+    private fun animateBackground() {
+        // Subtle continuous animation for background
+        val animator = ObjectAnimator.ofFloat(animatedBackground, "alpha", 0.2f, 0.4f)
+        animator.duration = 3000
+        animator.repeatCount = ObjectAnimator.INFINITE
+        animator.repeatMode = ObjectAnimator.REVERSE
+        animator.interpolator = DecelerateInterpolator()
+        animator.start()
     }
 
     private fun setupNavigation() {
