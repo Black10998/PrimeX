@@ -12,14 +12,6 @@
         android:focusableInTouchMode="false"
         android:clickable="false" />
 
-    <!-- Dark overlay -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#60000000"
-        android:focusable="false"
-        android:clickable="false" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/section_content_recycler"
         android:layout_width="match_parent"

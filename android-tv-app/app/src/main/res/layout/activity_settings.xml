@@ -12,14 +12,6 @@
         android:focusableInTouchMode="false"
         android:clickable="false" />
 
-    <!-- Dark overlay -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80000000"
-        android:focusable="false"
-        android:clickable="false" />
-
     <!-- Settings Fragment Container -->
     <FrameLayout
         android:id="@+id/settings_fragment"
