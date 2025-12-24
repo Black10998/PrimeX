@@ -17,7 +17,7 @@ import com.primex.iptv.utils.VideoBackgroundHelper
 class SeriesFragment : Fragment() {
 
     private lateinit var contentRecycler: RecyclerView
-    private var videoBackground: VideoView? = null
+    
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,30 +30,12 @@ class SeriesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        videoBackground = view.findViewById(R.id.video_background)
-        videoBackground?.let {
-            VideoBackgroundHelper.setupVideoBackground(it, R.raw.bg_series)
-        }
+        (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_series)
         
         contentRecycler = view.findViewById(R.id.section_content_recycler)
         contentRecycler.layoutManager = LinearLayoutManager(requireContext())
         
         loadSeriesContent()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        VideoBackgroundHelper.pauseVideo(videoBackground)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        VideoBackgroundHelper.resumeVideo(videoBackground)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        VideoBackgroundHelper.releaseVideo(videoBackground)
     }
 
     private fun loadSeriesContent() {

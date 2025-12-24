@@ -39,7 +39,6 @@ class HomeFragment : Fragment() {
     private lateinit var welcomeMessage: TextView
     private lateinit var welcomeSubtitle: TextView
     private lateinit var socialMessage: TextView
-    private var videoBackground: VideoView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,32 +51,14 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Setup video background
-        videoBackground = view.findViewById(R.id.video_background)
-        videoBackground?.let {
-            VideoBackgroundHelper.setupVideoBackground(it, R.raw.bg_home)
-        }
+        // Tell MainActivity to show home video background
+        (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_home)
         
         setupViews(view)
         animateLogo()
         animateWelcomeMessage()
         setupNavigation()
         loadContent()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        VideoBackgroundHelper.pauseVideo(videoBackground)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        VideoBackgroundHelper.resumeVideo(videoBackground)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        VideoBackgroundHelper.releaseVideo(videoBackground)
     }
 
     private fun setupViews(view: View) {
@@ -222,6 +203,7 @@ class HomeFragment : Fragment() {
         // Setup click and focus listeners
         navHome.setOnClickListener {
             selectNav(navHome)
+            (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_home)
             showHomeContent()
         }
         navHome.setOnFocusChangeListener { _, hasFocus ->
@@ -232,6 +214,7 @@ class HomeFragment : Fragment() {
         
         navLiveTV.setOnClickListener {
             selectNav(navLiveTV)
+            (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_live_tv)
             loadLiveTVContent()
         }
         navLiveTV.setOnFocusChangeListener { _, hasFocus ->
@@ -242,6 +225,7 @@ class HomeFragment : Fragment() {
         
         navMovies.setOnClickListener {
             selectNav(navMovies)
+            (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_movies)
             showMoviesFragment()
         }
         navMovies.setOnFocusChangeListener { _, hasFocus ->
@@ -252,6 +236,7 @@ class HomeFragment : Fragment() {
         
         navSeries.setOnClickListener {
             selectNav(navSeries)
+            (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_series)
             showSeriesFragment()
         }
         navSeries.setOnFocusChangeListener { _, hasFocus ->
@@ -262,6 +247,7 @@ class HomeFragment : Fragment() {
         
         navCategories.setOnClickListener {
             selectNav(navCategories)
+            (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_categories)
             showCategoriesFragment()
         }
         navCategories.setOnFocusChangeListener { _, hasFocus ->
@@ -272,6 +258,7 @@ class HomeFragment : Fragment() {
         
         navFavorites.setOnClickListener {
             selectNav(navFavorites)
+            (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_favorites)
             showFavoritesFragment()
         }
         navFavorites.setOnFocusChangeListener { _, hasFocus ->

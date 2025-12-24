@@ -3,10 +3,12 @@ package com.primex.iptv.ui
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.VideoView
 import androidx.lifecycle.lifecycleScope
 import com.primex.iptv.R
 import com.primex.iptv.api.ApiClient
 import com.primex.iptv.utils.PreferenceManager
+import com.primex.iptv.utils.VideoBackgroundHelper
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,13 +26,35 @@ class AccountActivity : BaseActivity() {
     private lateinit var loadingView: View
     private lateinit var contentView: View
     private lateinit var errorView: View
+    private var videoBackground: VideoView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
 
+        // Setup video background
+        videoBackground = findViewById(R.id.video_background)
+        videoBackground?.let {
+            VideoBackgroundHelper.setupVideoBackground(it, R.raw.bg_settings)
+        }
+
         initViews()
         loadUserData()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        VideoBackgroundHelper.pauseVideo(videoBackground)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        VideoBackgroundHelper.resumeVideo(videoBackground)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        VideoBackgroundHelper.releaseVideo(videoBackground)
     }
 
     private fun initViews() {
