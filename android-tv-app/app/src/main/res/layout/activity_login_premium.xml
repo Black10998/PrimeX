@@ -7,13 +7,18 @@
     <VideoView
         android:id="@+id/video_background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:clickable="false" />
 
     <!-- Dark overlay for better text readability -->
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80000000" />
+        android:background="#80000000"
+        android:focusable="false"
+        android:clickable="false" />
 
     <!-- Logo and Branding - Top Left -->
     <LinearLayout
@@ -95,7 +100,11 @@
                 android:textSize="16sp"
                 android:inputType="text"
                 android:imeOptions="actionNext"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:clickable="true"
+                android:nextFocusDown="@id/password_input" />
         </LinearLayout>
 
         <!-- Password Input -->
@@ -125,7 +134,11 @@
                 android:textSize="16sp"
                 android:inputType="textPassword"
                 android:imeOptions="actionDone"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:clickable="true"
+                android:nextFocusDown="@id/sign_in_button" />
         </LinearLayout>
 
         <!-- Error Message -->

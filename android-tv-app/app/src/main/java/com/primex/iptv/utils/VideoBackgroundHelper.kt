@@ -10,13 +10,41 @@ object VideoBackgroundHelper {
 
     fun setupVideoBackground(videoView: VideoView, videoResId: Int) {
         try {
+            // Ensure VideoView doesn't intercept focus or touch events
+            videoView.isFocusable = false
+            videoView.isFocusableInTouchMode = false
+            videoView.isClickable = false
+            
             val uri = Uri.parse("android.resource://${videoView.context.packageName}/$videoResId")
             videoView.setVideoURI(uri)
             
-            // Mute the video
+            // Mute the video and setup fullscreen scaling
             videoView.setOnPreparedListener { mediaPlayer ->
                 mediaPlayer.isLooping = true
                 mediaPlayer.setVolume(0f, 0f)
+                
+                // Scale video to fill screen (fullscreen)
+                val videoWidth = mediaPlayer.videoWidth.toFloat()
+                val videoHeight = mediaPlayer.videoHeight.toFloat()
+                val viewWidth = videoView.width.toFloat()
+                val viewHeight = videoView.height.toFloat()
+                
+                val scaleX = viewWidth / videoWidth
+                val scaleY = viewHeight / videoHeight
+                val scale = Math.max(scaleX, scaleY)
+                
+                val scaledWidth = (videoWidth * scale).toInt()
+                val scaledHeight = (videoHeight * scale).toInt()
+                
+                videoView.layoutParams = videoView.layoutParams.apply {
+                    width = scaledWidth
+                    height = scaledHeight
+                }
+                
+                // Center the video
+                videoView.translationX = (viewWidth - scaledWidth) / 2f
+                videoView.translationY = (viewHeight - scaledHeight) / 2f
+                
                 mediaPlayer.start()
             }
             

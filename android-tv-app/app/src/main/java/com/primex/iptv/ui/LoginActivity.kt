@@ -57,6 +57,9 @@ class LoginActivity : BaseActivity() {
         videoBackground?.let {
             VideoBackgroundHelper.setupVideoBackground(it, R.raw.bg_login)
         }
+        
+        // Request focus on username field for TV remote navigation
+        usernameInput.requestFocus()
     }
 
     private fun setupListeners() {
