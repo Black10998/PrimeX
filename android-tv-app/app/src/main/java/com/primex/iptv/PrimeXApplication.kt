@@ -30,6 +30,14 @@ class PrimeXApplication : Application() {
         
         android.util.Log.d("PrimeXApplication", "Network preferences set: IPv4 preferred")
         
+        // Initialize SoundManager
+        try {
+            com.primex.iptv.utils.SoundManager.initialize(this)
+            android.util.Log.d("PrimeXApplication", "SoundManager initialized")
+        } catch (e: Exception) {
+            android.util.Log.e("PrimeXApplication", "Error initializing SoundManager: ${e.message}", e)
+        }
+        
         // NOW it's safe to access SharedPreferences and apply saved locale
         try {
             LocaleHelper.applyLocale(this)

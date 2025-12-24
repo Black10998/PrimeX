@@ -56,11 +56,48 @@ class MoviesFragment : Fragment() {
     }
 
     private fun createPlaceholderMovies(): List<Channel> {
+        val movieTitles = listOf(
+            "The Dark Knight", "Inception", "Interstellar", "The Matrix", "Pulp Fiction",
+            "The Godfather", "Fight Club", "Forrest Gump", "The Shawshank Redemption", "Gladiator",
+            "The Prestige", "Memento", "The Departed", "Goodfellas", "Casino Royale",
+            "Blade Runner 2049", "Mad Max: Fury Road", "John Wick", "The Revenant", "Dunkirk",
+            "Parasite", "Joker", "1917", "Tenet", "Dune",
+            "No Time to Die", "Top Gun: Maverick", "Avatar", "Titanic", "The Avengers",
+            "Iron Man", "The Dark Knight Rises", "Skyfall", "Spectre", "Mission Impossible",
+            "Fast & Furious", "Transformers", "Jurassic World", "Star Wars", "The Lion King",
+            "Frozen", "Toy Story", "Finding Nemo", "The Incredibles", "Up",
+            "WALL-E", "Ratatouille", "Inside Out", "Coco", "Soul"
+        )
+        
         return (1..50).map { index ->
+            val posterIndex = ((index - 1) % 20) + 1
+            val drawableId = when (posterIndex) {
+                1 -> R.drawable.movie_poster_1
+                2 -> R.drawable.movie_poster_2
+                3 -> R.drawable.movie_poster_3
+                4 -> R.drawable.movie_poster_4
+                5 -> R.drawable.movie_poster_5
+                6 -> R.drawable.movie_poster_6
+                7 -> R.drawable.movie_poster_7
+                8 -> R.drawable.movie_poster_8
+                9 -> R.drawable.movie_poster_9
+                10 -> R.drawable.movie_poster_10
+                11 -> R.drawable.movie_poster_11
+                12 -> R.drawable.movie_poster_12
+                13 -> R.drawable.movie_poster_13
+                14 -> R.drawable.movie_poster_14
+                15 -> R.drawable.movie_poster_15
+                16 -> R.drawable.movie_poster_16
+                17 -> R.drawable.movie_poster_17
+                18 -> R.drawable.movie_poster_18
+                19 -> R.drawable.movie_poster_19
+                else -> R.drawable.movie_poster_20
+            }
+            
             Channel(
                 id = "movie_$index",
-                name = "Movie $index",
-                logo_url = null,
+                name = movieTitles.getOrElse(index - 1) { "Movie $index" },
+                logo_url = "android.resource://com.primex.iptv/$drawableId",
                 stream_url = "",
                 category = "movies"
             )
