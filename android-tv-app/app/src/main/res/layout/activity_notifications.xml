@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/amarco_black"
+    android:padding="48dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notifications"
+            android:textColor="@color/amarco_gold"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manage your notification preferences"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:alpha="0.7"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Content Notifications Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_selector"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Content"
+                android:textColor="@color/amarco_gold"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <CheckBox
+                android:id="@+id/new_content_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="New Content Available"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:buttonTint="@color/amarco_gold"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get notified when new movies or series are added"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.6"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp" />
+
+            <CheckBox
+                android:id="@+id/updates_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="App Updates"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:buttonTint="@color/amarco_gold"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notify about new features and improvements"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.6"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Marketing Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_selector"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Marketing"
+                android:textColor="@color/amarco_gold"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <CheckBox
+                android:id="@+id/promotions_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Promotions & Offers"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:buttonTint="@color/amarco_gold"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Receive special offers and promotional content"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.6"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Account Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_selector"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Account"
+                android:textColor="@color/amarco_gold"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <CheckBox
+                android:id="@+id/account_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Account Activity"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:buttonTint="@color/amarco_gold"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Important updates about your account and subscription"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.6"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

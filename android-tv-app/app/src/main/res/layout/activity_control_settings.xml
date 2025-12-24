@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/amarco_black"
+    android:padding="48dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Control Settings"
+            android:textColor="@color/amarco_gold"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Configure remote control and playback behavior"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:alpha="0.7"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Sound Effects Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_selector"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sound Effects"
+                android:textColor="@color/amarco_gold"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <CheckBox
+                android:id="@+id/sound_enabled_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enable UI Sound Effects"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:buttonTint="@color/amarco_gold"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Play sounds for navigation and interactions"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.6"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Feedback Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_selector"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Feedback"
+                android:textColor="@color/amarco_gold"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <CheckBox
+                android:id="@+id/vibration_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enable Vibration Feedback"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:buttonTint="@color/amarco_gold"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vibrate on button presses (if supported)"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.6"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Playback Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_selector"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Playback"
+                android:textColor="@color/amarco_gold"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <CheckBox
+                android:id="@+id/autoplay_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Auto-play Next Episode"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:buttonTint="@color/amarco_gold"
+                android:padding="8dp"
+                android:layout_marginBottom="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seek Sensitivity"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <SeekBar
+                    android:id="@+id/seek_sensitivity_seekbar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="30"
+                    android:progress="10"
+                    android:progressTint="@color/amarco_gold"
+                    android:thumbTint="@color/amarco_gold" />
+
+                <TextView
+                    android:id="@+id/seek_sensitivity_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10s"
+                    android:textColor="@color/amarco_gold"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="16dp"
+                    android:minWidth="48dp"
+                    android:gravity="end" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time to skip when using seek buttons"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.6"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

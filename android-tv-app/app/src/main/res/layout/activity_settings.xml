@@ -3,4 +3,6 @@
     android:id="@+id/settings_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/amarco_black" />
+    android:background="@color/amarco_black"
+    android:padding="48dp"
+    android:clipToPadding="false" />

@@ -8,7 +8,7 @@ import java.util.*
 object LocaleHelper {
 
     private const val TAG = "LocaleHelper"
-    private const val DEFAULT_LANGUAGE = "en"
+    private const val DEFAULT_LANGUAGE = "ar" // Arabic is default
 
     fun setLocale(context: Context, languageCode: String): Context {
         PreferenceManager.saveLanguage(context, languageCode)

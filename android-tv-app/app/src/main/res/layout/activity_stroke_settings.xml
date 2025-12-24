@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/amarco_black"
+    android:padding="48dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stroke Settings"
+            android:textColor="@color/amarco_gold"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Configure subtitle and text outline appearance"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:alpha="0.7"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Subtitle Stroke Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_selector"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subtitle Stroke"
+                android:textColor="@color/amarco_gold"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <CheckBox
+                android:id="@+id/subtitle_stroke_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enable Subtitle Stroke"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:buttonTint="@color/amarco_gold"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add outline to subtitles for better readability"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.6"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Stroke Width Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_selector"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stroke Width"
+                android:textColor="@color/amarco_gold"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <SeekBar
+                    android:id="@+id/stroke_width_seekbar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="5"
+                    android:progress="2"
+                    android:progressTint="@color/amarco_gold"
+                    android:thumbTint="@color/amarco_gold" />
+
+                <TextView
+                    android:id="@+id/stroke_width_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2px"
+                    android:textColor="@color/amarco_gold"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="16dp"
+                    android:minWidth="48dp"
+                    android:gravity="end" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Adjust the thickness of the stroke outline"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.6"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+        <!-- Stroke Color Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_selector"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stroke Color"
+                android:textColor="@color/amarco_gold"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <RadioGroup
+                android:id="@+id/stroke_color_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/radio_black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Black"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:buttonTint="@color/amarco_gold"
+                    android:padding="8dp" />
+
+                <RadioButton
+                    android:id="@+id/radio_white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="White"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:buttonTint="@color/amarco_gold"
+                    android:padding="8dp" />
+
+                <RadioButton
+                    android:id="@+id/radio_gold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Gold"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:buttonTint="@color/amarco_gold"
+                    android:padding="8dp" />
+
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose the color for subtitle outlines"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.6"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

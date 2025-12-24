@@ -24,6 +24,9 @@ class SettingsFragment : VerticalGridSupportFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
+        // Remove title to prevent overlay issue
+        title = null
+        
         setupAdapter()
         setupEventListeners()
     }
@@ -31,6 +34,7 @@ class SettingsFragment : VerticalGridSupportFragment() {
     private fun setupAdapter() {
         val gridPresenter = VerticalGridPresenter()
         gridPresenter.numberOfColumns = 1
+        gridPresenter.shadowEnabled = false
         setGridPresenter(gridPresenter)
         
         adapter = ArrayObjectAdapter(SettingsCardPresenter())
@@ -43,27 +47,27 @@ class SettingsFragment : VerticalGridSupportFragment() {
             icon = R.drawable.ic_account
         ))
         
-        // Playback Settings
+        // Partner
         adapter.add(SettingsItem(
-            id = "playback",
-            title = "Playback Settings",
-            description = "Video quality and autoplay",
-            icon = R.drawable.ic_play
-        ))
-        
-        // Parental Controls
-        adapter.add(SettingsItem(
-            id = "parental",
-            title = "Parental Controls",
-            description = "Manage content restrictions",
+            id = "partner",
+            title = "Partner",
+            description = "Partner program and referrals",
             icon = R.drawable.ic_info
         ))
         
-        // Language & Subtitles
+        // Control
+        adapter.add(SettingsItem(
+            id = "control",
+            title = "Control",
+            description = "Remote control and device settings",
+            icon = R.drawable.ic_settings
+        ))
+        
+        // Language
         adapter.add(SettingsItem(
             id = "language",
-            title = "Language & Subtitles",
-            description = "Audio and subtitle preferences",
+            title = "Language",
+            description = "Change app language (العربية / English)",
             icon = R.drawable.ic_subtitles
         ))
         
@@ -71,16 +75,16 @@ class SettingsFragment : VerticalGridSupportFragment() {
         adapter.add(SettingsItem(
             id = "notifications",
             title = "Notifications",
-            description = "Manage app notifications",
+            description = "Manage app notifications and alerts",
             icon = R.drawable.ic_info
         ))
         
-        // Storage
+        // Stroke
         adapter.add(SettingsItem(
-            id = "storage",
-            title = "Storage",
-            description = "Clear cache and manage downloads",
-            icon = R.drawable.ic_downloads
+            id = "stroke",
+            title = "Stroke",
+            description = "Display and subtitle stroke settings",
+            icon = R.drawable.ic_subtitles
         ))
         
         // Help & Support
@@ -115,11 +119,11 @@ class SettingsFragment : VerticalGridSupportFragment() {
             if (item is SettingsItem) {
                 when (item.id) {
                     "account" -> showAccount()
-                    "playback" -> showPlaybackSettings()
-                    "parental" -> showParentalControls()
+                    "partner" -> showPartner()
+                    "control" -> showControl()
                     "language" -> showLanguageSettings()
                     "notifications" -> showNotifications()
-                    "storage" -> showStorage()
+                    "stroke" -> showStroke()
                     "help" -> showHelp()
                     "about" -> showAbout()
                     "logout" -> logout()
@@ -133,32 +137,34 @@ class SettingsFragment : VerticalGridSupportFragment() {
         startActivity(intent)
     }
 
-    private fun showPlaybackSettings() {
-        val intent = Intent(requireContext(), PlaybackSettingsActivity::class.java)
+    private fun showPartner() {
+        val intent = Intent(requireContext(), PartnerActivity::class.java)
         startActivity(intent)
     }
 
-    private fun showParentalControls() {
-        showSimpleDialog("Parental Controls", "Set up content restrictions and PIN protection.")
+    private fun showControl() {
+        val intent = Intent(requireContext(), ControlSettingsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showLanguageSettings() {
-        showSimpleDialog("Language & Subtitles", "Configure audio and subtitle preferences.")
+        val intent = Intent(requireContext(), LanguageSettingsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showNotifications() {
-        showSimpleDialog("Notifications", "Manage app notifications and alerts.")
+        val intent = Intent(requireContext(), NotificationsActivity::class.java)
+        startActivity(intent)
     }
 
-    private fun showStorage() {
-        showSimpleDialog("Storage", "Clear cache and manage downloads to free up space.")
+    private fun showStroke() {
+        val intent = Intent(requireContext(), StrokeSettingsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showHelp() {
-        showSimpleDialog(
-            "Help & Support",
-            "Developer: PAX\nSupport: info@paxdes.com\n\nFor assistance, please contact support."
-        )
+        val intent = Intent(requireContext(), HelpSupportActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showAbout() {
