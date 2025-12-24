@@ -34,11 +34,25 @@ class SettingsFragment : VerticalGridSupportFragment() {
         // Remove title area completely to prevent overlay
         title = ""
         
-        // Hide the title view if it exists
-        view.findViewById<View>(androidx.leanback.R.id.browse_title_group)?.visibility = View.GONE
+        // Aggressively hide all potential overlay elements
+        view.findViewById<View>(androidx.leanback.R.id.browse_title_group)?.apply {
+            visibility = View.GONE
+            layoutParams?.height = 0
+        }
         
-        // Remove any background from the grid view
+        view.findViewById<View>(androidx.leanback.R.id.browse_headers)?.apply {
+            visibility = View.GONE
+            layoutParams?.height = 0
+        }
+        
+        view.findViewById<View>(androidx.leanback.R.id.browse_headers_dock)?.apply {
+            visibility = View.GONE
+            layoutParams?.height = 0
+        }
+        
+        view.findViewById<View>(androidx.leanback.R.id.browse_frame)?.background = null
         view.findViewById<View>(androidx.leanback.R.id.browse_grid)?.background = null
+        view.findViewById<View>(androidx.leanback.R.id.browse_container_dock)?.background = null
         
         // Remove background from the entire fragment view
         view.background = null

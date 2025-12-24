@@ -36,12 +36,21 @@ class MainActivity : FragmentActivity() {
     }
 
     fun changeVideoBackground(videoResource: Int) {
+        android.util.Log.d("MainActivity", "Changing video background to: $videoResource (current: $currentVideoResource)")
+        
         if (currentVideoResource != videoResource) {
             currentVideoResource = videoResource
-            mainVideoBackground?.let {
-                VideoBackgroundHelper.releaseVideo(it)
-                VideoBackgroundHelper.setupVideoBackground(it, videoResource)
+            mainVideoBackground?.let { videoView ->
+                // Stop current video immediately
+                videoView.stopPlayback()
+                
+                // Setup new video
+                VideoBackgroundHelper.setupVideoBackground(videoView, videoResource)
+                
+                android.util.Log.d("MainActivity", "Video background changed successfully")
             }
+        } else {
+            android.util.Log.d("MainActivity", "Video already showing, skipping change")
         }
     }
 
