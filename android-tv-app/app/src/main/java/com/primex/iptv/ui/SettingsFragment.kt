@@ -24,11 +24,18 @@ class SettingsFragment : VerticalGridSupportFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Remove title to prevent overlay issue
-        title = null
-        
         setupAdapter()
         setupEventListeners()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        // Remove title area completely to prevent overlay
+        title = ""
+        
+        // Hide the title view if it exists
+        view.findViewById<View>(androidx.leanback.R.id.browse_title_group)?.visibility = View.GONE
     }
 
     private fun setupAdapter() {

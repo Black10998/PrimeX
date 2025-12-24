@@ -27,6 +27,9 @@ class SeriesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
+        // Set cinematic space background
+        view.setBackgroundResource(R.drawable.bg_space_series)
+        
         contentRecycler = view.findViewById(R.id.section_content_recycler)
         contentRecycler.layoutManager = LinearLayoutManager(requireContext())
         

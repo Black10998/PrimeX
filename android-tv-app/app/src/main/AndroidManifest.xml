@@ -120,6 +120,48 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.Leanback" />
 
+        <!-- Language Settings Activity -->
+        <activity
+            android:name=".ui.LanguageSettingsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
+        <!-- Partner Activity -->
+        <activity
+            android:name=".ui.PartnerActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
+        <!-- Control Settings Activity -->
+        <activity
+            android:name=".ui.ControlSettingsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
+        <!-- Notifications Activity -->
+        <activity
+            android:name=".ui.NotificationsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
+        <!-- Stroke Settings Activity -->
+        <activity
+            android:name=".ui.StrokeSettingsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
+        <!-- Help Support Activity -->
+        <activity
+            android:name=".ui.HelpSupportActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
     </application>
 
 </manifest>
