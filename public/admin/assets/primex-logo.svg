@@ -31,13 +31,9 @@
     <circle cx="15" cy="6" r="1.5" fill="url(#goldGradientLight)"/>
   </g>
   
-  <!-- Text: PrimeX IPTV -->
-  <text x="40" y="25" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" font-size="18" font-weight="700" fill="url(#goldGradient)">
-    PrimeX
-  </text>
-  
-  <text x="105" y="25" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" font-size="14" font-weight="500" fill="url(#goldGradient)" opacity="0.8">
-    IPTV
+  <!-- Text: PAX -->
+  <text x="40" y="25" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" font-size="22" font-weight="700" fill="url(#goldGradient)" letter-spacing="2">
+    PAX
   </text>
   
   <!-- Tagline -->
