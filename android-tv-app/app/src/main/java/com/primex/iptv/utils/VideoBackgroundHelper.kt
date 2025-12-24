@@ -5,12 +5,17 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.view.View
 import android.widget.VideoView
+import com.primex.iptv.views.AdaptiveVideoView
 
 object VideoBackgroundHelper {
 
+    /**
+     * Universal adaptive video setup for all screens.
+     * Works like Netflix/Prime Video - automatically adapts to any TV size, resolution, and aspect ratio.
+     */
     fun setupVideoBackground(videoView: VideoView, videoResId: Int) {
         try {
-            android.util.Log.d("VideoBackground", "Setting up video: $videoResId")
+            android.util.Log.d("VideoBackground", "Setting up adaptive video: $videoResId")
             
             // Ensure VideoView doesn't intercept focus or touch events
             videoView.isFocusable = false
@@ -24,33 +29,43 @@ object VideoBackgroundHelper {
             // Setup video when prepared
             videoView.setOnPreparedListener { mediaPlayer ->
                 try {
-                    android.util.Log.d("VideoBackground", "Video prepared, starting playback")
+                    android.util.Log.d("VideoBackground", "Video prepared")
                     
                     // Mute and loop
                     mediaPlayer.isLooping = true
                     mediaPlayer.setVolume(0f, 0f)
                     
-                    // Get dimensions
-                    val videoWidth = mediaPlayer.videoWidth.toFloat()
-                    val videoHeight = mediaPlayer.videoHeight.toFloat()
-                    val viewWidth = videoView.width.toFloat()
-                    val viewHeight = videoView.height.toFloat()
+                    // Get video dimensions
+                    val videoWidth = mediaPlayer.videoWidth
+                    val videoHeight = mediaPlayer.videoHeight
                     
-                    android.util.Log.d("VideoBackground", "Video: ${videoWidth}x${videoHeight}, View: ${viewWidth}x${viewHeight}")
+                    android.util.Log.d("VideoBackground", "Video dimensions: ${videoWidth}x${videoHeight}")
                     
-                    // Calculate scale to fill screen completely (centerCrop)
-                    val scaleX = viewWidth / videoWidth
-                    val scaleY = viewHeight / videoHeight
-                    val scale = Math.max(scaleX, scaleY)
+                    // If using AdaptiveVideoView, set video size for proper aspect ratio handling
+                    if (videoView is AdaptiveVideoView) {
+                        videoView.setVideoSize(videoWidth, videoHeight)
+                        android.util.Log.d("VideoBackground", "Using AdaptiveVideoView - automatic aspect ratio")
+                    } else {
+                        // Fallback for regular VideoView - apply centerCrop scaling
+                        val viewWidth = videoView.width.toFloat()
+                        val viewHeight = videoView.height.toFloat()
+                        
+                        if (viewWidth > 0 && viewHeight > 0) {
+                            val scaleX = viewWidth / videoWidth
+                            val scaleY = viewHeight / videoHeight
+                            val scale = Math.max(scaleX, scaleY)
+                            
+                            videoView.scaleX = scale
+                            videoView.scaleY = scale
+                            
+                            android.util.Log.d("VideoBackground", "Applied scale: $scale")
+                        }
+                    }
                     
-                    // Apply uniform scale to fill screen
-                    videoView.scaleX = scale
-                    videoView.scaleY = scale
-                    
-                    android.util.Log.d("VideoBackground", "Applied uniform scale: $scale")
-                    
-                    // Start playback
+                    // Start playback immediately
                     mediaPlayer.start()
+                    android.util.Log.d("VideoBackground", "Playback started")
+                    
                 } catch (e: Exception) {
                     android.util.Log.e("VideoBackground", "Error in onPrepared", e)
                 }
