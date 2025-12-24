@@ -8,91 +8,65 @@ import android.widget.VideoView
 
 object VideoBackgroundHelper {
 
-    private var isPreparing = false
-
     fun setupVideoBackground(videoView: VideoView, videoResId: Int) {
-        // Prevent multiple simultaneous setups
-        if (isPreparing) {
-            android.util.Log.w("VideoBackground", "Already preparing video, skipping")
-            return
-        }
-        
-        isPreparing = true
         try {
+            android.util.Log.d("VideoBackground", "Setting up video: $videoResId")
+            
             // Ensure VideoView doesn't intercept focus or touch events
             videoView.isFocusable = false
             videoView.isFocusableInTouchMode = false
             videoView.isClickable = false
             
-            // Force VideoView to fill parent and scale properly
-            videoView.layoutParams = videoView.layoutParams.apply {
-                width = android.view.ViewGroup.LayoutParams.MATCH_PARENT
-                height = android.view.ViewGroup.LayoutParams.MATCH_PARENT
-            }
-            
+            // Set URI
             val uri = Uri.parse("android.resource://${videoView.context.packageName}/$videoResId")
             videoView.setVideoURI(uri)
             
-            // Mute the video and setup fullscreen scaling
+            // Setup video when prepared
             videoView.setOnPreparedListener { mediaPlayer ->
                 try {
+                    android.util.Log.d("VideoBackground", "Video prepared, starting playback")
+                    
+                    // Mute and loop
                     mediaPlayer.isLooping = true
                     mediaPlayer.setVolume(0f, 0f)
                     
-                    // Get actual dimensions
-                    val videoWidth = mediaPlayer.videoWidth
-                    val videoHeight = mediaPlayer.videoHeight
-                    val viewWidth = videoView.width
-                    val viewHeight = videoView.height
+                    // Get dimensions
+                    val videoWidth = mediaPlayer.videoWidth.toFloat()
+                    val videoHeight = mediaPlayer.videoHeight.toFloat()
+                    val viewWidth = videoView.width.toFloat()
+                    val viewHeight = videoView.height.toFloat()
                     
                     android.util.Log.d("VideoBackground", "Video: ${videoWidth}x${videoHeight}, View: ${viewWidth}x${viewHeight}")
                     
-                    // Calculate scale to fill screen (centerCrop behavior)
-                    val videoAspect = videoWidth.toFloat() / videoHeight.toFloat()
-                    val viewAspect = viewWidth.toFloat() / viewHeight.toFloat()
+                    // Calculate scale to fill screen completely (centerCrop)
+                    val scaleX = viewWidth / videoWidth
+                    val scaleY = viewHeight / videoHeight
+                    val scale = Math.max(scaleX, scaleY)
                     
-                    val scaleX: Float
-                    val scaleY: Float
+                    // Apply uniform scale to fill screen
+                    videoView.scaleX = scale
+                    videoView.scaleY = scale
                     
-                    if (videoAspect > viewAspect) {
-                        // Video is wider - scale to height
-                        scaleY = viewHeight.toFloat() / videoHeight.toFloat()
-                        scaleX = scaleY
-                    } else {
-                        // Video is taller - scale to width
-                        scaleX = viewWidth.toFloat() / videoWidth.toFloat()
-                        scaleY = scaleX
-                    }
+                    android.util.Log.d("VideoBackground", "Applied uniform scale: $scale")
                     
-                    // Apply scaling
-                    videoView.scaleX = scaleX * (viewWidth.toFloat() / videoWidth.toFloat())
-                    videoView.scaleY = scaleY * (viewHeight.toFloat() / videoHeight.toFloat())
-                    
-                    android.util.Log.d("VideoBackground", "Applied scale: X=${videoView.scaleX}, Y=${videoView.scaleY}")
-                    
-                    // Start immediately for instant playback
+                    // Start playback
                     mediaPlayer.start()
-                    
-                    isPreparing = false
                 } catch (e: Exception) {
                     android.util.Log.e("VideoBackground", "Error in onPrepared", e)
-                    isPreparing = false
                 }
             }
             
             // Handle errors
             videoView.setOnErrorListener { _, what, extra ->
-                android.util.Log.e("VideoBackground", "Error playing video: what=$what, extra=$extra")
-                isPreparing = false
+                android.util.Log.e("VideoBackground", "Error: what=$what, extra=$extra")
                 true
             }
             
-            // Start playing immediately
-            videoView.start()
+            // Request focus on parent to ensure video doesn't steal it
+            (videoView.parent as? android.view.View)?.requestFocus()
             
         } catch (e: Exception) {
-            android.util.Log.e("VideoBackground", "Failed to setup video background", e)
-            isPreparing = false
+            android.util.Log.e("VideoBackground", "Setup failed", e)
         }
     }
 
