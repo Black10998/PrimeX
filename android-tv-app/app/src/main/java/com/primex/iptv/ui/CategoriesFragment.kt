@@ -11,10 +11,13 @@ import com.primex.iptv.R
 import com.primex.iptv.adapters.ContentRow
 import com.primex.iptv.adapters.ContentRowAdapter
 import com.primex.iptv.models.Channel
+import android.widget.VideoView
+import com.primex.iptv.utils.VideoBackgroundHelper
 
 class CategoriesFragment : Fragment() {
 
     private lateinit var contentRecycler: RecyclerView
+    private var videoBackground: VideoView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,13 +30,30 @@ class CategoriesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Set cinematic space background
-        view.setBackgroundResource(R.drawable.bg_space_categories)
+        videoBackground = view.findViewById(R.id.video_background)
+        videoBackground?.let {
+            VideoBackgroundHelper.setupVideoBackground(it, R.raw.bg_categories)
+        }
         
         contentRecycler = view.findViewById(R.id.section_content_recycler)
         contentRecycler.layoutManager = LinearLayoutManager(requireContext())
         
         loadCategoriesContent()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        VideoBackgroundHelper.pauseVideo(videoBackground)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        VideoBackgroundHelper.resumeVideo(videoBackground)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        VideoBackgroundHelper.releaseVideo(videoBackground)
     }
 
     private fun loadCategoriesContent() {

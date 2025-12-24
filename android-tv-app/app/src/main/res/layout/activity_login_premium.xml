@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/amarco_splash_background">
+    android:layout_height="match_parent">
+
+    <!-- Video Background -->
+    <VideoView
+        android:id="@+id/video_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Dark overlay for better text readability -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000" />
 
     <!-- Logo and Branding - Top Left -->
     <LinearLayout

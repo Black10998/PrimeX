@@ -7,11 +7,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.VideoView
 import androidx.lifecycle.lifecycleScope
 import com.primex.iptv.R
 import com.primex.iptv.api.ApiClient
 import com.primex.iptv.models.LoginRequest
 import com.primex.iptv.utils.PreferenceManager
+import com.primex.iptv.utils.VideoBackgroundHelper
 import kotlinx.coroutines.launch
 
 class LoginActivity : BaseActivity() {
@@ -21,6 +23,7 @@ class LoginActivity : BaseActivity() {
     private lateinit var loginButton: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var errorText: TextView
+    private var videoBackground: VideoView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +51,12 @@ class LoginActivity : BaseActivity() {
         loginButton = findViewById(R.id.sign_in_button)
         progressBar = findViewById(R.id.loading_indicator)
         errorText = findViewById(R.id.error_text)
+        
+        // Setup video background
+        videoBackground = findViewById(R.id.video_background)
+        videoBackground?.let {
+            VideoBackgroundHelper.setupVideoBackground(it, R.raw.bg_login)
+        }
     }
 
     private fun setupListeners() {
@@ -188,5 +197,20 @@ class LoginActivity : BaseActivity() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        VideoBackgroundHelper.pauseVideo(videoBackground)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        VideoBackgroundHelper.resumeVideo(videoBackground)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        VideoBackgroundHelper.releaseVideo(videoBackground)
     }
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.VideoView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.primex.iptv.api.ApiClient
 import com.primex.iptv.models.Channel
 import com.primex.iptv.player.PlayerActivity
 import com.primex.iptv.utils.PreferenceManager
+import com.primex.iptv.utils.VideoBackgroundHelper
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -38,6 +40,7 @@ class HomeFragment : Fragment() {
     private lateinit var welcomeSubtitle: TextView
     private lateinit var socialMessage: TextView
     private lateinit var spaceBackground: View
+    private var videoBackground: VideoView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,12 +53,33 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
+        // Setup video background
+        videoBackground = view.findViewById(R.id.video_background)
+        videoBackground?.let {
+            VideoBackgroundHelper.setupVideoBackground(it, R.raw.bg_home)
+        }
+        
         setupViews(view)
         animateLogo()
         animateWelcomeMessage()
         animateBackground()
         setupNavigation()
         loadContent()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        VideoBackgroundHelper.pauseVideo(videoBackground)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        VideoBackgroundHelper.resumeVideo(videoBackground)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        VideoBackgroundHelper.releaseVideo(videoBackground)
     }
 
     private fun setupViews(view: View) {

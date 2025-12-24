@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.VideoView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,10 +12,12 @@ import com.primex.iptv.R
 import com.primex.iptv.adapters.ContentRow
 import com.primex.iptv.adapters.ContentRowAdapter
 import com.primex.iptv.models.Channel
+import com.primex.iptv.utils.VideoBackgroundHelper
 
 class MoviesFragment : Fragment() {
 
     private lateinit var contentRecycler: RecyclerView
+    private var videoBackground: VideoView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,13 +30,31 @@ class MoviesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Set cinematic space background
-        view.setBackgroundResource(R.drawable.bg_space_movies)
+        // Setup video background
+        videoBackground = view.findViewById(R.id.video_background)
+        videoBackground?.let {
+            VideoBackgroundHelper.setupVideoBackground(it, R.raw.bg_movies)
+        }
         
         contentRecycler = view.findViewById(R.id.section_content_recycler)
         contentRecycler.layoutManager = LinearLayoutManager(requireContext())
         
         loadMoviesContent()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        VideoBackgroundHelper.pauseVideo(videoBackground)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        VideoBackgroundHelper.resumeVideo(videoBackground)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        VideoBackgroundHelper.releaseVideo(videoBackground)
     }
 
     private fun loadMoviesContent() {
