@@ -39,7 +39,6 @@ class HomeFragment : Fragment() {
     private lateinit var welcomeMessage: TextView
     private lateinit var welcomeSubtitle: TextView
     private lateinit var socialMessage: TextView
-    private lateinit var spaceBackground: View
     private var videoBackground: VideoView? = null
 
     override fun onCreateView(
@@ -62,7 +61,6 @@ class HomeFragment : Fragment() {
         setupViews(view)
         animateLogo()
         animateWelcomeMessage()
-        animateBackground()
         setupNavigation()
         loadContent()
     }
@@ -99,7 +97,6 @@ class HomeFragment : Fragment() {
         welcomeMessage = view.findViewById(R.id.welcome_message)
         welcomeSubtitle = view.findViewById(R.id.welcome_subtitle)
         socialMessage = view.findViewById(R.id.social_message)
-        spaceBackground = view.findViewById(R.id.space_background)
     }
 
     private fun animateLogo() {
@@ -219,102 +216,67 @@ class HomeFragment : Fragment() {
         }, 1100)
     }
 
-    private fun animateBackground() {
-        // Subtle continuous pulse for space background
-        val animator = ObjectAnimator.ofFloat(spaceBackground, "alpha", 0.7f, 0.9f)
-        animator.duration = 4000
-        animator.repeatCount = ObjectAnimator.INFINITE
-        animator.repeatMode = ObjectAnimator.REVERSE
-        animator.interpolator = DecelerateInterpolator()
-        animator.start()
-    }
 
-    private fun changeBackground(backgroundRes: Int) {
-        // Smooth transition to new space background
-        spaceBackground.animate()
-            .alpha(0f)
-            .setDuration(500)
-            .withEndAction {
-                spaceBackground.setBackgroundResource(backgroundRes)
-                spaceBackground.animate()
-                    .alpha(0.8f)
-                    .setDuration(500)
-                    .start()
-            }
-            .start()
-    }
 
     private fun setupNavigation() {
         // Setup click and focus listeners
         navHome.setOnClickListener {
             selectNav(navHome)
-            changeBackground(R.drawable.bg_home_space)
             showHomeContent()
         }
         navHome.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 selectNav(navHome)
-                changeBackground(R.drawable.bg_home_space)
             }
         }
         
         navLiveTV.setOnClickListener {
             selectNav(navLiveTV)
-            changeBackground(R.drawable.bg_livetv_space)
             loadLiveTVContent()
         }
         navLiveTV.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 selectNav(navLiveTV)
-                changeBackground(R.drawable.bg_livetv_space)
             }
         }
         
         navMovies.setOnClickListener {
             selectNav(navMovies)
-            changeBackground(R.drawable.bg_movies_space)
             showMoviesFragment()
         }
         navMovies.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 selectNav(navMovies)
-                changeBackground(R.drawable.bg_movies_space)
             }
         }
         
         navSeries.setOnClickListener {
             selectNav(navSeries)
-            changeBackground(R.drawable.bg_series_space)
             showSeriesFragment()
         }
         navSeries.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 selectNav(navSeries)
-                changeBackground(R.drawable.bg_series_space)
             }
         }
         
         navCategories.setOnClickListener {
             selectNav(navCategories)
-            changeBackground(R.drawable.bg_categories_space)
             showCategoriesFragment()
         }
         navCategories.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 selectNav(navCategories)
-                changeBackground(R.drawable.bg_categories_space)
             }
         }
         
         navFavorites.setOnClickListener {
             selectNav(navFavorites)
-            changeBackground(R.drawable.bg_favorites_space)
             showFavoritesFragment()
         }
         navFavorites.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 selectNav(navFavorites)
-                changeBackground(R.drawable.bg_favorites_space)
             }
         }
         

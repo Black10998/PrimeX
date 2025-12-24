@@ -36,6 +36,12 @@ class SettingsFragment : VerticalGridSupportFragment() {
         
         // Hide the title view if it exists
         view.findViewById<View>(androidx.leanback.R.id.browse_title_group)?.visibility = View.GONE
+        
+        // Remove any background from the grid view
+        view.findViewById<View>(androidx.leanback.R.id.browse_grid)?.background = null
+        
+        // Remove background from the entire fragment view
+        view.background = null
     }
 
     private fun setupAdapter() {

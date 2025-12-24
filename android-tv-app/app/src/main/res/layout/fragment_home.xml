@@ -26,8 +26,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="40dp"
-        android:paddingEnd="40dp"
-        android:background="@color/amarco_black">
+        android:paddingEnd="40dp">
 
         <!-- Logo/Brand -->
         <ImageView
@@ -184,14 +183,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-
-        <!-- Space-themed Background -->
-        <View
-            android:id="@+id/space_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_home_space"
-            android:alpha="0.8" />
 
         <!-- Welcome Section -->
         <LinearLayout
