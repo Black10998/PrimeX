@@ -357,6 +357,12 @@ class HomeFragment : Fragment() {
             try {
                 // Load live streams for home sections
                 val response = ApiClient.xtreamApiService.getLiveStreams(username, password)
+                
+                // CRITICAL SECURITY: Check for account deactivation
+                if (SessionManager.handleUnauthorizedResponse(requireContext(), response.code())) {
+                    return@launch
+                }
+                
                 if (response.isSuccessful && response.body() != null) {
                     val streams = response.body()!!
                     
@@ -437,6 +443,12 @@ class HomeFragment : Fragment() {
             try {
                 // Load live streams
                 val response = ApiClient.xtreamApiService.getLiveStreams(username, password)
+                
+                // CRITICAL SECURITY: Check for account deactivation
+                if (SessionManager.handleUnauthorizedResponse(requireContext(), response.code())) {
+                    return@launch
+                }
+                
                 if (response.isSuccessful && response.body() != null) {
                     val streams = response.body()!!
                     

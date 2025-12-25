@@ -25,8 +25,27 @@ async function authenticateToken(req, res, next) {
 
         const user = users[0];
 
+        // Critical security check: inactive users must be blocked immediately
         if (user.status !== 'active') {
-            return res.status(403).json(formatResponse(false, null, 'Account is not active'));
+            const statusMessages = {
+                'inactive': 'Your account has been deactivated. Please contact support.',
+                'suspended': 'Your account has been suspended. Please contact support.',
+                'expired': 'Your subscription has expired. Please renew to continue.',
+                'banned': 'Your account has been banned. Please contact support.'
+            };
+            
+            const message = statusMessages[user.status] || 'Account is not active';
+            
+            logger.warn('Blocked inactive user access:', { 
+                userId: user.id, 
+                username: user.username, 
+                status: user.status 
+            });
+            
+            return res.status(403).json(formatResponse(false, null, message, {
+                status: user.status,
+                action_required: 'contact_support'
+            }));
         }
 
         req.user = {

@@ -89,6 +89,14 @@ object ApiClient {
             try {
                 val response = chain.proceed(request)
                 android.util.Log.d(TAG, "Response: ${response.code} ${response.message}")
+                
+                // CRITICAL SECURITY: Handle account deactivation immediately
+                if (response.code == 401 || response.code == 403) {
+                    android.util.Log.w(TAG, "Authentication failed: ${response.code} - User may be deactivated")
+                    // Response will be handled by individual API calls
+                    // They should clear session and redirect to login
+                }
+                
                 response
             } catch (e: UnknownHostException) {
                 android.util.Log.e(TAG, "DNS resolution failed: ${e.message}", e)

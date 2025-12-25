@@ -322,11 +322,12 @@ class UserController {
             const { id } = req.params;
             const { email, status, plan_id, subscription_end, max_devices, password } = req.body;
 
-            const [existing] = await pool.query('SELECT id FROM users WHERE id = ?', [id]);
+            const [existing] = await pool.query('SELECT id, status FROM users WHERE id = ?', [id]);
             if (existing.length === 0) {
                 return res.status(404).json(formatResponse(false, null, 'User not found'));
             }
 
+            const oldStatus = existing[0].status;
             const updates = [];
             const params = [];
 
@@ -366,6 +367,32 @@ class UserController {
                 params
             );
 
+            // CRITICAL SECURITY: If status changed to inactive, revoke all access immediately
+            if (status !== undefined && status !== 'active' && oldStatus === 'active') {
+                const userSessionService = require('../services/userSession.service');
+                const revocationResult = await userSessionService.revokeUserAccess(id);
+                
+                logger.warn('User deactivated - access revoked:', {
+                    userId: id,
+                    oldStatus,
+                    newStatus: status,
+                    sessionsInvalidated: revocationResult.sessionsInvalidated,
+                    devicesDeactivated: revocationResult.devicesDeactivated,
+                    updatedBy: req.admin.id
+                });
+
+                await pool.query(
+                    'INSERT INTO activity_logs (user_id, action, details) VALUES (?, ?, ?)',
+                    [id, 'user_access_revoked', JSON.stringify({
+                        updated_by: req.admin.id,
+                        old_status: oldStatus,
+                        new_status: status,
+                        sessions_invalidated: revocationResult.sessionsInvalidated,
+                        devices_deactivated: revocationResult.devicesDeactivated
+                    })]
+                );
+            }
+
             await pool.query(
                 'INSERT INTO activity_logs (user_id, action, details) VALUES (?, ?, ?)',
                 [id, 'user_updated', JSON.stringify({ updated_by: req.admin.id, fields: updates })]
@@ -387,11 +414,27 @@ class UserController {
                 return res.status(404).json(formatResponse(false, null, 'User not found'));
             }
 
+            // CRITICAL SECURITY: Revoke all access before deletion
+            const userSessionService = require('../services/userSession.service');
+            const revocationResult = await userSessionService.revokeUserAccess(id);
+            
+            logger.warn('User deleted - access revoked:', {
+                userId: id,
+                sessionsInvalidated: revocationResult.sessionsInvalidated,
+                devicesDeactivated: revocationResult.devicesDeactivated,
+                deletedBy: req.admin.id
+            });
+
             await pool.query('DELETE FROM users WHERE id = ?', [id]);
 
             await pool.query(
                 'INSERT INTO activity_logs (action, details) VALUES (?, ?)',
-                ['user_deleted', JSON.stringify({ user_id: id, deleted_by: req.admin.id })]
+                ['user_deleted', JSON.stringify({ 
+                    user_id: id, 
+                    deleted_by: req.admin.id,
+                    sessions_invalidated: revocationResult.sessionsInvalidated,
+                    devices_deactivated: revocationResult.devicesDeactivated
+                })]
             );
 
             return res.json(formatResponse(true, null, 'User deleted successfully'));

@@ -43,6 +43,8 @@ object SessionManager {
     }
 
     fun logoutUser(context: Context, reason: String? = null) {
+        android.util.Log.w(TAG, "Logging out user: $reason")
+        
         // Clear all user data
         PreferenceManager.logout(context)
 
@@ -52,6 +54,23 @@ object SessionManager {
             reason?.let { putExtra("logout_reason", it) }
         }
         context.startActivity(intent)
+    }
+    
+    /**
+     * Handle unauthorized/forbidden response (401/403)
+     * CRITICAL SECURITY: Immediately logs out deactivated users
+     * 
+     * @param context Application context
+     * @param httpCode HTTP response code
+     * @return True if unauthorized and handled
+     */
+    fun handleUnauthorizedResponse(context: Context, httpCode: Int): Boolean {
+        if (httpCode == 401 || httpCode == 403) {
+            android.util.Log.e(TAG, "Unauthorized access detected (HTTP $httpCode) - account may be deactivated")
+            logoutUser(context, "Your account has been deactivated. Please contact support.")
+            return true
+        }
+        return false
     }
 
     fun validateAndRefreshSession(context: Context, onValid: () -> Unit, onInvalid: () -> Unit) {
