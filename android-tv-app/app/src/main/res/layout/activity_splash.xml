@@ -22,7 +22,7 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
-                android:background="@drawable/amarco_logo_glow" />
+                android:background="@drawable/pax_logo_glow" />
             
             <!-- Logo -->
             <ImageView
@@ -30,21 +30,22 @@
                 android:layout_width="160dp"
                 android:layout_height="160dp"
                 android:layout_gravity="center"
-                android:src="@drawable/amarco_logo"
-                android:contentDescription="Amarco Logo"
+                android:src="@drawable/pax_logo"
+                android:contentDescription="PAX Logo"
                 android:scaleType="fitCenter" />
         </FrameLayout>
 
         <!-- App Name -->
         <TextView
+            android:id="@+id/splash_app_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="AMARCO"
-            android:textSize="48sp"
+            android:text="PAX"
+            android:textSize="56sp"
             android:textColor="@color/amarco_gold"
-            android:fontFamily="sans-serif-light"
-            android:letterSpacing="0.15" />
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.2" />
 
         <!-- Tagline -->
         <TextView

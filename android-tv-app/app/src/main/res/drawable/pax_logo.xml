@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+    
+    <!-- Outer Circle - Gold Ring -->
+    <path
+        android:pathData="M80,20 A60,60 0 1,1 80,140 A60,60 0 1,1 80,20 Z"
+        android:strokeWidth="4"
+        android:strokeColor="@color/amarco_gold"
+        android:fillColor="@android:color/transparent" />
+    
+    <!-- Inner Circle - Subtle -->
+    <path
+        android:pathData="M80,30 A50,50 0 1,1 80,130 A50,50 0 1,1 80,30 Z"
+        android:strokeWidth="1"
+        android:strokeColor="@color/amarco_gold_light"
+        android:fillColor="@android:color/transparent" />
+    
+    <!-- Letter P -->
+    <path
+        android:pathData="M55,50 L55,110 L62,110 L62,85 L75,85 C82,85 87,80 87,67.5 C87,55 82,50 75,50 Z M62,57 L75,57 C78,57 80,60 80,67.5 C80,75 78,78 75,78 L62,78 Z"
+        android:fillColor="@color/amarco_gold" />
+    
+    <!-- Letter A -->
+    <path
+        android:pathData="M95,50 L75,110 L82,110 L85,100 L100,100 L103,110 L110,110 L90,50 Z M87,93 L92.5,75 L98,93 Z"
+        android:fillColor="@color/amarco_gold" />
+    
+    <!-- Letter X -->
+    <path
+        android:pathData="M115,50 L105,70 L95,50 L88,50 L102,77 L87,110 L94,110 L105,88 L116,110 L123,110 L108,77 L122,50 Z"
+        android:fillColor="@color/amarco_gold" />
+    
+    <!-- Accent Lines - Top -->
+    <path
+        android:pathData="M60,45 L100,45"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold_light"
+        android:strokeLineCap="round" />
+    
+    <!-- Accent Lines - Bottom -->
+    <path
+        android:pathData="M60,115 L100,115"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold_light"
+        android:strokeLineCap="round" />
+    
+    <!-- Corner Accents - Top Left -->
+    <path
+        android:pathData="M35,35 L45,35 L45,45"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold"
+        android:fillColor="@android:color/transparent"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    
+    <!-- Corner Accents - Top Right -->
+    <path
+        android:pathData="M125,35 L115,35 L115,45"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold"
+        android:fillColor="@android:color/transparent"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    
+    <!-- Corner Accents - Bottom Left -->
+    <path
+        android:pathData="M35,125 L45,125 L45,115"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold"
+        android:fillColor="@android:color/transparent"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    
+    <!-- Corner Accents - Bottom Right -->
+    <path
+        android:pathData="M125,125 L115,125 L115,115"
+        android:strokeWidth="2"
+        android:strokeColor="@color/amarco_gold"
+        android:fillColor="@android:color/transparent"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

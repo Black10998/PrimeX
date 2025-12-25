@@ -27,18 +27,18 @@
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/amarco_logo"
-            android:contentDescription="Amarco Logo" />
+            android:src="@drawable/pax_logo"
+            android:contentDescription="PAX Logo" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="AMARCO"
-            android:textSize="24sp"
+            android:text="PAX"
+            android:textSize="28sp"
             android:textColor="@color/amarco_gold"
-            android:fontFamily="sans-serif-light"
-            android:letterSpacing="0.15" />
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.2" />
     </LinearLayout>
 
     <!-- Login Form - Center -->

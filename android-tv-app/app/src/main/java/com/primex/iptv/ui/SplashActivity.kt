@@ -16,15 +16,17 @@ class SplashActivity : ComponentActivity() {
 
     private val splashDuration = 2500L // 2.5 seconds
     private lateinit var logoView: ImageView
+    private lateinit var appNameView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
         logoView = findViewById(R.id.splash_logo)
+        appNameView = findViewById(R.id.splash_app_name)
 
-        // Animate logo
-        animateLogo()
+        // Animate splash screen
+        animateSplash()
 
         // Navigate after delay
         Handler(Looper.getMainLooper()).postDelayed({
@@ -32,27 +34,39 @@ class SplashActivity : ComponentActivity() {
         }, splashDuration)
     }
 
-    private fun animateLogo() {
-        // Scale animation
-        logoView.scaleX = 0.8f
-        logoView.scaleY = 0.8f
+    private fun animateSplash() {
+        // Logo: Scale + Fade animation
+        logoView.scaleX = 0.7f
+        logoView.scaleY = 0.7f
         logoView.alpha = 0f
 
         logoView.animate()
             .scaleX(1f)
             .scaleY(1f)
             .alpha(1f)
-            .setDuration(1000)
+            .setDuration(1200)
             .setInterpolator(AccelerateDecelerateInterpolator())
             .start()
 
-        // Subtle rotation for premium feel
+        // Logo: Subtle continuous rotation for premium feel
         ObjectAnimator.ofFloat(logoView, View.ROTATION, 0f, 360f).apply {
             duration = 20000
             repeatCount = ObjectAnimator.INFINITE
             interpolator = AccelerateDecelerateInterpolator()
             start()
         }
+
+        // App Name: Fade + Slide up animation (delayed)
+        appNameView.alpha = 0f
+        appNameView.translationY = 30f
+
+        appNameView.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setStartDelay(400)
+            .setDuration(800)
+            .setInterpolator(AccelerateDecelerateInterpolator())
+            .start()
     }
 
     private fun navigateToNextScreen() {

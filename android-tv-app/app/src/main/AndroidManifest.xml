@@ -19,7 +19,7 @@
     <application
         android:name=".PrimeXApplication"
         android:allowBackup="true"
-        android:banner="@drawable/amarco_logo"
+        android:banner="@drawable/pax_logo"
         android:icon="@mipmap/ic_launcher"
         android:label="PAX"
         android:supportsRtl="true"
