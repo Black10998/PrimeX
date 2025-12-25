@@ -21,6 +21,7 @@ import com.primex.iptv.api.ApiClient
 import com.primex.iptv.models.Channel
 import com.primex.iptv.player.PlayerActivity
 import com.primex.iptv.utils.PreferenceManager
+import com.primex.iptv.utils.SessionManager
 import com.primex.iptv.utils.VideoBackgroundHelper
 import kotlinx.coroutines.launch
 
