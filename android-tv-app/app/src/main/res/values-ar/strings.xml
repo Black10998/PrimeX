@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App Name -->
-    <string name="app_name">Amarco</string>
+    <string name="app_name">PAX</string>
     
     <!-- Login Screen -->
     <string name="sign_in_title">تسجيل الدخول</string>
@@ -20,7 +20,7 @@
     <string name="activation_instructions">قم بزيارة موقع التفعيل وأدخل الرمز أعلاه لتفعيل جهازك</string>
     
     <!-- Main Screen -->
-    <string name="browse_title">Amarco</string>
+    <string name="browse_title">PAX</string>
     <string name="live_tv">القنوات المباشرة</string>
     <string name="movies">الأفلام</string>
     <string name="series">المسلسلات</string>

@@ -21,7 +21,7 @@
         android:allowBackup="true"
         android:banner="@drawable/amarco_logo"
         android:icon="@mipmap/ic_launcher"
-        android:label="Amarco"
+        android:label="PAX"
         android:supportsRtl="true"
         android:theme="@style/Theme.Amarco"
         android:usesCleartextTraffic="true"
