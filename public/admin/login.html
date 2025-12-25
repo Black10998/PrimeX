@@ -155,6 +155,22 @@
             to { transform: rotate(360deg); }
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .footer {
             text-align: center;
             margin-top: 20px;
@@ -267,6 +283,405 @@
             }, 1700);
         }
 
+        function show2FAVerification(username, password) {
+            // Create 2FA modal overlay
+            const modalOverlay = document.createElement('div');
+            modalOverlay.id = 'twoFactorModal';
+            modalOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(15, 23, 42, 0.95);
+                backdrop-filter: blur(10px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            modalOverlay.innerHTML = `
+                <div style="
+                    background: var(--bg-secondary);
+                    border-radius: 16px;
+                    padding: 40px;
+                    max-width: 420px;
+                    width: 90%;
+                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+                    animation: slideUp 0.3s ease;
+                ">
+                    <h2 style="margin: 0 0 10px 0; font-size: 24px; color: var(--text-primary);">
+                        <i class="fas fa-shield-alt" style="color: var(--primary);"></i>
+                        Two-Factor Authentication
+                    </h2>
+                    <p style="margin: 0 0 30px 0; color: var(--text-secondary); font-size: 14px;">
+                        Enter the 6-digit code from your authenticator app
+                    </p>
+
+                    <div id="twoFactorError" style="
+                        display: none;
+                        background: rgba(239, 68, 68, 0.1);
+                        border: 1px solid var(--danger);
+                        color: var(--danger);
+                        padding: 12px;
+                        border-radius: 8px;
+                        margin-bottom: 20px;
+                        font-size: 14px;
+                    "></div>
+
+                    <form id="twoFactorForm">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 14px;">
+                                Authentication Code
+                            </label>
+                            <input 
+                                type="text" 
+                                id="totpCode" 
+                                maxlength="6" 
+                                pattern="[0-9]{6}"
+                                required
+                                autofocus
+                                style="
+                                    width: 100%;
+                                    padding: 12px;
+                                    background: var(--bg-tertiary);
+                                    border: 2px solid transparent;
+                                    border-radius: 8px;
+                                    color: var(--text-primary);
+                                    font-size: 24px;
+                                    text-align: center;
+                                    letter-spacing: 8px;
+                                    font-family: monospace;
+                                    transition: all 0.3s ease;
+                                "
+                                placeholder="000000"
+                            >
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <button 
+                                type="button" 
+                                onclick="close2FAModal()"
+                                style="
+                                    flex: 1;
+                                    padding: 12px;
+                                    background: var(--bg-tertiary);
+                                    border: none;
+                                    border-radius: 8px;
+                                    color: var(--text-secondary);
+                                    font-size: 14px;
+                                    font-weight: 500;
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                                "
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                type="submit"
+                                id="verify2FABtn"
+                                style="
+                                    flex: 2;
+                                    padding: 12px;
+                                    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+                                    border: none;
+                                    border-radius: 8px;
+                                    color: #1e293b;
+                                    font-size: 14px;
+                                    font-weight: 600;
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                                "
+                            >
+                                <span id="verify2FAText">Verify & Login</span>
+                                <div id="verify2FASpinner" style="display: none; width: 16px; height: 16px; border: 2px solid #1e293b; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
+                            </button>
+                        </div>
+
+                        <p style="margin: 20px 0 0 0; text-align: center; color: var(--text-muted); font-size: 13px;">
+                            Lost your device? <a href="#" onclick="show2FARecovery(); return false;" style="color: var(--primary);">Use recovery code</a>
+                        </p>
+                    </form>
+                </div>
+            `;
+
+            document.body.appendChild(modalOverlay);
+
+            // Store credentials for recovery code access
+            modalOverlay.dataset.username = username;
+            modalOverlay.dataset.password = password;
+
+            // Handle 2FA form submission
+            document.getElementById('twoFactorForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await verify2FACode(username, password);
+            });
+
+            // Focus on input
+            setTimeout(() => {
+                document.getElementById('totpCode').focus();
+            }, 100);
+        }
+
+        async function verify2FACode(username, password) {
+            const totpCode = document.getElementById('totpCode').value;
+            const errorDiv = document.getElementById('twoFactorError');
+            const verifyBtn = document.getElementById('verify2FABtn');
+            const verifyText = document.getElementById('verify2FAText');
+            const verifySpinner = document.getElementById('verify2FASpinner');
+
+            if (totpCode.length !== 6) {
+                errorDiv.textContent = 'Please enter a 6-digit code';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Show loading
+            verifyBtn.disabled = true;
+            verifyText.style.display = 'none';
+            verifySpinner.style.display = 'block';
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/v1/auth/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        username, 
+                        password,
+                        totp_token: totpCode
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Store token
+                    localStorage.setItem('adminToken', data.data.token);
+                    
+                    // Close modal
+                    close2FAModal();
+                    
+                    // Show welcome message
+                    showWelcomeMessage();
+                    
+                    // Redirect
+                    setTimeout(() => {
+                        window.location.href = '/admin/enterprise-panel.html';
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || '2FA verification failed');
+                }
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+                
+                // Reset button
+                verifyBtn.disabled = false;
+                verifyText.style.display = 'block';
+                verifySpinner.style.display = 'none';
+                
+                // Clear input
+                document.getElementById('totpCode').value = '';
+                document.getElementById('totpCode').focus();
+            }
+        }
+
+        function close2FAModal() {
+            const modal = document.getElementById('twoFactorModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function show2FARecovery() {
+            const modal = document.getElementById('twoFactorModal');
+            if (!modal) return;
+
+            // Replace modal content with recovery code form
+            const modalContent = modal.querySelector('div');
+            modalContent.innerHTML = `
+                <h2 style="margin: 0 0 10px 0; font-size: 24px; color: var(--text-primary);">
+                    <i class="fas fa-key" style="color: var(--primary);"></i>
+                    Recovery Code
+                </h2>
+                <p style="margin: 0 0 30px 0; color: var(--text-secondary); font-size: 14px;">
+                    Enter one of your backup recovery codes
+                </p>
+
+                <div id="recoveryError" style="
+                    display: none;
+                    background: rgba(239, 68, 68, 0.1);
+                    border: 1px solid var(--danger);
+                    color: var(--danger);
+                    padding: 12px;
+                    border-radius: 8px;
+                    margin-bottom: 20px;
+                    font-size: 14px;
+                "></div>
+
+                <form id="recoveryForm">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 14px;">
+                            Recovery Code (XXXX-XXXX)
+                        </label>
+                        <input 
+                            type="text" 
+                            id="recoveryCode" 
+                            maxlength="9" 
+                            pattern="[A-Z0-9]{4}-[A-Z0-9]{4}"
+                            required
+                            autofocus
+                            style="
+                                width: 100%;
+                                padding: 12px;
+                                background: var(--bg-tertiary);
+                                border: 2px solid transparent;
+                                border-radius: 8px;
+                                color: var(--text-primary);
+                                font-size: 18px;
+                                text-align: center;
+                                letter-spacing: 4px;
+                                font-family: monospace;
+                                text-transform: uppercase;
+                                transition: all 0.3s ease;
+                            "
+                            placeholder="XXXX-XXXX"
+                        >
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button 
+                            type="button" 
+                            onclick="close2FAModal()"
+                            style="
+                                flex: 1;
+                                padding: 12px;
+                                background: var(--bg-tertiary);
+                                border: none;
+                                border-radius: 8px;
+                                color: var(--text-secondary);
+                                font-size: 14px;
+                                font-weight: 500;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                            "
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit"
+                            id="verifyRecoveryBtn"
+                            style="
+                                flex: 2;
+                                padding: 12px;
+                                background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+                                border: none;
+                                border-radius: 8px;
+                                color: #1e293b;
+                                font-size: 14px;
+                                font-weight: 600;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                            "
+                        >
+                            <span id="verifyRecoveryText">Verify & Login</span>
+                            <div id="verifyRecoverySpinner" style="display: none; width: 16px; height: 16px; border: 2px solid #1e293b; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
+                        </button>
+                    </div>
+
+                    <p style="margin: 20px 0 0 0; text-align: center; color: var(--text-muted); font-size: 13px;">
+                        <a href="#" onclick="location.reload(); return false;" style="color: var(--primary);">Back to 2FA code</a>
+                    </p>
+                </form>
+            `;
+
+            // Get stored credentials from closure
+            const username = modal.dataset.username;
+            const password = modal.dataset.password;
+
+            // Handle recovery form submission
+            document.getElementById('recoveryForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await verifyRecoveryCode(username, password);
+            });
+
+            // Focus on input
+            setTimeout(() => {
+                document.getElementById('recoveryCode').focus();
+            }, 100);
+        }
+
+        async function verifyRecoveryCode(username, password) {
+            const recoveryCode = document.getElementById('recoveryCode').value.toUpperCase();
+            const errorDiv = document.getElementById('recoveryError');
+            const verifyBtn = document.getElementById('verifyRecoveryBtn');
+            const verifyText = document.getElementById('verifyRecoveryText');
+            const verifySpinner = document.getElementById('verifyRecoverySpinner');
+
+            if (!/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(recoveryCode)) {
+                errorDiv.textContent = 'Please enter a valid recovery code (XXXX-XXXX)';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Show loading
+            verifyBtn.disabled = true;
+            verifyText.style.display = 'none';
+            verifySpinner.style.display = 'block';
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/v1/auth/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        username, 
+                        password,
+                        recovery_code: recoveryCode
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Store token
+                    localStorage.setItem('adminToken', data.data.token);
+                    
+                    // Close modal
+                    close2FAModal();
+                    
+                    // Show welcome message
+                    showWelcomeMessage();
+                    
+                    // Redirect
+                    setTimeout(() => {
+                        window.location.href = '/admin/enterprise-panel.html';
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || 'Recovery code verification failed');
+                }
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+                
+                // Reset button
+                verifyBtn.disabled = false;
+                verifyText.style.display = 'block';
+                verifySpinner.style.display = 'none';
+                
+                // Clear input
+                document.getElementById('recoveryCode').value = '';
+                document.getElementById('recoveryCode').focus();
+            }
+        }
+
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -289,6 +704,18 @@
                 });
 
                 const data = await response.json();
+
+                // Check if 2FA is required (credentials valid, but need 2FA)
+                if (data.requires_2fa) {
+                    // Reset button
+                    loginBtn.disabled = false;
+                    btnText.style.display = 'block';
+                    btnSpinner.style.display = 'none';
+                    
+                    // Show 2FA verification modal
+                    show2FAVerification(username, password);
+                    return;
+                }
 
                 if (response.ok && data.success) {
                     // Store token
