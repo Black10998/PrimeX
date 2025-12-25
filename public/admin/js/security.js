@@ -196,13 +196,13 @@ const SecurityModule = {
         PrimeXCore.showLoading(true);
         try {
             const response = await PrimeXCore.apiCall('/admin/2fa/generate', 'POST');
-            const qrCode = response.data.qr_code;
+            const qrCode = response.data.qrCode;
             const secret = response.data.secret;
 
             const modalContent = `
                 <div style="text-align: center;">
                     <p>Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.)</p>
-                    <img src="${qrCode}" style="max-width: 250px; margin: 20px auto;">
+                    <img src="${qrCode}" alt="QR Code" style="max-width: 250px; margin: 20px auto; display: block; margin-left: auto; margin-right: auto;">
                     <p style="margin-top: 20px;"><strong>Secret Key:</strong></p>
                     <code style="font-size: 14px; padding: 10px; background: var(--bg-tertiary); display: block; margin: 10px 0;">${secret}</code>
                     <form id="verify2FAForm" style="margin-top: 20px;">
@@ -216,8 +216,19 @@ const SecurityModule = {
 
             PrimeXCore.showModal('Enable Two-Factor Authentication', modalContent, [
                 { text: 'Cancel', class: 'btn-secondary', onclick: 'PrimeXCore.closeModal()' },
-                { text: 'Verify & Enable', class: 'btn-success', onclick: 'document.getElementById("verify2FAForm").requestSubmit()' }
+                { text: 'Verify & Enable', class: 'btn-success', onclick: 'SecurityModule.submitVerify2FA()' }
             ]);
+
+            // Attach form handler after modal is shown
+            setTimeout(() => {
+                const tfaForm = document.getElementById('verify2FAForm');
+                if (tfaForm) {
+                    tfaForm.onsubmit = (e) => {
+                        e.preventDefault();
+                        SecurityModule.submitVerify2FA();
+                    };
+                }
+            }, 100);
         } catch (error) {
             PrimeXCore.showToast('Failed to generate 2FA setup', 'error');
         } finally {
@@ -225,63 +236,106 @@ const SecurityModule = {
         }
     },
 
-    async verify2FA(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
+    async submitVerify2FA() {
+        const form = document.getElementById('verify2FAForm');
+        if (!form) return;
+        
+        const formData = new FormData(form);
         const token = formData.get('token');
+
+        if (!token || token.length !== 6) {
+            PrimeXCore.showToast('Please enter a valid 6-digit code', 'error');
+            return;
+        }
 
         PrimeXCore.showLoading(true);
         try {
-            await PrimeXCore.apiCall('/admin/2fa/enable', 'POST', { token });
-            PrimeXCore.showToast('2FA enabled successfully', 'success');
-            PrimeXCore.closeModal();
-            await this.loadSecurityData();
+            const response = await PrimeXCore.apiCall('/admin/2fa/enable', 'POST', { token });
+            PrimeXCore.showToast('2FA enabled successfully! Please save your backup codes.', 'success');
+            
+            // Show backup codes
+            if (response.data && response.data.recoveryCodes) {
+                const codes = response.data.recoveryCodes;
+                const codesHtml = `
+                    <div style="text-align: center;">
+                        <p style="color: var(--danger); font-weight: bold; margin-bottom: 20px;">
+                            ⚠️ Save these backup codes in a secure location. You won't see them again!
+                        </p>
+                        <div style="background: var(--bg-tertiary); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            ${codes.map(code => `<div style="font-family: monospace; font-size: 16px; padding: 5px;">${code}</div>`).join('')}
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 14px;">
+                            Use these codes if you lose access to your authenticator app.
+                        </p>
+                    </div>
+                `;
+                
+                PrimeXCore.closeModal();
+                PrimeXCore.showModal('Backup Recovery Codes', codesHtml, [
+                    { text: 'I have saved these codes', class: 'btn-success', onclick: 'PrimeXCore.closeModal(); SecurityModule.loadSecurityData();' }
+                ]);
+            } else {
+                PrimeXCore.closeModal();
+                await this.loadSecurityData();
+            }
         } catch (error) {
-            PrimeXCore.showToast('Invalid code. Please try again.', 'error');
+            PrimeXCore.showToast(error.message || 'Invalid code. Please try again.', 'error');
         } finally {
             PrimeXCore.showLoading(false);
         }
     },
 
+    async verify2FA(event) {
+        event.preventDefault();
+        await this.submitVerify2FA();
+    },
+
     async disable2FA() {
-        const token = prompt('Enter your 2FA code to disable:');
-        if (!token) return;
+        const password = prompt('Enter your admin password to disable 2FA:');
+        if (!password) return;
 
         PrimeXCore.showLoading(true);
         try {
-            await PrimeXCore.apiCall('/admin/2fa/disable', 'POST', { token });
-            PrimeXCore.showToast('2FA disabled successfully', 'success');
-            await this.loadSecurityData();
+            await PrimeXCore.apiCall('/admin/2fa/disable', 'POST', { password });
+            PrimeXCore.showToast('2FA disabled successfully. You will be logged out.', 'success');
+            setTimeout(() => {
+                window.location.href = '/admin/login.html';
+            }, 2000);
         } catch (error) {
-            PrimeXCore.showToast('Failed to disable 2FA', 'error');
+            PrimeXCore.showToast(error.message || 'Failed to disable 2FA. Check your password.', 'error');
         } finally {
             PrimeXCore.showLoading(false);
         }
     },
 
     async regenerateBackupCodes() {
-        if (!confirm('Regenerate backup codes? Old codes will be invalidated.')) return;
+        const password = prompt('Enter your admin password to regenerate backup codes:');
+        if (!password) return;
 
         PrimeXCore.showLoading(true);
         try {
-            const response = await PrimeXCore.apiCall('/admin/2fa/regenerate-backup-codes', 'POST');
-            const codes = response.data.backup_codes || [];
+            const response = await PrimeXCore.apiCall('/admin/2fa/regenerate-backup-codes', 'POST', { password });
+            const codes = response.data.recoveryCodes || [];
             
             const modalContent = `
-                <div>
-                    <p><strong>Save these backup codes in a safe place:</strong></p>
+                <div style="text-align: center;">
+                    <p style="color: var(--danger); font-weight: bold; margin-bottom: 20px;">
+                        ⚠️ Save these NEW backup codes in a secure location. Old codes are now invalid!
+                    </p>
                     <div style="background: var(--bg-tertiary); padding: 20px; border-radius: 8px; margin: 20px 0;">
-                        ${codes.map(code => `<div style="font-family: monospace; padding: 5px;">${code}</div>`).join('')}
+                        ${codes.map(code => `<div style="font-family: monospace; font-size: 16px; padding: 5px;">${code}</div>`).join('')}
                     </div>
-                    <p style="color: var(--warning);">⚠️ These codes will only be shown once!</p>
+                    <p style="color: var(--text-muted); font-size: 14px;">
+                        Use these codes if you lose access to your authenticator app.
+                    </p>
                 </div>
             `;
 
-            PrimeXCore.showModal('Backup Codes', modalContent, [
-                { text: 'Close', class: 'btn-primary', onclick: 'PrimeXCore.closeModal()' }
+            PrimeXCore.showModal('New Backup Recovery Codes', modalContent, [
+                { text: 'I have saved these codes', class: 'btn-success', onclick: 'PrimeXCore.closeModal()' }
             ]);
         } catch (error) {
-            PrimeXCore.showToast('Failed to regenerate backup codes', 'error');
+            PrimeXCore.showToast(error.message || 'Failed to regenerate backup codes. Check your password.', 'error');
         } finally {
             PrimeXCore.showLoading(false);
         }
