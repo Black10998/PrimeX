@@ -6,13 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.VideoView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.primex.iptv.R
 import com.primex.iptv.adapters.ContentRow
 import com.primex.iptv.adapters.ContentRowAdapter
+import com.primex.iptv.api.ApiClient
 import com.primex.iptv.models.Channel
+import com.primex.iptv.utils.PreferenceManager
+import com.primex.iptv.utils.SessionManager
 import com.primex.iptv.utils.VideoBackgroundHelper
+import kotlinx.coroutines.launch
 
 class MoviesFragment : Fragment() {
 
@@ -38,73 +43,76 @@ class MoviesFragment : Fragment() {
     }
 
     private fun loadMoviesContent() {
-        // Create placeholder movie content
-        val placeholderMovies = createPlaceholderMovies()
-        
-        val rows = listOf(
-            ContentRow("Popular Movies", placeholderMovies.take(10)),
-            ContentRow("New Releases", placeholderMovies.drop(10).take(10)),
-            ContentRow("Action Movies", placeholderMovies.drop(20).take(10)),
-            ContentRow("Drama", placeholderMovies.drop(30).take(10)),
-            ContentRow("Comedy", placeholderMovies.drop(40).take(10))
-        )
-        
-        contentRecycler.adapter = ContentRowAdapter(rows) { movie ->
-            // Placeholder click action
-            android.widget.Toast.makeText(
-                requireContext(),
-                "Movie: ${movie.name}",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
+        val username = PreferenceManager.getXtreamUsername(requireContext())
+        val password = PreferenceManager.getXtreamPassword(requireContext())
+
+        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
+            showEmptyState("Please login to view movies")
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                // Load VOD (movies) from backend
+                val response = ApiClient.xtreamApiService.getVodStreams(username, password)
+                
+                // Check for account deactivation
+                if (SessionManager.handleUnauthorizedResponse(requireContext(), response.code())) {
+                    return@launch
+                }
+                
+                if (response.isSuccessful && response.body() != null) {
+                    val movies = response.body()!!
+                    
+                    if (movies.isEmpty()) {
+                        showEmptyState("No movies available")
+                        return@launch
+                    }
+                    
+                    // Convert to Channel objects
+                    val movieChannels = movies.map { movie ->
+                        Channel(
+                            id = movie.streamId?.toString() ?: "0",
+                            name = movie.name ?: "Unknown Movie",
+                            logo_url = movie.streamIcon,
+                            stream_url = buildStreamUrl(username, password, movie.streamId?.toString() ?: "0", "movie"),
+                            category = movie.categoryId
+                        )
+                    }
+                    
+                    // Group by category if available, otherwise show all
+                    val rows = if (movieChannels.size > 10) {
+                        listOf(
+                            ContentRow("All Movies", movieChannels)
+                        )
+                    } else {
+                        listOf(ContentRow("Movies", movieChannels))
+                    }
+                    
+                    contentRecycler.adapter = ContentRowAdapter(rows) { movie ->
+                        // Play movie
+                        android.widget.Toast.makeText(
+                            requireContext(),
+                            "Playing: ${movie.name}",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    showEmptyState("Failed to load movies")
+                }
+            } catch (e: Exception) {
+                showEmptyState("Error: ${e.message}")
+            }
         }
     }
 
-    private fun createPlaceholderMovies(): List<Channel> {
-        val movieTitles = listOf(
-            "The Dark Knight", "Inception", "Interstellar", "The Matrix", "Pulp Fiction",
-            "The Godfather", "Fight Club", "Forrest Gump", "The Shawshank Redemption", "Gladiator",
-            "The Prestige", "Memento", "The Departed", "Goodfellas", "Casino Royale",
-            "Blade Runner 2049", "Mad Max: Fury Road", "John Wick", "The Revenant", "Dunkirk",
-            "Parasite", "Joker", "1917", "Tenet", "Dune",
-            "No Time to Die", "Top Gun: Maverick", "Avatar", "Titanic", "The Avengers",
-            "Iron Man", "The Dark Knight Rises", "Skyfall", "Spectre", "Mission Impossible",
-            "Fast & Furious", "Transformers", "Jurassic World", "Star Wars", "The Lion King",
-            "Frozen", "Toy Story", "Finding Nemo", "The Incredibles", "Up",
-            "WALL-E", "Ratatouille", "Inside Out", "Coco", "Soul"
-        )
-        
-        return (1..50).map { index ->
-            val posterIndex = ((index - 1) % 20) + 1
-            val drawableId = when (posterIndex) {
-                1 -> R.drawable.movie_poster_1
-                2 -> R.drawable.movie_poster_2
-                3 -> R.drawable.movie_poster_3
-                4 -> R.drawable.movie_poster_4
-                5 -> R.drawable.movie_poster_5
-                6 -> R.drawable.movie_poster_6
-                7 -> R.drawable.movie_poster_7
-                8 -> R.drawable.movie_poster_8
-                9 -> R.drawable.movie_poster_9
-                10 -> R.drawable.movie_poster_10
-                11 -> R.drawable.movie_poster_11
-                12 -> R.drawable.movie_poster_12
-                13 -> R.drawable.movie_poster_13
-                14 -> R.drawable.movie_poster_14
-                15 -> R.drawable.movie_poster_15
-                16 -> R.drawable.movie_poster_16
-                17 -> R.drawable.movie_poster_17
-                18 -> R.drawable.movie_poster_18
-                19 -> R.drawable.movie_poster_19
-                else -> R.drawable.movie_poster_20
-            }
-            
-            Channel(
-                id = "movie_$index",
-                name = movieTitles.getOrElse(index - 1) { "Movie $index" },
-                logo_url = "android.resource://com.primex.iptv/$drawableId",
-                stream_url = "",
-                category = "movies"
-            )
-        }
+    private fun buildStreamUrl(username: String, password: String, streamId: String, type: String): String {
+        return "https://prime-x.live/$type/$username/$password/$streamId.mp4"
     }
+
+    private fun showEmptyState(message: String) {
+        contentRecycler.adapter = ContentRowAdapter(emptyList()) { }
+        android.widget.Toast.makeText(requireContext(), message, android.widget.Toast.LENGTH_LONG).show()
+    }
+
 }

@@ -39,34 +39,12 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun loadFavoritesContent() {
-        // Create placeholder favorites content
-        val placeholderFavorites = createPlaceholderFavorites()
-        
-        val rows = listOf(
-            ContentRow("My Favorites", placeholderFavorites.take(15)),
-            ContentRow("Recently Added to Favorites", placeholderFavorites.drop(15).take(10)),
-            ContentRow("Watch Later", placeholderFavorites.drop(25).take(10))
-        )
-        
-        contentRecycler.adapter = ContentRowAdapter(rows) { favorite ->
-            // Placeholder click action
-            android.widget.Toast.makeText(
-                requireContext(),
-                "Favorite: ${favorite.name}",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
-        }
+        // Favorites feature not yet implemented - show empty state
+        showEmptyState("Favorites feature coming soon")
     }
 
-    private fun createPlaceholderFavorites(): List<Channel> {
-        return (1..35).map { index ->
-            Channel(
-                id = "favorite_$index",
-                name = "Favorite Item $index",
-                logo_url = null,
-                stream_url = "",
-                category = "favorites"
-            )
-        }
+    private fun showEmptyState(message: String) {
+        contentRecycler.adapter = ContentRowAdapter(emptyList()) { }
+        android.widget.Toast.makeText(requireContext(), message, android.widget.Toast.LENGTH_LONG).show()
     }
 }
