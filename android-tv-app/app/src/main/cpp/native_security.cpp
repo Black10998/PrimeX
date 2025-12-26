@@ -1,11 +1,16 @@
 /**
  * Native Security Layer - C++ Implementation
  * 
- * CRITICAL SECURITY:
- * - Implements security checks in native code
- * - Harder to reverse engineer than Java/Kotlin
- * - Stores sensitive data in native memory
- * - Performs integrity verification at native level
+ * ENFORCEMENT MODEL:
+ * 
+ * HARD ENFORCEMENT (Non-negotiable):
+ * - Package name verification
+ * - PrimeX domain/protocol storage
+ * - AppKey encryption/decryption
+ * 
+ * FLEXIBLE ENFORCEMENT (Warning/Monitoring):
+ * - Debugger detection
+ * - Emulator detection
  * 
  * This provides an additional layer of security that's significantly
  * harder to bypass than pure Java/Kotlin implementations.
@@ -116,26 +121,27 @@ Java_com_primex_iptv_security_NativeSecurity_verifyPackageName(
 
 /**
  * Get PrimeX domain from native memory
- * This is harder to extract than from Java strings
+ * HARD ENFORCEMENT: Domain is part of app identity
+ * FLEXIBLE ENFORCEMENT: Environment checks are warnings only
  */
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_primex_iptv_security_NativeSecurity_getPrimexDomain(
         JNIEnv* env,
         jobject /* this */) {
     
-    // Perform anti-debugging check
+    // FLEXIBLE: Anti-debugging check (warning only)
     if (isDebuggerAttached()) {
-        LOGE("Debugger detected - terminating");
-        exit(1);
+        LOGE("ENVIRONMENT: Debugger detected - monitoring enabled");
+        // Does NOT terminate
     }
     
-    // Check for emulator
+    // FLEXIBLE: Emulator check (warning only)
     if (isEmulator()) {
-        LOGE("Emulator detected");
-        // In production, uncomment to enforce:
-        // exit(1);
+        LOGE("ENVIRONMENT: Emulator detected - monitoring enabled");
+        // Does NOT terminate
     }
     
+    // HARD: Return PrimeX domain (identity)
     return env->NewStringUTF(PRIMEX_DOMAIN);
 }
 
@@ -152,7 +158,9 @@ Java_com_primex_iptv_security_NativeSecurity_getPrimexProtocol(
 
 /**
  * Perform comprehensive native security check
- * Returns true if all checks pass
+ * FLEXIBLE ENFORCEMENT: Environment checks only, warnings not failures
+ * 
+ * Returns true (checks always pass, environment is monitored)
  */
 extern "C" JNIEXPORT jboolean JNICALL
 Java_com_primex_iptv_security_NativeSecurity_performSecurityCheck(
@@ -161,17 +169,16 @@ Java_com_primex_iptv_security_NativeSecurity_performSecurityCheck(
     
     LOGI("Performing native security checks...");
     
-    // Check 1: Anti-debugging
+    // FLEXIBLE: Anti-debugging (warning only)
     if (isDebuggerAttached()) {
-        LOGE("Security check failed: Debugger detected");
-        return false;
+        LOGE("ENVIRONMENT: Debugger detected - monitoring enabled");
+        // Does NOT fail check
     }
     
-    // Check 2: Emulator detection
+    // FLEXIBLE: Emulator detection (warning only)
     if (isEmulator()) {
-        LOGE("Security check failed: Emulator detected");
-        // In production, return false to enforce
-        // return false;
+        LOGE("ENVIRONMENT: Emulator detected - monitoring enabled");
+        // Does NOT fail check
     }
     
     // Check 3: Verify process name
@@ -204,31 +211,30 @@ static void decryptAppKey(unsigned char* output, int length) {
 
 /**
  * Get decrypted AppKey
- * CRITICAL: Only returns key if all security checks pass
+ * HARD ENFORCEMENT: AppKey is part of app identity
+ * FLEXIBLE ENFORCEMENT: Environment checks are warnings only
  */
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_primex_iptv_security_NativeSecurity_getAppKey(
         JNIEnv* env,
         jobject /* this */) {
     
-    // CRITICAL: Perform security checks before returning key
+    // FLEXIBLE: Environment checks (warning only, does NOT block AppKey)
     if (isDebuggerAttached()) {
-        LOGE("Debugger detected - refusing to decrypt AppKey");
-        return env->NewStringUTF("");
+        LOGE("ENVIRONMENT: Debugger detected - monitoring enabled");
+        // Does NOT refuse to decrypt
     }
     
     if (isEmulator()) {
-        LOGE("Emulator detected - refusing to decrypt AppKey");
-        // In production, return empty string:
-        // return env->NewStringUTF("");
+        LOGE("ENVIRONMENT: Emulator detected - monitoring enabled");
+        // Does NOT refuse to decrypt
     }
     
-    // Decrypt AppKey
+    // HARD: Decrypt and return AppKey (identity)
     unsigned char decrypted[APP_KEY_LENGTH + 1];
     decryptAppKey(decrypted, APP_KEY_LENGTH);
     decrypted[APP_KEY_LENGTH] = '\0';
     
-    // Return decrypted key
     return env->NewStringUTF(reinterpret_cast<const char*>(decrypted));
 }
 

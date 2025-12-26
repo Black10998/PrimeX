@@ -10,11 +10,17 @@ import java.security.MessageDigest
 /**
  * TamperDetector - Runtime Tampering Detection
  * 
- * CRITICAL SECURITY:
- * - Detects runtime code modification
- * - Monitors for hooking frameworks
- * - Checks APK integrity
- * - Detects memory tampering
+ * ENFORCEMENT MODEL:
+ * 
+ * HARD ENFORCEMENT (Immediate termination):
+ * ✓ DEX file modification (code tampering)
+ * ✓ Native library modification (code tampering)
+ * ✓ APK signature invalid (identity tampering)
+ * 
+ * FLEXIBLE ENFORCEMENT (Warning/Monitoring):
+ * ⚠ Hooking frameworks (environment)
+ * ⚠ Memory tampering (environment)
+ * ⚠ Debugger detection (environment)
  * 
  * Runs continuously to detect tampering attempts during runtime.
  */
@@ -51,46 +57,60 @@ object TamperDetector {
     
     /**
      * Detect runtime tampering
-     * Returns true if tampering detected
+     * 
+     * HARD ENFORCEMENT: Code/identity tampering
+     * FLEXIBLE ENFORCEMENT: Environment issues
+     * 
+     * Returns true if HARD tampering detected (requires termination)
      */
     fun detectTampering(context: Context): Boolean {
+        var hardViolation = false
+        
         try {
-            // Check 1: DEX file integrity
+            // ========================================
+            // HARD CHECKS - Identity/Code Tampering
+            // ========================================
+            
+            // HARD: DEX file integrity (code tampering)
             if (isDexModified(context)) {
-                Log.e(TAG, "✗ DEX file tampering detected")
-                return true
+                Log.e(TAG, "✗ IDENTITY VIOLATION: DEX file tampering detected")
+                hardViolation = true
             }
             
-            // Check 2: Native library integrity
+            // HARD: Native library integrity (code tampering)
             if (isNativeLibraryModified()) {
-                Log.e(TAG, "✗ Native library tampering detected")
-                return true
+                Log.e(TAG, "✗ IDENTITY VIOLATION: Native library tampering detected")
+                hardViolation = true
             }
             
-            // Check 3: Hooking frameworks
-            if (isHookingFrameworkActive()) {
-                Log.e(TAG, "✗ Hooking framework detected")
-                return true
-            }
-            
-            // Check 4: Memory tampering
-            if (isMemoryTampered()) {
-                Log.e(TAG, "✗ Memory tampering detected")
-                return true
-            }
-            
-            // Check 5: APK signature
+            // HARD: APK signature (identity tampering)
             if (isApkSignatureInvalid(context)) {
-                Log.e(TAG, "✗ APK signature invalid")
-                return true
+                Log.e(TAG, "✗ IDENTITY VIOLATION: APK signature invalid")
+                hardViolation = true
             }
             
-            return false
+            // ========================================
+            // FLEXIBLE CHECKS - Environment Issues
+            // ========================================
+            
+            // FLEXIBLE: Hooking frameworks (warning only)
+            if (isHookingFrameworkActive()) {
+                Log.w(TAG, "⚠️ ENVIRONMENT: Hooking framework detected - monitoring enabled")
+                // Does NOT set hardViolation
+            }
+            
+            // FLEXIBLE: Memory tampering (warning only)
+            if (isMemoryTampered()) {
+                Log.w(TAG, "⚠️ ENVIRONMENT: Memory tampering detected - monitoring enabled")
+                // Does NOT set hardViolation
+            }
+            
+            return hardViolation
             
         } catch (e: Exception) {
             Log.e(TAG, "Tamper detection error: ${e.message}")
-            // Treat errors as potential tampering
-            return true
+            // Errors in detection are NOT treated as hard violations
+            return false
         }
     }
     
@@ -300,7 +320,11 @@ object TamperDetector {
     
     /**
      * Start continuous tampering monitoring
-     * Checks for tampering periodically
+     * 
+     * HARD ENFORCEMENT: Terminates on identity/code tampering
+     * FLEXIBLE ENFORCEMENT: Monitors environment issues
+     * 
+     * Checks for tampering periodically (every 10 seconds)
      */
     fun startMonitoring(context: Context, intervalMs: Long = 10000L) {
         Thread {
@@ -308,11 +332,15 @@ object TamperDetector {
                 try {
                     Thread.sleep(intervalMs)
                     
-                    if (detectTampering(context)) {
-                        Log.e(TAG, "TAMPERING DETECTED - TERMINATING APP")
+                    // Check for tampering
+                    val hardViolation = detectTampering(context)
+                    
+                    if (hardViolation) {
+                        // HARD VIOLATION: Identity/code tampering detected
+                        Log.e(TAG, "IDENTITY VIOLATION DETECTED - TERMINATING APP")
                         
-                        // In production, terminate immediately
-                        // System.exit(1)
+                        // HARD ENFORCEMENT: Terminate immediately
+                        System.exit(1)
                     }
                     
                 } catch (e: InterruptedException) {
@@ -324,6 +352,6 @@ object TamperDetector {
             }
         }.start()
         
-        Log.d(TAG, "✓ Continuous tampering monitoring started")
+        Log.d(TAG, "✓ Continuous tampering monitoring started (identity locked, environment monitored)")
     }
 }

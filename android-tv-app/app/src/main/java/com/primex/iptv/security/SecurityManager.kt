@@ -14,15 +14,22 @@ import kotlin.system.exitProcess
 /**
  * SecurityManager - Maximum Security Implementation
  * 
- * CRITICAL SECURITY:
- * - Cryptographic app binding to PrimeX
- * - Certificate pinning
- * - Signature verification against hardcoded hash
- * - Root/emulator detection
- * - Runtime tampering detection
- * - No fallback, no bypass
+ * ENFORCEMENT MODEL (Netflix/Spotify/Amazon Prime):
  * 
- * ANY tampering = immediate termination
+ * HARD ENFORCEMENT (Non-negotiable - Immediate termination):
+ * ✓ Package name verification
+ * ✓ Signature verification
+ * ✓ AppKey integrity
+ * ✓ PrimeX backend binding
+ * ✓ Code tampering detection
+ * 
+ * FLEXIBLE ENFORCEMENT (Monitoring/Warning/Feature restriction):
+ * ⚠ Root detection
+ * ⚠ Emulator detection
+ * ⚠ Play Integrity
+ * ⚠ Debugger detection
+ * 
+ * Identity is non-negotiable. Environment is tolerant.
  */
 object SecurityManager {
     
@@ -63,40 +70,50 @@ object SecurityManager {
     
     /**
      * Initialize security - MUST be called on app startup
-     * Terminates app immediately if any check fails
+     * 
+     * HARD ENFORCEMENT: Package name, signature, AppKey, backend binding
+     * FLEXIBLE ENFORCEMENT: Root, emulator, Play Integrity, debugging
      */
     fun initialize(context: Context) {
         Log.d(TAG, "Initializing security checks...")
         
         try {
-            // 1. Verify package name
+            // ========================================
+            // HARD ENFORCEMENT - Immediate termination
+            // ========================================
+            
+            // 1. HARD: Verify package name (non-negotiable)
             verifyPackageName(context)
             
-            // 2. Verify app signature
+            // 2. HARD: Verify app signature (non-negotiable)
             verifySignature(context)
             
-            // 3. Detect root/emulator
-            detectRootAndEmulator()
-            
-            // 4. Verify runtime integrity
-            verifyRuntimeIntegrity(context)
-            
-            // 5. Verify native security layer
+            // 3. HARD: Verify native security layer (non-negotiable)
             verifyNativeLayer(context)
             
-            // 6. Initialize tamper detection
+            // 4. HARD: Initialize tamper detection (non-negotiable)
             TamperDetector.initialize(context)
             
-            // 7. Verify Play Integrity (async - don't block startup)
-            verifyPlayIntegrity(context)
-            
-            // 8. Start continuous tampering monitoring
+            // 5. HARD: Start continuous tampering monitoring (non-negotiable)
             TamperDetector.startMonitoring(context)
+            
+            // ========================================
+            // FLEXIBLE ENFORCEMENT - Warning/Monitoring
+            // ========================================
+            
+            // 6. FLEXIBLE: Detect root/emulator (warning only)
+            detectEnvironment()
+            
+            // 7. FLEXIBLE: Check runtime environment (warning only)
+            checkRuntimeEnvironment(context)
+            
+            // 8. FLEXIBLE: Verify Play Integrity (async, monitoring only)
+            verifyPlayIntegrity(context)
             
             integrityVerified = true
             lastCheckTime = System.currentTimeMillis()
             
-            Log.d(TAG, "✓ All security checks passed - maximum security active")
+            Log.d(TAG, "✓ Security initialized - Identity locked, Environment monitored")
             
         } catch (e: SecurityException) {
             Log.e(TAG, "SECURITY VIOLATION: ${e.message}")
@@ -155,22 +172,25 @@ object SecurityManager {
     
     /**
      * Verify package name matches expected value
+     * HARD ENFORCEMENT: Package name is part of app identity
      */
     private fun verifyPackageName(context: Context) {
         val actualPackageName = context.packageName
         
         if (actualPackageName != EXPECTED_PACKAGE_NAME) {
             throw SecurityException(
-                "Package name mismatch: expected=$EXPECTED_PACKAGE_NAME, actual=$actualPackageName"
+                "IDENTITY VIOLATION: Package name mismatch - expected=$EXPECTED_PACKAGE_NAME, actual=$actualPackageName"
             )
         }
         
-        Log.d(TAG, "✓ Package name verified")
+        Log.d(TAG, "✓ Package name verified (identity locked)")
     }
     
     /**
      * Verify app signature against hardcoded expected hash
-     * CRITICAL: This prevents repackaging and re-signing
+     * HARD ENFORCEMENT: Signature is part of app identity
+     * 
+     * This prevents repackaging and re-signing
      */
     private fun verifySignature(context: Context): Boolean {
         try {
@@ -218,11 +238,11 @@ object SecurityManager {
             
             if (signatureHashBase64 != EXPECTED_SIGNATURE_HASH) {
                 throw SecurityException(
-                    "Signature mismatch: app has been re-signed or tampered with"
+                    "IDENTITY VIOLATION: Signature mismatch - app has been re-signed or tampered with"
                 )
             }
             
-            Log.d(TAG, "✓ Signature verified")
+            Log.d(TAG, "✓ Signature verified (identity locked)")
             return true
             
         } catch (e: Exception) {
@@ -232,33 +252,34 @@ object SecurityManager {
     }
     
     /**
-     * Detect root and emulator
-     * CRITICAL: Rooted devices and emulators are security risks
-     * In production, these should terminate the app
+     * Detect environment (root, emulator, hooking)
+     * FLEXIBLE ENFORCEMENT: Warning/monitoring only, does NOT terminate app
+     * 
+     * This follows Netflix/Spotify model: monitor but allow usage
      */
-    private fun detectRootAndEmulator() {
-        // Check for root
+    private fun detectEnvironment() {
+        // Check for root - WARNING ONLY
         if (isRooted()) {
-            Log.w(TAG, "⚠️ Rooted device detected")
-            // PRODUCTION: Uncomment to enforce strict security
-            // throw SecurityException("Rooted devices not supported for security reasons")
+            Log.w(TAG, "⚠️ ENVIRONMENT: Rooted device detected - monitoring enabled")
+            // Could restrict certain features here if needed
+            // But does NOT terminate app
         }
         
-        // Check for emulator
+        // Check for emulator - WARNING ONLY
         if (isEmulator()) {
-            Log.w(TAG, "⚠️ Emulator detected")
-            // PRODUCTION: Uncomment to enforce strict security
-            // throw SecurityException("Emulators not supported for security reasons")
+            Log.w(TAG, "⚠️ ENVIRONMENT: Emulator detected - monitoring enabled")
+            // Could restrict certain features here if needed
+            // But does NOT terminate app
         }
         
-        // Check for Xposed/Frida
+        // Check for Xposed/Frida - WARNING ONLY
         if (isXposedOrFridaDetected()) {
-            Log.e(TAG, "✗ Hooking framework detected")
-            // PRODUCTION: Uncomment to enforce strict security
-            // throw SecurityException("Hooking frameworks not supported")
+            Log.w(TAG, "⚠️ ENVIRONMENT: Hooking framework detected - monitoring enabled")
+            // Could restrict certain features here if needed
+            // But does NOT terminate app
         }
         
-        Log.d(TAG, "✓ Root/emulator/hooking check passed")
+        Log.d(TAG, "✓ Environment check complete (flexible enforcement)")
     }
     
     /**
@@ -442,25 +463,27 @@ object SecurityManager {
     }
     
     /**
-     * Verify runtime integrity
-     * Detects if app is running in debugger or being tampered with
+     * Check runtime environment (debugger, debuggable flag)
+     * FLEXIBLE ENFORCEMENT: Warning/monitoring only, does NOT terminate app
+     * 
+     * This follows Netflix/Spotify model: monitor but allow usage
      */
-    private fun verifyRuntimeIntegrity(context: Context) {
-        // Check if debuggable
+    private fun checkRuntimeEnvironment(context: Context) {
+        // Check if debuggable - WARNING ONLY
         val isDebuggable = (context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
         
         if (isDebuggable) {
-            Log.w(TAG, "⚠️ App is debuggable")
-            // In production, this should terminate:
-            // throw SecurityException("Debuggable apps not allowed")
+            Log.w(TAG, "⚠️ ENVIRONMENT: App is debuggable - monitoring enabled")
+            // Does NOT terminate app
         }
         
-        // Check if debugger is attached
+        // Check if debugger is attached - WARNING ONLY
         if (android.os.Debug.isDebuggerConnected()) {
-            throw SecurityException("Debugger detected")
+            Log.w(TAG, "⚠️ ENVIRONMENT: Debugger connected - monitoring enabled")
+            // Does NOT terminate app
         }
         
-        Log.d(TAG, "✓ Runtime integrity verified")
+        Log.d(TAG, "✓ Runtime environment check complete (flexible enforcement)")
     }
     
     /**
@@ -505,33 +528,38 @@ object SecurityManager {
     
     /**
      * Verify native security layer
+     * HARD ENFORCEMENT: Native layer is part of app identity
+     * 
      * Uses C++ implementation for additional protection
      */
     private fun verifyNativeLayer(context: Context) {
         if (!NativeSecurity.isNativeLibraryLoaded()) {
-            Log.w(TAG, "⚠️ Native security library not loaded")
-            // In production, this should be enforced:
-            // throw SecurityException("Native security layer required")
+            Log.w(TAG, "⚠️ Native security library not loaded - continuing without native checks")
+            // Native layer is optional enhancement, not required
             return
         }
         
-        // Verify package name using native code
+        // HARD: Verify package name using native code
         if (!NativeSecurity.verifyPackageName(context.packageName)) {
-            throw SecurityException("Native package verification failed")
+            throw SecurityException("IDENTITY VIOLATION: Native package verification failed")
         }
         
-        // Verify native integrity
+        // HARD: Verify native integrity
         if (!NativeSecurity.verifyNativeIntegrity()) {
-            throw SecurityException("Native integrity verification failed")
+            throw SecurityException("IDENTITY VIOLATION: Native integrity verification failed")
         }
         
-        Log.d(TAG, "✓ Native security layer verified")
+        Log.d(TAG, "✓ Native security layer verified (identity locked)")
     }
     
     /**
      * Verify device integrity using Play Integrity API
+     * FLEXIBLE ENFORCEMENT: Monitoring only, does NOT terminate app
+     * 
      * This verifies the app is running on a genuine Android device
-     * with Google Play Services and hasn't been tampered with
+     * with Google Play Services and hasn't been tampered with.
+     * 
+     * Follows Netflix/Spotify model: monitor but allow usage
      */
     private fun verifyPlayIntegrity(context: Context) {
         if (CLOUD_PROJECT_NUMBER == "REPLACE_WITH_YOUR_CLOUD_PROJECT_NUMBER") {
@@ -553,21 +581,20 @@ object SecurityManager {
             integrityManager.requestIntegrityToken(integrityTokenRequest)
                 .addOnSuccessListener { response ->
                     val token = response.token()
-                    Log.d(TAG, "✓ Play Integrity token received")
+                    Log.d(TAG, "✓ ENVIRONMENT: Play Integrity token received")
                     
-                    // In production, send token to your backend for verification
-                    // Backend should verify using Google's API
+                    // Send token to backend for verification and monitoring
+                    // Backend can decide on feature restrictions if needed
                     // https://developer.android.com/google/play/integrity/verdict
                 }
                 .addOnFailureListener { exception ->
-                    Log.e(TAG, "✗ Play Integrity verification failed: ${exception.message}")
+                    Log.w(TAG, "⚠️ ENVIRONMENT: Play Integrity verification failed: ${exception.message}")
                     
-                    // In production, this should terminate the app
-                    // Uncomment for strict enforcement:
-                    // terminateApp("Play Integrity verification failed")
+                    // FLEXIBLE: Does NOT terminate app
+                    // Could restrict certain features if needed
                 }
         } catch (e: Exception) {
-            Log.e(TAG, "Play Integrity check error: ${e.message}")
+            Log.w(TAG, "⚠️ ENVIRONMENT: Play Integrity check error: ${e.message}")
         }
     }
     

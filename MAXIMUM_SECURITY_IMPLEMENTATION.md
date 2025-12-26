@@ -4,14 +4,25 @@
 
 This document describes the **maximum security implementation** for the PAX IPTV Android TV application. The app is now **cryptographically bound to PrimeX** and **impossible to reuse, modify, or connect to any other backend**.
 
-## Security Requirements (100% Implemented)
+## Enforcement Model (Netflix/Spotify/Amazon Prime)
 
-✅ **Cryptographic Binding**: App is cryptographically bound to PrimeX backend  
-✅ **AppKey Protection**: AppKey stored encrypted in native code, impossible to extract  
-✅ **Anti-Repackaging**: Re-signing or repackaging renders app completely unusable  
-✅ **Signature Verification**: Strict signature verification against hardcoded expected value  
-✅ **No Bypass**: No fallback, no client-side control, no bypass possible  
-✅ **Immediate Termination**: Any tampering attempt terminates app immediately  
+### HARD ENFORCEMENT (Non-negotiable - Immediate termination)
+
+✅ **Package Name Verification** - Must be exactly `com.primex.iptv`  
+✅ **Signature Verification** - Must match hardcoded SHA-256 hash  
+✅ **AppKey Integrity** - Encrypted in native code, bound to signature  
+✅ **PrimeX Backend Binding** - Hardcoded to `prime-x.live` only  
+✅ **Code Tampering Detection** - DEX/native library modification  
+
+### FLEXIBLE ENFORCEMENT (Warning/Monitoring - Does NOT terminate)
+
+⚠️ **Root Detection** - Logged and monitored, app continues  
+⚠️ **Emulator Detection** - Logged and monitored, app continues  
+⚠️ **Play Integrity** - Logged and monitored, app continues  
+⚠️ **Debugger Detection** - Logged and monitored, app continues  
+⚠️ **Hooking Frameworks** - Logged and monitored, app continues  
+
+**Identity is non-negotiable. Environment is tolerant.**  
 
 ## Security Layers
 
@@ -288,9 +299,9 @@ static const unsigned char ENCRYPTED_APP_KEY[] = {
 3. Try to debug
 
 **Expected Result**:
-- ❌ Debugger detected
-- ❌ App terminates or refuses to function
-- ❌ Native ptrace check fails
+- ⚠️ Debugger detected (logged as warning)
+- ✅ App continues to function normally
+- ⚠️ Monitoring enabled for analytics
 
 ### Test 5: Root Detection
 
@@ -299,9 +310,9 @@ static const unsigned char ENCRYPTED_APP_KEY[] = {
 2. Try to run
 
 **Expected Result**:
-- ⚠️ Root detected (logged)
-- ⚠️ Can be configured to terminate
-- ⚠️ Security warning issued
+- ⚠️ Root detected (logged as warning)
+- ✅ App continues to function normally
+- ⚠️ Monitoring enabled for analytics
 
 ### Test 6: Hooking Framework Detection
 
@@ -311,9 +322,10 @@ static const unsigned char ENCRYPTED_APP_KEY[] = {
 3. Try to bypass security checks
 
 **Expected Result**:
-- ❌ Hooking framework detected
-- ❌ App terminates
-- ❌ Tampering detected
+- ⚠️ Hooking framework detected (logged as warning)
+- ✅ App continues to function normally
+- ⚠️ Monitoring enabled for analytics
+- ❌ Identity tampering still terminates app
 
 ### Test 7: Code Modification
 
@@ -348,63 +360,45 @@ Before deploying to production:
 
 - [ ] Replace `EXPECTED_SIGNATURE_HASH` with actual release signature
 - [ ] Replace `CERTIFICATE_PINS` with actual prime-x.live certificate pins
-- [ ] Replace `CLOUD_PROJECT_NUMBER` with actual Google Cloud project number
+- [ ] Replace `CLOUD_PROJECT_NUMBER` with actual Google Cloud project number (optional)
 - [ ] Replace `ENCRYPTED_APP_KEY` with actual encrypted AppKey
-- [ ] Enable strict enforcement (uncomment termination code)
 - [ ] Test all security measures thoroughly
 - [ ] Build release APK with ProGuard enabled
 - [ ] Sign with release certificate
-- [ ] Test repackaging detection
-- [ ] Test re-signing detection
-- [ ] Test certificate pinning
+- [ ] Test repackaging detection (should terminate)
+- [ ] Test re-signing detection (should terminate)
+- [ ] Test certificate pinning (should fail connection)
+- [ ] Test code tampering detection (should terminate)
 - [ ] Verify no debug logging in release build
 - [ ] Verify code obfuscation is working
 - [ ] Test on multiple devices
-- [ ] Test on rooted device (if enforcement enabled)
-- [ ] Test with SSL proxy (should fail)
+- [ ] Test on rooted device (should work with warnings)
+- [ ] Test on emulator (should work with warnings)
+- [ ] Test with debugger (should work with warnings)
+- [ ] Test with SSL proxy (should fail connection)
 - [ ] Verify AppKey cannot be extracted
 
 ## Security Enforcement Levels
 
-### Development Mode (Current)
+### Production Mode (Current - Netflix/Spotify Model)
 
-- ✅ All checks enabled
-- ⚠️ Warnings logged but app continues
-- ⚠️ Allows debugging
-- ⚠️ Allows emulators
-- ⚠️ Allows rooted devices
+**HARD ENFORCEMENT (Always Active):**
+- ✅ Package name verification → Terminates if mismatch
+- ✅ Signature verification → Terminates if mismatch
+- ✅ Code tampering detection → Terminates if detected
+- ✅ Certificate pinning → Connection fails if mismatch
+- ✅ AppKey integrity → Terminates if compromised
 
-**Purpose**: Testing and development
+**FLEXIBLE ENFORCEMENT (Always Active):**
+- ⚠️ Root detection → Logs warning, app continues
+- ⚠️ Emulator detection → Logs warning, app continues
+- ⚠️ Debugger detection → Logs warning, app continues
+- ⚠️ Hooking frameworks → Logs warning, app continues
+- ⚠️ Play Integrity → Logs result, app continues
 
-### Production Mode (Recommended)
+**Purpose**: Maximum security on identity, maximum compatibility on environment
 
-Enable by uncommenting enforcement code:
-
-```kotlin
-// In SecurityManager.kt
-if (isRooted()) {
-    throw SecurityException("Rooted devices not supported")
-}
-
-if (isEmulator()) {
-    throw SecurityException("Emulators not supported")
-}
-
-// In TamperDetector.kt
-if (detectTampering(context)) {
-    System.exit(1)
-}
-```
-
-- ✅ All checks enabled
-- ❌ Terminates on any security violation
-- ❌ No debugging allowed
-- ❌ No emulators allowed
-- ❌ No rooted devices allowed
-- ❌ No hooking frameworks allowed
-- ❌ No tampering allowed
-
-**Purpose**: Maximum security for production
+**This is the recommended production configuration** - no code changes needed.
 
 ## Attack Scenarios & Outcomes
 
