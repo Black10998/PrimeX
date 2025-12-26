@@ -21,18 +21,11 @@ android {
 
     buildTypes {
         release {
-            // CRITICAL SECURITY: Enable code obfuscation and shrinking
+            // Production: Enable code obfuscation
             minifyEnabled true
             shrinkResources true
-            
-            // Use aggressive optimization
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            
-            // Disable debugging in release
             debuggable false
-            
-            // Enable R8 full mode for maximum obfuscation
-            // This makes reverse engineering significantly harder
         }
         debug {
             debuggable true
@@ -52,14 +45,6 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
-    }
-    
-    // CRITICAL SECURITY: Enable NDK for native security layer
-    externalNativeBuild {
-        cmake {
-            path file('src/main/cpp/CMakeLists.txt')
-            version '3.18.1'
-        }
     }
 }
 
@@ -109,9 +94,6 @@ dependencies {
     
     // Preferences
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    
-    // Security - Play Integrity API
-    implementation 'com.google.android.play:integrity:1.3.0'
     
     // Testing
     testImplementation 'junit:junit:4.13.2'

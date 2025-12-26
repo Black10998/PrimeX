@@ -1,25 +1,20 @@
 package com.primex.iptv.config
 
 import android.content.Context
-import com.primex.iptv.security.SecurityManager
 
 /**
- * ConfigManager - Maximum Security PrimeX Backend Configuration
+ * ConfigManager - Production PrimeX Backend Configuration
  * 
- * CRITICAL SECURITY:
- * - Cryptographically bound to PrimeX
- * - Certificate pinning enforced
- * - Signature verification on every call
- * - No user configuration possible
- * - No fallback, no bypass
+ * LOCKED TO PRIMEX:
+ * - Hardcoded to prime-x.live
+ * - HTTPS only
+ * - No user configuration
  * 
- * ANY tampering = immediate termination
- * 
- * Developer: PAX
+ * Clean, simple, production-grade.
  */
 object ConfigManager {
     
-    // LOCKED: PrimeX backend only - CRYPTOGRAPHICALLY BOUND
+    // LOCKED: PrimeX backend only
     private const val PRIMEX_BASE_URL = "prime-x.live"
     private const val PRIMEX_PROTOCOL = "https"
     
@@ -33,27 +28,22 @@ object ConfigManager {
     }
     
     /**
-     * Get base URL - CRYPTOGRAPHICALLY LOCKED to PrimeX backend
-     * Verifies app integrity on EVERY call
-     * NOT user-configurable, NO bypass possible
+     * Get base URL - LOCKED to PrimeX backend
      */
-    private fun getBaseUrl(context: Context): String {
-        // CRITICAL: Verify app integrity before returning URL
-        SecurityManager.verifyIntegrity(context)
+    private fun getBaseUrl(): String {
         return PRIMEX_BASE_URL
     }
     
     /**
-     * Get full base URL with protocol - LOCKED to PrimeX
+     * Get full base URL with protocol
      */
     fun getFullBaseUrl(context: Context): String {
-        val baseUrl = getBaseUrl(context) // Includes integrity check
+        val baseUrl = getBaseUrl()
         return "$PRIMEX_PROTOCOL://$baseUrl/"
     }
     
     /**
      * Build API URL for Xtream Codes API
-     * LOCKED to PrimeX backend
      */
     fun buildApiUrl(context: Context): String {
         return getFullBaseUrl(context)
@@ -62,7 +52,6 @@ object ConfigManager {
     /**
      * Build stream URL for live channels
      * Format: https://prime-x.live/live/username/password/streamId.m3u8
-     * LOCKED to PrimeX backend
      */
     fun buildLiveStreamUrl(
         context: Context,
@@ -70,14 +59,13 @@ object ConfigManager {
         password: String,
         streamId: String
     ): String {
-        val baseUrl = getBaseUrl(context) // Includes integrity check
+        val baseUrl = getBaseUrl()
         return "$PRIMEX_PROTOCOL://$baseUrl/live/$username/$password/$streamId.m3u8"
     }
     
     /**
      * Build stream URL for VOD (movies)
      * Format: https://prime-x.live/movie/username/password/streamId.mp4
-     * LOCKED to PrimeX backend
      */
     fun buildVodStreamUrl(
         context: Context,
@@ -86,14 +74,13 @@ object ConfigManager {
         streamId: String,
         extension: String = "mp4"
     ): String {
-        val baseUrl = getBaseUrl(context) // Includes integrity check
+        val baseUrl = getBaseUrl()
         return "$PRIMEX_PROTOCOL://$baseUrl/movie/$username/$password/$streamId.$extension"
     }
     
     /**
      * Build stream URL for series episodes
      * Format: https://prime-x.live/series/username/password/episodeId.mp4
-     * LOCKED to PrimeX backend
      */
     fun buildSeriesStreamUrl(
         context: Context,
@@ -102,13 +89,12 @@ object ConfigManager {
         episodeId: String,
         extension: String = "mp4"
     ): String {
-        val baseUrl = getBaseUrl(context) // Includes integrity check
+        val baseUrl = getBaseUrl()
         return "$PRIMEX_PROTOCOL://$baseUrl/series/$username/$password/$episodeId.$extension"
     }
     
     /**
      * Build generic stream URL
-     * LOCKED to PrimeX backend
      */
     fun buildStreamUrl(
         context: Context,

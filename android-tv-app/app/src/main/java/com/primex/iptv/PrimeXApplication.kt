@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import com.primex.iptv.api.ApiClient
-import com.primex.iptv.security.SecurityManager
+import com.primex.iptv.security.ProductionSecurityManager
 import com.primex.iptv.utils.LocaleHelper
 import java.util.*
 
@@ -26,18 +26,10 @@ class PrimeXApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        // CRITICAL SECURITY: Initialize maximum security checks
-        // This MUST be the first thing that runs
-        // ANY tampering = immediate termination, NO bypass possible
-        try {
-            SecurityManager.initialize(this)
-            android.util.Log.d("PrimeXApplication", "✓ Maximum security initialized - cryptographically bound to PrimeX")
-        } catch (e: SecurityException) {
-            android.util.Log.e("PrimeXApplication", "✗ SECURITY VIOLATION: ${e.message}")
-            // SecurityManager.initialize() already terminates app
-            // This is unreachable but kept for clarity
-            return
-        }
+        // PRODUCTION SECURITY: Initialize graceful security system
+        // Violations enter Security Lock Mode (no crashes)
+        ProductionSecurityManager.initialize(this)
+        android.util.Log.d("PrimeXApplication", "✓ Production security initialized")
         
         // Initialize ApiClient with application context
         ApiClient.initialize(this)

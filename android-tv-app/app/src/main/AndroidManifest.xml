@@ -162,6 +162,13 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.Leanback" />
 
+        <!-- Security Lock Activity -->
+        <activity
+            android:name=".ui.SecurityLockActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Leanback" />
+
     </application>
 
 </manifest>
