@@ -66,6 +66,14 @@ class SettingsFragment : VerticalGridSupportFragment() {
         
         adapter = ArrayObjectAdapter(SettingsCardPresenter())
         
+        // Server Configuration (NEW)
+        adapter.add(SettingsItem(
+            id = "server_config",
+            title = "Server Configuration",
+            description = "Configure IPTV server connection",
+            icon = R.drawable.ic_settings
+        ))
+        
         // Account Section
         adapter.add(SettingsItem(
             id = "account",
@@ -145,6 +153,7 @@ class SettingsFragment : VerticalGridSupportFragment() {
         onItemViewClickedListener = OnItemViewClickedListener { _, item, _, _ ->
             if (item is SettingsItem) {
                 when (item.id) {
+                    "server_config" -> showServerConfig()
                     "account" -> showAccount()
                     "partner" -> showPartner()
                     "control" -> showControl()
@@ -157,6 +166,11 @@ class SettingsFragment : VerticalGridSupportFragment() {
                 }
             }
         }
+    }
+    
+    private fun showServerConfig() {
+        val intent = Intent(requireContext(), ServerConfigActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showAccount() {

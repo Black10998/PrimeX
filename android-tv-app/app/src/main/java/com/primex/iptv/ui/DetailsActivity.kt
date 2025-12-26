@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.primex.iptv.R
 import com.primex.iptv.api.ApiClient
+import com.primex.iptv.config.ConfigManager
 import com.primex.iptv.models.Episode
 import com.primex.iptv.player.PlayerActivity
 import com.primex.iptv.utils.PreferenceManager
@@ -79,7 +80,7 @@ class DetailsActivity : FragmentActivity() {
     }
     
     private fun buildSeriesStreamUrl(username: String, password: String, episodeId: String): String {
-        return "https://prime-x.live/series/$username/$password/$episodeId.mp4"
+        return ConfigManager.buildSeriesStreamUrl(this, username, password, episodeId)
     }
 
     fun playEpisode(episode: Episode) {

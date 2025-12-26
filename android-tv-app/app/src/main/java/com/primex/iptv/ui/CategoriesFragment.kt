@@ -12,6 +12,7 @@ import com.primex.iptv.R
 import com.primex.iptv.adapters.ContentRow
 import com.primex.iptv.adapters.ContentRowAdapter
 import com.primex.iptv.api.ApiClient
+import com.primex.iptv.config.ConfigManager
 import com.primex.iptv.models.Channel
 import android.widget.VideoView
 import com.primex.iptv.utils.PreferenceManager
@@ -105,7 +106,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun buildStreamUrl(username: String, password: String, streamId: String): String {
-        return "https://prime-x.live/live/$username/$password/$streamId.m3u8"
+        return ConfigManager.buildLiveStreamUrl(requireContext(), username, password, streamId)
     }
 
     private fun showEmptyState(message: String) {

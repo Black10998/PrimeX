@@ -12,11 +12,11 @@ android {
         applicationId "com.primex.iptv"
         minSdk 21
         targetSdk 34
-        versionCode 3
-        versionName "3.0.0"
+        versionCode 4
+        versionName "3.1.0"
         
-        // Xtream Codes API Base URL
-        buildConfigField "String", "XTREAM_BASE_URL", "\"https://prime-x.live/\""
+        // Server URL is now dynamically configured via ConfigManager
+        // No hardcoded URLs - fully flexible backend configuration
     }
 
     buildTypes {

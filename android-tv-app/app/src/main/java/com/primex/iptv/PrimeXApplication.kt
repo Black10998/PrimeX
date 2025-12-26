@@ -3,6 +3,7 @@ package com.primex.iptv
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
+import com.primex.iptv.api.ApiClient
 import com.primex.iptv.utils.LocaleHelper
 import java.util.*
 
@@ -23,6 +24,10 @@ class PrimeXApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        
+        // Initialize ApiClient with application context (for dynamic URL configuration)
+        ApiClient.initialize(this)
+        android.util.Log.d("PrimeXApplication", "ApiClient initialized with dynamic configuration")
         
         // Prefer IPv4 for Android TV network compatibility
         System.setProperty("java.net.preferIPv4Stack", "true")

@@ -1,6 +1,8 @@
 package com.primex.iptv.api
 
+import android.content.Context
 import com.primex.iptv.BuildConfig
+import com.primex.iptv.config.ConfigManager
 import okhttp3.Dns
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,8 +16,25 @@ object ApiClient {
 
     private const val TAG = "ApiClient"
     
-    // Xtream Codes API Base URL
-    private const val XTREAM_BASE_URL = "https://prime-x.live/"
+    // Context for accessing ConfigManager
+    private var appContext: Context? = null
+    
+    /**
+     * Initialize ApiClient with application context
+     * Must be called before using the API
+     */
+    fun initialize(context: Context) {
+        appContext = context.applicationContext
+    }
+    
+    /**
+     * Get base URL from ConfigManager (dynamic configuration)
+     * Falls back to default if not configured
+     */
+    private fun getBaseUrl(): String {
+        return appContext?.let { ConfigManager.getFullBaseUrl(it) } 
+            ?: "https://prime-x.live/"
+    }
 
     /**
      * Custom DNS resolver for Android TV
@@ -116,26 +135,27 @@ object ApiClient {
 
     /**
      * Xtream Codes API Service
-     * Base URL: https://prime-x.live
+     * Base URL: Dynamic from ConfigManager
      */
-    private val xtreamRetrofit = Retrofit.Builder()
-        .baseUrl(XTREAM_BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val xtreamApiService: XtreamApiService = xtreamRetrofit.create(XtreamApiService::class.java)
+    val xtreamApiService: XtreamApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(getBaseUrl())
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(XtreamApiService::class.java)
+    }
     
     /**
      * Legacy PrimeX API Service (deprecated)
      */
     @Deprecated("Use xtreamApiService instead")
-    private val legacyRetrofit = Retrofit.Builder()
-        .baseUrl(XTREAM_BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    @Deprecated("Use xtreamApiService instead")
-    val apiService: PrimeXApiService = legacyRetrofit.create(PrimeXApiService::class.java)
+    val apiService: PrimeXApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(getBaseUrl())
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(PrimeXApiService::class.java)
+    }
 }

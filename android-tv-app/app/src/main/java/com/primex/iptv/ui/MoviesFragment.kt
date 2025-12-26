@@ -13,6 +13,7 @@ import com.primex.iptv.R
 import com.primex.iptv.adapters.ContentRow
 import com.primex.iptv.adapters.ContentRowAdapter
 import com.primex.iptv.api.ApiClient
+import com.primex.iptv.config.ConfigManager
 import com.primex.iptv.models.Channel
 import com.primex.iptv.utils.PreferenceManager
 import com.primex.iptv.utils.SessionManager
@@ -107,7 +108,7 @@ class MoviesFragment : Fragment() {
     }
 
     private fun buildStreamUrl(username: String, password: String, streamId: String, type: String): String {
-        return "https://prime-x.live/$type/$username/$password/$streamId.mp4"
+        return ConfigManager.buildVodStreamUrl(requireContext(), username, password, streamId)
     }
 
     private fun showEmptyState(message: String) {

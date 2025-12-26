@@ -16,6 +16,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.primex.iptv.R
 import com.primex.iptv.api.ApiClient
+import com.primex.iptv.config.ConfigManager
 import com.primex.iptv.models.Channel
 import com.primex.iptv.models.Movie
 import com.primex.iptv.models.Series
@@ -250,11 +251,11 @@ class MainFragment : BrowseSupportFragment() {
     }
     
     private fun buildXtreamStreamUrl(username: String, password: String, streamId: String, type: String): String {
-        val baseUrl = "https://prime-x.live"
         return when (type) {
-            "live" -> "$baseUrl/live/$username/$password/$streamId.m3u8"
-            "movie" -> "$baseUrl/movie/$username/$password/$streamId.mp4"
-            else -> "$baseUrl/$type/$username/$password/$streamId"
+            "live" -> ConfigManager.buildLiveStreamUrl(requireContext(), username, password, streamId)
+            "movie" -> ConfigManager.buildVodStreamUrl(requireContext(), username, password, streamId)
+            "series" -> ConfigManager.buildSeriesStreamUrl(requireContext(), username, password, streamId)
+            else -> ConfigManager.buildStreamUrl(requireContext(), username, password, streamId, ConfigManager.StreamType.LIVE)
         }
     }
 
