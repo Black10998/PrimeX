@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import com.primex.iptv.api.ApiClient
-import com.primex.iptv.config.ConfigManager
+import com.primex.iptv.security.SecurityManager
 import com.primex.iptv.utils.LocaleHelper
 import java.util.*
 
@@ -26,15 +26,16 @@ class PrimeXApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        // SECURITY: Verify app integrity on startup
+        // CRITICAL SECURITY: Initialize maximum security checks
+        // This MUST be the first thing that runs
+        // ANY tampering = immediate termination, NO bypass possible
         try {
-            // This will throw SecurityException if app is tampered with
-            ConfigManager.getFullBaseUrl(this)
-            android.util.Log.d("PrimeXApplication", "App integrity verified - locked to PrimeX backend")
+            SecurityManager.initialize(this)
+            android.util.Log.d("PrimeXApplication", "✓ Maximum security initialized - cryptographically bound to PrimeX")
         } catch (e: SecurityException) {
-            android.util.Log.e("PrimeXApplication", "SECURITY: App integrity check failed - terminating")
-            // App will not function if integrity check fails
-            System.exit(1)
+            android.util.Log.e("PrimeXApplication", "✗ SECURITY VIOLATION: ${e.message}")
+            // SecurityManager.initialize() already terminates app
+            // This is unreachable but kept for clarity
             return
         }
         

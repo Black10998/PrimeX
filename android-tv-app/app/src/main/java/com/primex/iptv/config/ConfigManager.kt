@@ -1,33 +1,27 @@
 package com.primex.iptv.config
 
 import android.content.Context
-import android.content.pm.PackageManager
-import android.util.Base64
-import java.security.MessageDigest
+import com.primex.iptv.security.SecurityManager
 
 /**
- * ConfigManager - Secure PrimeX Backend Configuration
+ * ConfigManager - Maximum Security PrimeX Backend Configuration
  * 
- * SECURITY: Locked to PrimeX backend only. Not user-configurable.
- * Server routing and environment switching handled server-side.
+ * CRITICAL SECURITY:
+ * - Cryptographically bound to PrimeX
+ * - Certificate pinning enforced
+ * - Signature verification on every call
+ * - No user configuration possible
+ * - No fallback, no bypass
  * 
- * Anti-tampering measures:
- * - Package signature verification
- * - Hardcoded PrimeX backend
- * - No user configuration allowed
- * - App unusable if extracted or reused
+ * ANY tampering = immediate termination
  * 
  * Developer: PAX
  */
 object ConfigManager {
     
-    // LOCKED: PrimeX backend only - NOT configurable
+    // LOCKED: PrimeX backend only - CRYPTOGRAPHICALLY BOUND
     private const val PRIMEX_BASE_URL = "prime-x.live"
     private const val PRIMEX_PROTOCOL = "https"
-    
-    // Expected package signature (SHA-256)
-    // This will be set during build/signing
-    private const val EXPECTED_PACKAGE_NAME = "com.primex.iptv"
     
     /**
      * Stream types for URL building
@@ -39,53 +33,13 @@ object ConfigManager {
     }
     
     /**
-     * Verify app integrity - package name and signature
-     * Prevents app from working if extracted or repackaged
-     */
-    private fun verifyAppIntegrity(context: Context): Boolean {
-        try {
-            // Check package name
-            if (context.packageName != EXPECTED_PACKAGE_NAME) {
-                android.util.Log.e("ConfigManager", "Invalid package name: ${context.packageName}")
-                return false
-            }
-            
-            // Get app signature
-            val packageInfo = context.packageManager.getPackageInfo(
-                context.packageName,
-                PackageManager.GET_SIGNATURES
-            )
-            
-            val signatures = packageInfo.signatures
-            if (signatures.isNullOrEmpty()) {
-                android.util.Log.e("ConfigManager", "No signatures found")
-                return false
-            }
-            
-            // Calculate signature hash
-            val signature = signatures[0]
-            val md = MessageDigest.getInstance("SHA-256")
-            val signatureHash = md.digest(signature.toByteArray())
-            val signatureString = Base64.encodeToString(signatureHash, Base64.NO_WRAP)
-            
-            android.util.Log.d("ConfigManager", "App signature verified")
-            return true
-            
-        } catch (e: Exception) {
-            android.util.Log.e("ConfigManager", "Integrity check failed: ${e.message}")
-            return false
-        }
-    }
-    
-    /**
-     * Get base URL - LOCKED to PrimeX backend
-     * NOT user-configurable
+     * Get base URL - CRYPTOGRAPHICALLY LOCKED to PrimeX backend
+     * Verifies app integrity on EVERY call
+     * NOT user-configurable, NO bypass possible
      */
     private fun getBaseUrl(context: Context): String {
-        // Verify app integrity before returning URL
-        if (!verifyAppIntegrity(context)) {
-            throw SecurityException("App integrity verification failed")
-        }
+        // CRITICAL: Verify app integrity before returning URL
+        SecurityManager.verifyIntegrity(context)
         return PRIMEX_BASE_URL
     }
     
