@@ -162,14 +162,6 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.Leanback" />
 
-        <!-- Server Configuration Activity -->
-        <activity
-            android:name=".ui.ServerConfigActivity"
-            android:exported="false"
-            android:screenOrientation="landscape"
-            android:theme="@style/Theme.Leanback"
-            android:label="Server Configuration" />
-
     </application>
 
 </manifest>

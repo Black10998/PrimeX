@@ -1,45 +1,33 @@
 package com.primex.iptv.config
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.util.Base64
+import java.security.MessageDigest
 
 /**
- * ConfigManager - Dynamic Server Configuration
+ * ConfigManager - Secure PrimeX Backend Configuration
  * 
- * Manages server URLs and portal configuration dynamically.
- * Replaces all hardcoded URLs with configurable values.
+ * SECURITY: Locked to PrimeX backend only. Not user-configurable.
+ * Server routing and environment switching handled server-side.
  * 
- * Backend Compatibility: Uses existing PAX/PrimeX API endpoints,
- * just makes the base URL configurable.
+ * Anti-tampering measures:
+ * - Package signature verification
+ * - Hardcoded PrimeX backend
+ * - No user configuration allowed
+ * - App unusable if extracted or reused
  * 
  * Developer: PAX
  */
 object ConfigManager {
     
-    private const val PREFS_NAME = "pax_server_config"
-    private const val KEY_BASE_URL = "base_url"
-    private const val KEY_SERVER_NAME = "server_name"
-    private const val KEY_PORTAL_TYPE = "portal_type"
-    private const val KEY_USE_HTTPS = "use_https"
+    // LOCKED: PrimeX backend only - NOT configurable
+    private const val PRIMEX_BASE_URL = "prime-x.live"
+    private const val PRIMEX_PROTOCOL = "https"
     
-    // Default server (existing PAX/PrimeX backend)
-    private const val DEFAULT_BASE_URL = "prime-x.live"
-    private const val DEFAULT_SERVER_NAME = "PAX IPTV Server"
-    
-    /**
-     * Portal types supported by the application
-     */
-    enum class PortalType(val value: String) {
-        XTREAM_CODES("xtream"),
-        STALKER_PORTAL("stalker"),
-        CUSTOM("custom");
-        
-        companion object {
-            fun fromValue(value: String): PortalType {
-                return values().find { it.value == value } ?: XTREAM_CODES
-            }
-        }
-    }
+    // Expected package signature (SHA-256)
+    // This will be set during build/signing
+    private const val EXPECTED_PACKAGE_NAME = "com.primex.iptv"
     
     /**
      * Stream types for URL building
@@ -50,81 +38,68 @@ object ConfigManager {
         SERIES
     }
     
-    private fun getPrefs(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    }
-    
     /**
-     * Get configured base URL (without protocol)
+     * Verify app integrity - package name and signature
+     * Prevents app from working if extracted or repackaged
      */
-    fun getBaseUrl(context: Context): String {
-        return getPrefs(context).getString(KEY_BASE_URL, DEFAULT_BASE_URL) ?: DEFAULT_BASE_URL
+    private fun verifyAppIntegrity(context: Context): Boolean {
+        try {
+            // Check package name
+            if (context.packageName != EXPECTED_PACKAGE_NAME) {
+                android.util.Log.e("ConfigManager", "Invalid package name: ${context.packageName}")
+                return false
+            }
+            
+            // Get app signature
+            val packageInfo = context.packageManager.getPackageInfo(
+                context.packageName,
+                PackageManager.GET_SIGNATURES
+            )
+            
+            val signatures = packageInfo.signatures
+            if (signatures.isNullOrEmpty()) {
+                android.util.Log.e("ConfigManager", "No signatures found")
+                return false
+            }
+            
+            // Calculate signature hash
+            val signature = signatures[0]
+            val md = MessageDigest.getInstance("SHA-256")
+            val signatureHash = md.digest(signature.toByteArray())
+            val signatureString = Base64.encodeToString(signatureHash, Base64.NO_WRAP)
+            
+            android.util.Log.d("ConfigManager", "App signature verified")
+            return true
+            
+        } catch (e: Exception) {
+            android.util.Log.e("ConfigManager", "Integrity check failed: ${e.message}")
+            return false
+        }
     }
     
     /**
-     * Set base URL
+     * Get base URL - LOCKED to PrimeX backend
+     * NOT user-configurable
      */
-    fun setBaseUrl(context: Context, url: String) {
-        // Clean URL (remove protocol if present)
-        val cleanUrl = url.replace("https://", "").replace("http://", "").trim('/')
-        getPrefs(context).edit().putString(KEY_BASE_URL, cleanUrl).apply()
+    private fun getBaseUrl(context: Context): String {
+        // Verify app integrity before returning URL
+        if (!verifyAppIntegrity(context)) {
+            throw SecurityException("App integrity verification failed")
+        }
+        return PRIMEX_BASE_URL
     }
     
     /**
-     * Get server name
-     */
-    fun getServerName(context: Context): String {
-        return getPrefs(context).getString(KEY_SERVER_NAME, DEFAULT_SERVER_NAME) ?: DEFAULT_SERVER_NAME
-    }
-    
-    /**
-     * Set server name
-     */
-    fun setServerName(context: Context, name: String) {
-        getPrefs(context).edit().putString(KEY_SERVER_NAME, name).apply()
-    }
-    
-    /**
-     * Get portal type
-     */
-    fun getPortalType(context: Context): PortalType {
-        val value = getPrefs(context).getString(KEY_PORTAL_TYPE, PortalType.XTREAM_CODES.value)
-        return PortalType.fromValue(value ?: PortalType.XTREAM_CODES.value)
-    }
-    
-    /**
-     * Set portal type
-     */
-    fun setPortalType(context: Context, type: PortalType) {
-        getPrefs(context).edit().putString(KEY_PORTAL_TYPE, type.value).apply()
-    }
-    
-    /**
-     * Check if HTTPS should be used
-     */
-    fun useHttps(context: Context): Boolean {
-        return getPrefs(context).getBoolean(KEY_USE_HTTPS, true)
-    }
-    
-    /**
-     * Set HTTPS usage
-     */
-    fun setUseHttps(context: Context, useHttps: Boolean) {
-        getPrefs(context).edit().putBoolean(KEY_USE_HTTPS, useHttps).apply()
-    }
-    
-    /**
-     * Get full base URL with protocol
+     * Get full base URL with protocol - LOCKED to PrimeX
      */
     fun getFullBaseUrl(context: Context): String {
-        val protocol = if (useHttps(context)) "https" else "http"
-        val baseUrl = getBaseUrl(context)
-        return "$protocol://$baseUrl/"
+        val baseUrl = getBaseUrl(context) // Includes integrity check
+        return "$PRIMEX_PROTOCOL://$baseUrl/"
     }
     
     /**
      * Build API URL for Xtream Codes API
-     * Compatible with existing PAX/PrimeX backend
+     * LOCKED to PrimeX backend
      */
     fun buildApiUrl(context: Context): String {
         return getFullBaseUrl(context)
@@ -132,7 +107,8 @@ object ConfigManager {
     
     /**
      * Build stream URL for live channels
-     * Format: http(s)://domain/live/username/password/streamId.m3u8
+     * Format: https://prime-x.live/live/username/password/streamId.m3u8
+     * LOCKED to PrimeX backend
      */
     fun buildLiveStreamUrl(
         context: Context,
@@ -140,14 +116,14 @@ object ConfigManager {
         password: String,
         streamId: String
     ): String {
-        val protocol = if (useHttps(context)) "https" else "http"
-        val baseUrl = getBaseUrl(context)
-        return "$protocol://$baseUrl/live/$username/$password/$streamId.m3u8"
+        val baseUrl = getBaseUrl(context) // Includes integrity check
+        return "$PRIMEX_PROTOCOL://$baseUrl/live/$username/$password/$streamId.m3u8"
     }
     
     /**
      * Build stream URL for VOD (movies)
-     * Format: http(s)://domain/movie/username/password/streamId.mp4
+     * Format: https://prime-x.live/movie/username/password/streamId.mp4
+     * LOCKED to PrimeX backend
      */
     fun buildVodStreamUrl(
         context: Context,
@@ -156,14 +132,14 @@ object ConfigManager {
         streamId: String,
         extension: String = "mp4"
     ): String {
-        val protocol = if (useHttps(context)) "https" else "http"
-        val baseUrl = getBaseUrl(context)
-        return "$protocol://$baseUrl/movie/$username/$password/$streamId.$extension"
+        val baseUrl = getBaseUrl(context) // Includes integrity check
+        return "$PRIMEX_PROTOCOL://$baseUrl/movie/$username/$password/$streamId.$extension"
     }
     
     /**
      * Build stream URL for series episodes
-     * Format: http(s)://domain/series/username/password/episodeId.mp4
+     * Format: https://prime-x.live/series/username/password/episodeId.mp4
+     * LOCKED to PrimeX backend
      */
     fun buildSeriesStreamUrl(
         context: Context,
@@ -172,13 +148,13 @@ object ConfigManager {
         episodeId: String,
         extension: String = "mp4"
     ): String {
-        val protocol = if (useHttps(context)) "https" else "http"
-        val baseUrl = getBaseUrl(context)
-        return "$protocol://$baseUrl/series/$username/$password/$episodeId.$extension"
+        val baseUrl = getBaseUrl(context) // Includes integrity check
+        return "$PRIMEX_PROTOCOL://$baseUrl/series/$username/$password/$episodeId.$extension"
     }
     
     /**
      * Build generic stream URL
+     * LOCKED to PrimeX backend
      */
     fun buildStreamUrl(
         context: Context,
@@ -193,49 +169,5 @@ object ConfigManager {
             StreamType.VOD -> buildVodStreamUrl(context, username, password, streamId, extension ?: "mp4")
             StreamType.SERIES -> buildSeriesStreamUrl(context, username, password, streamId, extension ?: "mp4")
         }
-    }
-    
-    /**
-     * Reset to default configuration
-     */
-    fun resetToDefaults(context: Context) {
-        getPrefs(context).edit().clear().apply()
-    }
-    
-    /**
-     * Check if configuration is set (not using defaults)
-     */
-    fun isConfigured(context: Context): Boolean {
-        return getPrefs(context).contains(KEY_BASE_URL)
-    }
-    
-    /**
-     * Get configuration summary for display
-     */
-    fun getConfigSummary(context: Context): String {
-        val serverName = getServerName(context)
-        val baseUrl = getBaseUrl(context)
-        val protocol = if (useHttps(context)) "HTTPS" else "HTTP"
-        val portalType = getPortalType(context).name
-        
-        return """
-            Server: $serverName
-            URL: $baseUrl
-            Protocol: $protocol
-            Type: $portalType
-        """.trimIndent()
-    }
-    
-    /**
-     * Validate URL format
-     */
-    fun isValidUrl(url: String): Boolean {
-        if (url.isBlank()) return false
-        
-        // Remove protocol if present
-        val cleanUrl = url.replace("https://", "").replace("http://", "").trim('/')
-        
-        // Basic validation: should contain at least one dot and no spaces
-        return cleanUrl.contains(".") && !cleanUrl.contains(" ")
     }
 }

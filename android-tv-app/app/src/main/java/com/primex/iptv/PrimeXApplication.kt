@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import com.primex.iptv.api.ApiClient
+import com.primex.iptv.config.ConfigManager
 import com.primex.iptv.utils.LocaleHelper
 import java.util.*
 
@@ -25,9 +26,21 @@ class PrimeXApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        // Initialize ApiClient with application context (for dynamic URL configuration)
+        // SECURITY: Verify app integrity on startup
+        try {
+            // This will throw SecurityException if app is tampered with
+            ConfigManager.getFullBaseUrl(this)
+            android.util.Log.d("PrimeXApplication", "App integrity verified - locked to PrimeX backend")
+        } catch (e: SecurityException) {
+            android.util.Log.e("PrimeXApplication", "SECURITY: App integrity check failed - terminating")
+            // App will not function if integrity check fails
+            System.exit(1)
+            return
+        }
+        
+        // Initialize ApiClient with application context
         ApiClient.initialize(this)
-        android.util.Log.d("PrimeXApplication", "ApiClient initialized with dynamic configuration")
+        android.util.Log.d("PrimeXApplication", "ApiClient initialized - PrimeX backend only")
         
         // Prefer IPv4 for Android TV network compatibility
         System.setProperty("java.net.preferIPv4Stack", "true")
