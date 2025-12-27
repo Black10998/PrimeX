@@ -4,10 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,33 +21,31 @@ import com.primex.iptv.config.ConfigManager
 import com.primex.iptv.models.Channel
 import com.primex.iptv.player.PlayerActivity
 import com.primex.iptv.utils.PreferenceManager
-import com.primex.iptv.utils.SessionManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
- * ChannelBrowserFragment - Two-Panel Channel Browser
+ * Channel Browser - Simplified version that directly uses Live TV data
  * 
- * LEFT PANEL:
- * - Channel categories/lists
- * - Search field
- * - Channel numbers and names
+ * Two-panel layout:
+ * - Left: Categories and search
+ * - Right: Channel cards grid
  * 
- * RIGHT PANEL:
- * - Channel cards (thumbnails)
- * - Updates dynamically based on left selection
- * 
- * UI-driven navigation, not remote-triggered
+ * Uses the exact same API call as Live TV fragment
  */
 class ChannelBrowserFragment : Fragment() {
     
-    // Left panel
-    private lateinit var searchField: EditText
-    private lateinit var categoryList: RecyclerView
-    private lateinit var categoryAdapter: CategoryListAdapter
+    private val TAG = "ChannelBrowser"
     
-    // Right panel
-    private lateinit var channelCardsGrid: RecyclerView
-    private lateinit var channelCardsAdapter: ChannelCardsAdapter
+    // Views
+    private var searchField: EditText? = null
+    private var categoryList: RecyclerView? = null
+    private var channelCardsGrid: RecyclerView? = null
+    
+    // Adapters
+    private var categoryAdapter: CategoryListAdapter? = null
+    private var channelCardsAdapter: ChannelCardsAdapter? = null
     
     // Data
     private var allChannels: List<Channel> = emptyList()
@@ -57,97 +57,100 @@ class ChannelBrowserFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_channel_browser, container, false)
+        Log.d(TAG, "onCreateView")
+        return try {
+            inflater.inflate(R.layout.fragment_channel_browser, container, false)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error inflating layout", e)
+            Toast.makeText(context, "Error loading Channel Browser", Toast.LENGTH_SHORT).show()
+            null
+        }
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated")
         
         try {
-            (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_categories)
+            // Try to change background, but don't crash if it fails
+            try {
+                (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_categories)
+            } catch (e: Exception) {
+                Log.w(TAG, "Could not change background", e)
+            }
             
-            setupLeftPanel(view)
-            setupRightPanel(view)
+            setupViews(view)
             loadChannels()
         } catch (e: Exception) {
-            android.util.Log.e("ChannelBrowser", "Error in onViewCreated: ${e.message}", e)
-            showError("Error loading channel browser: ${e.message}")
+            Log.e(TAG, "Error in onViewCreated", e)
+            Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
     
-    private fun setupLeftPanel(view: View) {
-        try {
-            // Search field
-            searchField = view.findViewById(R.id.channel_search_field)
-            searchField.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    filterChannels(s?.toString() ?: "")
-                }
-                override fun afterTextChanged(s: Editable?) {}
-            })
-            
-            // Category list
-            categoryList = view.findViewById(R.id.category_list)
-            categoryList.layoutManager = LinearLayoutManager(requireContext())
-            
-            categoryAdapter = CategoryListAdapter { category ->
-                onCategorySelected(category)
+    private fun setupViews(view: View) {
+        Log.d(TAG, "Setting up views")
+        
+        // Search field
+        searchField = view.findViewById(R.id.channel_search_field)
+        searchField?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterChannels(s?.toString() ?: "")
             }
-            categoryList.adapter = categoryAdapter
-        } catch (e: Exception) {
-            android.util.Log.e("ChannelBrowser", "Error setting up left panel: ${e.message}", e)
+            override fun afterTextChanged(s: Editable?) {}
+        })
+        
+        // Category list (left panel)
+        categoryList = view.findViewById(R.id.category_list)
+        categoryList?.layoutManager = LinearLayoutManager(requireContext())
+        categoryAdapter = CategoryListAdapter { category ->
+            onCategorySelected(category)
         }
-    }
-    
-    private fun setupRightPanel(view: View) {
-        try {
-            channelCardsGrid = view.findViewById(R.id.channel_cards_grid)
-            channelCardsGrid.layoutManager = GridLayoutManager(requireContext(), 4)
-            
-            channelCardsAdapter = ChannelCardsAdapter { channel ->
-                playChannel(channel)
-            }
-            channelCardsGrid.adapter = channelCardsAdapter
-        } catch (e: Exception) {
-            android.util.Log.e("ChannelBrowser", "Error setting up right panel: ${e.message}", e)
+        categoryList?.adapter = categoryAdapter
+        
+        // Channel cards grid (right panel)
+        channelCardsGrid = view.findViewById(R.id.channel_cards_grid)
+        channelCardsGrid?.layoutManager = GridLayoutManager(requireContext(), 4)
+        channelCardsAdapter = ChannelCardsAdapter { channel ->
+            playChannel(channel)
         }
+        channelCardsGrid?.adapter = channelCardsAdapter
+        
+        Log.d(TAG, "Views setup complete")
     }
     
     private fun loadChannels() {
-        android.util.Log.d("ChannelBrowser", "Loading channels...")
+        Log.d(TAG, "Loading channels...")
         
         val username = PreferenceManager.getXtreamUsername(requireContext())
         val password = PreferenceManager.getXtreamPassword(requireContext())
         
-        android.util.Log.d("ChannelBrowser", "Username: $username")
-        
         if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
-            android.util.Log.e("ChannelBrowser", "No credentials found")
-            showError("Please login to view channels")
+            Log.e(TAG, "No credentials")
+            Toast.makeText(context, "Please login first", Toast.LENGTH_SHORT).show()
             return
         }
         
         lifecycleScope.launch {
             try {
-                android.util.Log.d("ChannelBrowser", "Calling API getLiveStreams...")
-                val response = ApiClient.xtreamApiService.getLiveStreams(username, password)
+                Log.d(TAG, "Fetching live streams from API...")
                 
-                if (SessionManager.handleUnauthorizedResponse(requireContext(), response.code())) {
-                    return@launch
+                // Use the exact same API call as Live TV
+                val response = withContext(Dispatchers.IO) {
+                    ApiClient.xtreamApiService.getLiveStreams(username, password)
                 }
                 
-                android.util.Log.d("ChannelBrowser", "API response: ${response.code()}")
+                Log.d(TAG, "API response code: ${response.code()}")
                 
                 if (response.isSuccessful && response.body() != null) {
                     val streams = response.body()!!
-                    android.util.Log.d("ChannelBrowser", "Loaded ${streams.size} streams")
+                    Log.d(TAG, "Received ${streams.size} streams")
                     
                     // Convert to Channel objects (same as Live TV)
                     allChannels = streams.mapIndexed { index, stream ->
                         Channel(
                             id = stream.streamId?.toString() ?: "0",
-                            name = stream.name ?: "Unknown Channel",
+                            name = stream.name ?: "Unknown",
                             number = index + 1,
                             logo_url = stream.streamIcon,
                             stream_url = ConfigManager.buildLiveStreamUrl(
@@ -162,40 +165,41 @@ class ChannelBrowserFragment : Fragment() {
                     
                     // Group by category
                     channelsByCategory = allChannels.groupBy { it.category ?: "Uncategorized" }
-                    android.util.Log.d("ChannelBrowser", "Categories: ${channelsByCategory.keys}")
                     
-                    // Create category list with "Live" as first category
-                    val categories = mutableListOf("All Channels", "Live")
+                    // Build category list
+                    val categories = mutableListOf("All Channels")
                     categories.addAll(channelsByCategory.keys.sorted())
                     
-                    android.util.Log.d("ChannelBrowser", "Submitting ${categories.size} categories")
-                    categoryAdapter.submitList(categories)
+                    Log.d(TAG, "Categories: ${categories.size}")
                     
-                    // Show all channels initially
-                    android.util.Log.d("ChannelBrowser", "Showing ${allChannels.size} channels")
-                    updateChannelCards(allChannels)
+                    // Update UI
+                    categoryAdapter?.submitList(categories)
+                    channelCardsAdapter?.submitList(allChannels)
                     
+                    Log.d(TAG, "Channels loaded successfully")
                 } else {
-                    showError("Failed to load channels")
+                    Log.e(TAG, "API error: ${response.code()}")
+                    Toast.makeText(context, "Failed to load channels", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                showError("Error: ${e.message}")
+                Log.e(TAG, "Error loading channels", e)
+                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
     
     private fun onCategorySelected(category: String) {
-        android.util.Log.d("ChannelBrowser", "Category selected: $category")
+        Log.d(TAG, "Category selected: $category")
         currentCategory = category
         
         val channels = when (category) {
             "All Channels" -> allChannels
-            "Live" -> allChannels // Live shows all channels (same as All Channels)
             else -> channelsByCategory[category] ?: emptyList()
         }
         
-        android.util.Log.d("ChannelBrowser", "Showing ${channels.size} channels for category: $category")
-        updateChannelCards(channels)
+        Log.d(TAG, "Showing ${channels.size} channels")
+        channelCardsAdapter?.submitList(channels)
+        channelCardsGrid?.scrollToPosition(0)
     }
     
     private fun filterChannels(query: String) {
@@ -209,14 +213,12 @@ class ChannelBrowserFragment : Fragment() {
             channel.number.toString().contains(query)
         }
         
-        updateChannelCards(filtered)
-    }
-    
-    private fun updateChannelCards(channels: List<Channel>) {
-        channelCardsAdapter.submitList(channels)
+        Log.d(TAG, "Filtered to ${filtered.size} channels")
+        channelCardsAdapter?.submitList(filtered)
     }
     
     private fun playChannel(channel: Channel) {
+        Log.d(TAG, "Playing channel: ${channel.name}")
         val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
             putExtra(PlayerActivity.EXTRA_STREAM_URL, channel.stream_url)
             putExtra(PlayerActivity.EXTRA_TITLE, channel.name)
@@ -225,13 +227,16 @@ class ChannelBrowserFragment : Fragment() {
         startActivity(intent)
     }
     
-    private fun showError(message: String) {
-        android.widget.Toast.makeText(requireContext(), message, android.widget.Toast.LENGTH_LONG).show()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        searchField = null
+        categoryList = null
+        channelCardsGrid = null
+        categoryAdapter = null
+        channelCardsAdapter = null
     }
     
     companion object {
-        fun newInstance(): ChannelBrowserFragment {
-            return ChannelBrowserFragment()
-        }
+        fun newInstance() = ChannelBrowserFragment()
     }
 }

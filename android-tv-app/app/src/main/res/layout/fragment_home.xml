@@ -30,131 +30,143 @@
             android:layout_marginEnd="24dp"
             android:alpha="0" />
 
-        <!-- Navigation Items -->
-        <TextView
-            android:id="@+id/nav_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Home"
-            android:textColor="@color/amarco_text_primary"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/nav_item_background"
-            android:focusable="true"
-            android:clickable="true" />
-
-        <TextView
-            android:id="@+id/nav_live_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Live TV"
-            android:textColor="#80FFFFFF"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/nav_item_background"
-            android:focusable="true"
-            android:clickable="true" />
-
-        <TextView
-            android:id="@+id/nav_movies"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Movies"
-            android:textColor="#80FFFFFF"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/nav_item_background"
-            android:focusable="true"
-            android:clickable="true" />
-
-        <TextView
-            android:id="@+id/nav_series"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Series"
-            android:textColor="#80FFFFFF"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/nav_item_background"
-            android:focusable="true"
-            android:clickable="true" />
-
-        <TextView
-            android:id="@+id/nav_categories"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Categories"
-            android:textColor="#80FFFFFF"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/nav_item_background"
-            android:focusable="true"
-            android:clickable="true" />
-
-        <TextView
-            android:id="@+id/nav_favorites"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Favorites"
-            android:textColor="#80FFFFFF"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/nav_item_background"
-            android:focusable="true"
-            android:clickable="true" />
-
-        <TextView
-            android:id="@+id/nav_channel_browser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Channel Browser"
-            android:textColor="#80FFFFFF"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/nav_item_background"
-            android:focusable="true"
-            android:clickable="true" />
-
-        <View
+        <!-- Scrollable Navigation Items -->
+        <HorizontalScrollView
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:fillViewport="false">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/nav_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Home"
+                    android:textColor="@color/amarco_text_primary"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/nav_item_background"
+                    android:focusable="true"
+                    android:clickable="true" />
+
+                <TextView
+                    android:id="@+id/nav_live_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Live TV"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/nav_item_background"
+                    android:focusable="true"
+                    android:clickable="true" />
+
+                <TextView
+                    android:id="@+id/nav_movies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Movies"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/nav_item_background"
+                    android:focusable="true"
+                    android:clickable="true" />
+
+                <TextView
+                    android:id="@+id/nav_series"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Series"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/nav_item_background"
+                    android:focusable="true"
+                    android:clickable="true" />
+
+                <TextView
+                    android:id="@+id/nav_categories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categories"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/nav_item_background"
+                    android:focusable="true"
+                    android:clickable="true" />
+
+                <TextView
+                    android:id="@+id/nav_favorites"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Favorites"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/nav_item_background"
+                    android:focusable="true"
+                    android:clickable="true" />
+
+                <TextView
+                    android:id="@+id/nav_channel_browser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Channel Browser"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/nav_item_background"
+                    android:focusable="true"
+                    android:clickable="true" />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <!-- Fixed Right Side: Search and Settings (Always Visible) -->
         <ImageView
             android:id="@+id/nav_search"
             android:layout_width="40dp"
@@ -162,6 +174,7 @@
             android:src="@drawable/ic_search"
             android:tint="#80FFFFFF"
             android:padding="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/nav_item_background"
             android:focusable="true"
