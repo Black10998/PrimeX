@@ -34,6 +34,15 @@ class ChannelCardsAdapter(
         holder.bind(getItem(position))
     }
     
+    override fun onBindViewHolder(holder: ChannelCardViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            // Partial update for better performance
+            holder.bind(getItem(position))
+        }
+    }
+    
     class ChannelCardViewHolder(
         itemView: View,
         private val onChannelClick: (Channel) -> Unit
@@ -47,12 +56,14 @@ class ChannelCardsAdapter(
             channelNumber.text = channel.number.toString().padStart(3, '0')
             channelName.text = channel.name
             
-            // Load channel logo
+            // Load channel logo with optimizations
             if (!channel.logo_url.isNullOrEmpty()) {
                 Glide.with(itemView.context)
                     .load(channel.logo_url)
                     .placeholder(R.drawable.app_icon)
                     .error(R.drawable.app_icon)
+                    .thumbnail(0.1f) // Load low-res thumbnail first
+                    .override(200, 120) // Resize to exact card size
                     .into(channelLogo)
             } else {
                 channelLogo.setImageResource(R.drawable.app_icon)

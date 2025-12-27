@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -79,6 +80,9 @@ class ChannelBrowserFragment : Fragment() {
                 Log.w(TAG, "Could not change background", e)
             }
             
+            // Setup focus isolation
+            setupFocusIsolation(view)
+            
             setupViews(view)
             loadChannels()
         } catch (e: Exception) {
@@ -87,30 +91,68 @@ class ChannelBrowserFragment : Fragment() {
         }
     }
     
+    private fun setupFocusIsolation(view: View) {
+        // Make root view focusable to capture all focus
+        view.isFocusable = true
+        view.isFocusableInTouchMode = true
+        
+        // Request focus to ensure we capture it
+        view.requestFocus()
+        
+        // Intercept back button to exit Channel Browser
+        view.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == android.view.KeyEvent.KEYCODE_BACK && 
+                event.action == android.view.KeyEvent.ACTION_UP) {
+                // Exit Channel Browser
+                activity?.onBackPressed()
+                true
+            } else {
+                false
+            }
+        }
+        
+        // Prevent focus from escaping
+        view.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+    }
+    
     private fun setupViews(view: View) {
         Log.d(TAG, "Setting up views")
         
-        // Search field
+        // Search field with debouncing for performance
         searchField = view.findViewById(R.id.channel_search_field)
+        var searchJob: kotlinx.coroutines.Job? = null
         searchField?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                filterChannels(s?.toString() ?: "")
+                // Debounce search for better performance
+                searchJob?.cancel()
+                searchJob = lifecycleScope.launch {
+                    kotlinx.coroutines.delay(300) // Wait 300ms before filtering
+                    filterChannels(s?.toString() ?: "")
+                }
             }
             override fun afterTextChanged(s: Editable?) {}
         })
         
-        // Category list (left panel)
+        // Category list (left panel) - optimized
         categoryList = view.findViewById(R.id.category_list)
-        categoryList?.layoutManager = LinearLayoutManager(requireContext())
+        categoryList?.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true) // Performance optimization
+            setItemViewCacheSize(20) // Cache more items
+        }
         categoryAdapter = CategoryListAdapter { category ->
             onCategorySelected(category)
         }
         categoryList?.adapter = categoryAdapter
         
-        // Channel cards grid (right panel)
+        // Channel cards grid (right panel) - optimized
         channelCardsGrid = view.findViewById(R.id.channel_cards_grid)
-        channelCardsGrid?.layoutManager = GridLayoutManager(requireContext(), 4)
+        channelCardsGrid?.apply {
+            layoutManager = GridLayoutManager(requireContext(), 4)
+            setHasFixedSize(true) // Performance optimization
+            setItemViewCacheSize(30) // Cache more items for smooth scrolling
+        }
         channelCardsAdapter = ChannelCardsAdapter { channel ->
             playChannel(channel)
         }
@@ -176,6 +218,11 @@ class ChannelBrowserFragment : Fragment() {
                     categoryAdapter?.submitList(categories)
                     channelCardsAdapter?.submitList(allChannels)
                     
+                    // Set initial focus to first category for easy navigation
+                    categoryList?.post {
+                        categoryList?.getChildAt(0)?.requestFocus()
+                    }
+                    
                     Log.d(TAG, "Channels loaded successfully")
                 } else {
                     Log.e(TAG, "API error: ${response.code()}")
@@ -192,14 +239,22 @@ class ChannelBrowserFragment : Fragment() {
         Log.d(TAG, "Category selected: $category")
         currentCategory = category
         
-        val channels = when (category) {
-            "All Channels" -> allChannels
-            else -> channelsByCategory[category] ?: emptyList()
+        // Filter on background thread for performance
+        lifecycleScope.launch(Dispatchers.Default) {
+            val channels = when (category) {
+                "All Channels" -> allChannels
+                else -> channelsByCategory[category] ?: emptyList()
+            }
+            
+            // Update UI on main thread
+            withContext(Dispatchers.Main) {
+                Log.d(TAG, "Showing ${channels.size} channels")
+                channelCardsAdapter?.submitList(channels) {
+                    // Scroll after list is updated
+                    channelCardsGrid?.scrollToPosition(0)
+                }
+            }
         }
-        
-        Log.d(TAG, "Showing ${channels.size} channels")
-        channelCardsAdapter?.submitList(channels)
-        channelCardsGrid?.scrollToPosition(0)
     }
     
     private fun filterChannels(query: String) {
@@ -208,13 +263,19 @@ class ChannelBrowserFragment : Fragment() {
             return
         }
         
-        val filtered = allChannels.filter { channel ->
-            channel.name.contains(query, ignoreCase = true) ||
-            channel.number.toString().contains(query)
+        // Filter on background thread for instant response
+        lifecycleScope.launch(Dispatchers.Default) {
+            val filtered = allChannels.filter { channel ->
+                channel.name.contains(query, ignoreCase = true) ||
+                channel.number.toString().contains(query)
+            }
+            
+            // Update UI on main thread
+            withContext(Dispatchers.Main) {
+                Log.d(TAG, "Filtered to ${filtered.size} channels")
+                channelCardsAdapter?.submitList(filtered)
+            }
         }
-        
-        Log.d(TAG, "Filtered to ${filtered.size} channels")
-        channelCardsAdapter?.submitList(filtered)
     }
     
     private fun playChannel(channel: Channel) {

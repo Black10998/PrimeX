@@ -43,6 +43,8 @@ class HomeFragment : Fragment() {
     private lateinit var welcomeMessage: TextView
     private lateinit var welcomeSubtitle: TextView
     private lateinit var socialMessage: TextView
+    
+    private var isChannelBrowserVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -605,11 +607,43 @@ class HomeFragment : Fragment() {
     }
 
     private fun showChannelBrowserFragment() {
+        isChannelBrowserVisible = true
+        
+        // Hide all home UI elements for full-screen experience
+        view?.findViewById<View>(R.id.welcome_section)?.visibility = View.GONE
+        view?.findViewById<View>(R.id.home_content)?.visibility = View.GONE
+        view?.findViewById<View>(R.id.developer_info)?.visibility = View.GONE
+        view?.findViewById<View>(R.id.top_navigation)?.visibility = View.GONE
+        
+        // Show Channel Browser in full-screen
         childFragmentManager.beginTransaction()
             .replace(R.id.content_container, ChannelBrowserFragment.newInstance())
+            .addToBackStack("channel_browser")
             .commit()
+    }
+    
+    private fun restoreHomeUI() {
+        isChannelBrowserVisible = false
         
-        view?.findViewById<View>(R.id.welcome_section)?.visibility = View.GONE
+        // Restore all home UI elements
+        view?.findViewById<View>(R.id.welcome_section)?.visibility = View.VISIBLE
+        view?.findViewById<View>(R.id.home_content)?.visibility = View.VISIBLE
+        view?.findViewById<View>(R.id.developer_info)?.visibility = View.VISIBLE
+        view?.findViewById<View>(R.id.top_navigation)?.visibility = View.VISIBLE
+        
+        // Restore home background
+        (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_home)
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        
+        // Listen for back stack changes to restore UI
+        childFragmentManager.addOnBackStackChangedListener {
+            if (childFragmentManager.backStackEntryCount == 0 && isChannelBrowserVisible) {
+                restoreHomeUI()
+            }
+        }
     }
 
 

@@ -260,15 +260,23 @@
         <FrameLayout
             android:id="@+id/content_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="140dp">
+            android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/content_recycler"
+            <!-- Home Content (with padding) -->
+            <FrameLayout
+                android:id="@+id/home_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="24dp" />
+                android:paddingTop="140dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/content_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="24dp" />
+
+            </FrameLayout>
 
         </FrameLayout>
 
