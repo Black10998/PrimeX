@@ -41,6 +41,10 @@ const { blockIPMiddleware, detectSuspiciousMiddleware } = require('./middleware/
 // Create Express app
 const app = express();
 
+// Trust proxy - Required for Cloudflare/Hostinger proxy setup
+// This allows express-rate-limit to work correctly with X-Forwarded-For headers
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet({
     contentSecurityPolicy: false,
