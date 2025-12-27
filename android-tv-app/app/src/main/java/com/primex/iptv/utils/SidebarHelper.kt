@@ -54,7 +54,7 @@ object SidebarHelper {
                                 password,
                                 stream.streamId?.toString() ?: "0"
                             ),
-                            category = stream.categoryName
+                            category = stream.categoryId
                         )
                     }
                     

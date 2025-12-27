@@ -51,11 +51,11 @@ class ChannelCardsAdapter(
             if (!channel.logo_url.isNullOrEmpty()) {
                 Glide.with(itemView.context)
                     .load(channel.logo_url)
-                    .placeholder(R.drawable.ic_launcher_foreground)
-                    .error(R.drawable.ic_launcher_foreground)
+                    .placeholder(R.drawable.app_icon)
+                    .error(R.drawable.app_icon)
                     .into(channelLogo)
             } else {
-                channelLogo.setImageResource(R.drawable.ic_launcher_foreground)
+                channelLogo.setImageResource(R.drawable.app_icon)
             }
             
             itemView.setOnClickListener {

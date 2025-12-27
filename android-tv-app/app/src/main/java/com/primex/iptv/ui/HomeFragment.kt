@@ -299,13 +299,37 @@ class HomeFragment : Fragment() {
         }
         
         navSearch.setOnClickListener {
-            selectNav(navSearch)
-            (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_favorites)
-            showFavoritesFragment()
+            // Reset all nav items
+            navHome.setTextColor(0x80FFFFFF.toInt())
+            navLiveTV.setTextColor(0x80FFFFFF.toInt())
+            navMovies.setTextColor(0x80FFFFFF.toInt())
+            navSeries.setTextColor(0x80FFFFFF.toInt())
+            navCategories.setTextColor(0x80FFFFFF.toInt())
+            navFavorites.setTextColor(0x80FFFFFF.toInt())
+            navChannelBrowser.setTextColor(0x80FFFFFF.toInt())
+            navSettings.setTextColor(0x80FFFFFF.toInt())
+            
+            // Highlight search icon
+            navSearch.setColorFilter(0xFFFFFFFF.toInt())
+            
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
         }
-        navFavorites.setOnFocusChangeListener { _, hasFocus ->
+        navSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                selectNav(navFavorites)
+                // Reset all nav items
+                navHome.setTextColor(0x80FFFFFF.toInt())
+                navLiveTV.setTextColor(0x80FFFFFF.toInt())
+                navMovies.setTextColor(0x80FFFFFF.toInt())
+                navSeries.setTextColor(0x80FFFFFF.toInt())
+                navCategories.setTextColor(0x80FFFFFF.toInt())
+                navFavorites.setTextColor(0x80FFFFFF.toInt())
+                navChannelBrowser.setTextColor(0x80FFFFFF.toInt())
+                navSettings.setTextColor(0x80FFFFFF.toInt())
+                
+                navSearch.setColorFilter(0xFFFFFFFF.toInt())
+            } else {
+                navSearch.setColorFilter(0x80FFFFFF.toInt())
             }
         }
         

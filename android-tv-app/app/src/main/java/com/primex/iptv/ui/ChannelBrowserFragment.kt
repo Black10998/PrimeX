@@ -134,7 +134,7 @@ class ChannelBrowserFragment : Fragment() {
                                 password,
                                 stream.streamId?.toString() ?: "0"
                             ),
-                            category = stream.categoryName ?: "Uncategorized"
+                            category = stream.categoryId ?: "Uncategorized"
                         )
                     }
                     
