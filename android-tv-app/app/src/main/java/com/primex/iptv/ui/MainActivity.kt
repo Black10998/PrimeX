@@ -45,27 +45,6 @@ class MainActivity : FragmentActivity() {
                 .replace(R.id.main_browse_fragment, HomeFragment())
                 .commit()
         }
-        
-        // Show hint about sidebar (first time only)
-        showSidebarHint()
-    }
-    
-    /**
-     * Show hint about sidebar feature (first time only)
-     */
-    private fun showSidebarHint() {
-        val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        val hasSeenHint = prefs.getBoolean("sidebar_hint_shown", false)
-        
-        if (!hasSeenHint) {
-            android.widget.Toast.makeText(
-                this,
-                "Press MENU button to open Channel Browser",
-                android.widget.Toast.LENGTH_LONG
-            ).show()
-            
-            prefs.edit().putBoolean("sidebar_hint_shown", true).apply()
-        }
     }
     
     /**
@@ -135,25 +114,7 @@ class MainActivity : FragmentActivity() {
         channelSidebar?.setOnChannelSelectedListener(listener)
     }
     
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        android.util.Log.d("MainActivity", "Key pressed: $keyCode (MENU=${KeyEvent.KEYCODE_MENU})")
-        
-        // Toggle sidebar with MENU button
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            android.util.Log.d("MainActivity", "MENU button pressed - toggling sidebar")
-            toggleChannelSidebar()
-            return true
-        }
-        
-        // Hide sidebar with BACK button when sidebar is visible
-        if (keyCode == KeyEvent.KEYCODE_BACK && isSidebarVisible) {
-            android.util.Log.d("MainActivity", "BACK button pressed - hiding sidebar")
-            hideSidebar()
-            return true
-        }
-        
-        return super.onKeyDown(keyCode, event)
-    }
+    // Removed MENU button trigger - channel browser is now UI-driven
 
     fun changeVideoBackground(videoResource: Int) {
         android.util.Log.d("MainActivity", "Request to change video to: $videoResource (current: $currentVideoResource)")

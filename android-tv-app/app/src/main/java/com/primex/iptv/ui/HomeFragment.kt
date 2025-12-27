@@ -37,6 +37,7 @@ class HomeFragment : Fragment() {
     private lateinit var navSeries: TextView
     private lateinit var navCategories: TextView
     private lateinit var navFavorites: TextView
+    private lateinit var navChannelBrowser: TextView
     private lateinit var navSearch: ImageView
     private lateinit var navSettings: TextView
     private lateinit var welcomeMessage: TextView
@@ -90,6 +91,7 @@ class HomeFragment : Fragment() {
         navSeries = view.findViewById(R.id.nav_series)
         navCategories = view.findViewById(R.id.nav_categories)
         navFavorites = view.findViewById(R.id.nav_favorites)
+        navChannelBrowser = view.findViewById(R.id.nav_channel_browser)
         navSearch = view.findViewById(R.id.nav_search)
         navSettings = view.findViewById(R.id.nav_settings)
         
@@ -276,6 +278,28 @@ class HomeFragment : Fragment() {
         
         navFavorites.setOnClickListener {
             selectNav(navFavorites)
+            (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_categories)
+            showFavoritesFragment()
+        }
+        navFavorites.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                selectNav(navFavorites)
+            }
+        }
+        
+        navChannelBrowser.setOnClickListener {
+            selectNav(navChannelBrowser)
+            (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_categories)
+            showChannelBrowserFragment()
+        }
+        navChannelBrowser.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                selectNav(navChannelBrowser)
+            }
+        }
+        
+        navSearch.setOnClickListener {
+            selectNav(navSearch)
             (activity as? MainActivity)?.changeVideoBackground(R.raw.bg_favorites)
             showFavoritesFragment()
         }
@@ -322,6 +346,7 @@ class HomeFragment : Fragment() {
         navSeries.setTextColor(0x80FFFFFF.toInt())
         navCategories.setTextColor(0x80FFFFFF.toInt())
         navFavorites.setTextColor(0x80FFFFFF.toInt())
+        navChannelBrowser.setTextColor(0x80FFFFFF.toInt())
         navSettings.setTextColor(0x80FFFFFF.toInt())
         
         // Highlight selected
@@ -335,7 +360,7 @@ class HomeFragment : Fragment() {
             .start()
         
         // Reset scale for others
-        listOf(navHome, navLiveTV, navMovies, navSeries, navCategories, navFavorites, navSettings).forEach {
+        listOf(navHome, navLiveTV, navMovies, navSeries, navCategories, navFavorites, navChannelBrowser, navSettings).forEach {
             if (it != selected) {
                 it.animate()
                     .scaleX(1.0f)
@@ -550,6 +575,14 @@ class HomeFragment : Fragment() {
     private fun showFavoritesFragment() {
         childFragmentManager.beginTransaction()
             .replace(R.id.content_container, FavoritesFragment())
+            .commit()
+        
+        view?.findViewById<View>(R.id.welcome_section)?.visibility = View.GONE
+    }
+
+    private fun showChannelBrowserFragment() {
+        childFragmentManager.beginTransaction()
+            .replace(R.id.content_container, ChannelBrowserFragment.newInstance())
             .commit()
         
         view?.findViewById<View>(R.id.welcome_section)?.visibility = View.GONE
