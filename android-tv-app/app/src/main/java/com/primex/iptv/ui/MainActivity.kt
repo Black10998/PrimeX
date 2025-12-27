@@ -45,12 +45,34 @@ class MainActivity : FragmentActivity() {
                 .replace(R.id.main_browse_fragment, HomeFragment())
                 .commit()
         }
+        
+        // Show hint about sidebar (first time only)
+        showSidebarHint()
+    }
+    
+    /**
+     * Show hint about sidebar feature (first time only)
+     */
+    private fun showSidebarHint() {
+        val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        val hasSeenHint = prefs.getBoolean("sidebar_hint_shown", false)
+        
+        if (!hasSeenHint) {
+            android.widget.Toast.makeText(
+                this,
+                "Press MENU button to open Channel Browser",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+            
+            prefs.edit().putBoolean("sidebar_hint_shown", true).apply()
+        }
     }
     
     /**
      * Toggle channel sidebar visibility
      */
     fun toggleChannelSidebar() {
+        android.util.Log.d("MainActivity", "toggleChannelSidebar called - current state: $isSidebarVisible")
         if (isSidebarVisible) {
             hideSidebar()
         } else {
@@ -62,19 +84,24 @@ class MainActivity : FragmentActivity() {
      * Show channel sidebar with slide-in animation
      */
     private fun showSidebar() {
+        android.util.Log.d("MainActivity", "showSidebar called")
+        
         if (channelSidebar == null) {
+            android.util.Log.d("MainActivity", "Creating new sidebar fragment")
             channelSidebar = ChannelSidebarFragment.newInstance()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.channel_sidebar_container, channelSidebar!!)
                 .commit()
         }
         
+        android.util.Log.d("MainActivity", "Animating sidebar in")
         sidebarContainer.visibility = View.VISIBLE
         sidebarContainer.animate()
             .translationX(0f)
             .setDuration(300)
             .withEndAction {
                 isSidebarVisible = true
+                android.util.Log.d("MainActivity", "Sidebar now visible")
                 channelSidebar?.requestSearchFocus()
             }
             .start()
@@ -109,14 +136,18 @@ class MainActivity : FragmentActivity() {
     }
     
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        android.util.Log.d("MainActivity", "Key pressed: $keyCode (MENU=${KeyEvent.KEYCODE_MENU})")
+        
         // Toggle sidebar with MENU button
         if (keyCode == KeyEvent.KEYCODE_MENU) {
+            android.util.Log.d("MainActivity", "MENU button pressed - toggling sidebar")
             toggleChannelSidebar()
             return true
         }
         
         // Hide sidebar with BACK button when sidebar is visible
         if (keyCode == KeyEvent.KEYCODE_BACK && isSidebarVisible) {
+            android.util.Log.d("MainActivity", "BACK button pressed - hiding sidebar")
             hideSidebar()
             return true
         }

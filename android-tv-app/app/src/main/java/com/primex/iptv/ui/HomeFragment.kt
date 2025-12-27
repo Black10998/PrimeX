@@ -23,6 +23,7 @@ import com.primex.iptv.models.Channel
 import com.primex.iptv.player.PlayerActivity
 import com.primex.iptv.utils.PreferenceManager
 import com.primex.iptv.utils.SessionManager
+import com.primex.iptv.utils.SidebarHelper
 import com.primex.iptv.utils.VideoBackgroundHelper
 import kotlinx.coroutines.launch
 
@@ -61,6 +62,21 @@ class HomeFragment : Fragment() {
         animateWelcomeMessage()
         setupNavigation()
         loadContent()
+        
+        // Load channels for sidebar
+        SidebarHelper.loadLiveChannelsToSidebar(
+            requireContext(),
+            activity as? MainActivity,
+            lifecycleScope
+        )
+        
+        // Setup channel playback from sidebar
+        SidebarHelper.setupChannelPlayback(
+            requireContext(),
+            activity as? MainActivity
+        ) { channel ->
+            playChannel(channel)
+        }
     }
 
     private fun setupViews(view: View) {
