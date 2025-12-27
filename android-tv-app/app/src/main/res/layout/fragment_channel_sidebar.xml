@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#E6000000"
+    android:padding="16dp">
+
+    <!-- Sidebar Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Channels"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Search Field -->
+    <EditText
+        android:id="@+id/sidebar_search_field"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Search channels..."
+        android:textColorHint="#888888"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/search_field_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <!-- Channel List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sidebar_channel_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
+
+</LinearLayout>

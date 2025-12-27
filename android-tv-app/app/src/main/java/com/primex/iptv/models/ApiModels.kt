@@ -143,6 +143,7 @@ data class Channel(
     val id: String,
     val name: String,
     val stream_url: String,
+    val number: Int = 0,
     val logo_url: String? = null,
     val category: String? = null,
     val epg_channel_id: String? = null,

@@ -2,9 +2,13 @@ package com.primex.iptv.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.VideoView
 import androidx.fragment.app.FragmentActivity
 import com.primex.iptv.R
+import com.primex.iptv.models.Channel
 import com.primex.iptv.utils.SessionManager
 import com.primex.iptv.utils.VideoBackgroundHelper
 
@@ -12,6 +16,11 @@ class MainActivity : FragmentActivity() {
 
     private var mainVideoBackground: VideoView? = null
     private var currentVideoResource: Int = R.raw.bg_home
+    
+    // Channel Sidebar
+    private lateinit var sidebarContainer: FrameLayout
+    private var channelSidebar: ChannelSidebarFragment? = null
+    private var isSidebarVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,12 +36,92 @@ class MainActivity : FragmentActivity() {
         // Setup main video background
         mainVideoBackground = findViewById(R.id.main_video_background)
         changeVideoBackground(R.raw.bg_home)
+        
+        // Setup sidebar container
+        sidebarContainer = findViewById(R.id.channel_sidebar_container)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_browse_fragment, HomeFragment())
                 .commit()
         }
+    }
+    
+    /**
+     * Toggle channel sidebar visibility
+     */
+    fun toggleChannelSidebar() {
+        if (isSidebarVisible) {
+            hideSidebar()
+        } else {
+            showSidebar()
+        }
+    }
+    
+    /**
+     * Show channel sidebar with slide-in animation
+     */
+    private fun showSidebar() {
+        if (channelSidebar == null) {
+            channelSidebar = ChannelSidebarFragment.newInstance()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.channel_sidebar_container, channelSidebar!!)
+                .commit()
+        }
+        
+        sidebarContainer.visibility = View.VISIBLE
+        sidebarContainer.animate()
+            .translationX(0f)
+            .setDuration(300)
+            .withEndAction {
+                isSidebarVisible = true
+                channelSidebar?.requestSearchFocus()
+            }
+            .start()
+    }
+    
+    /**
+     * Hide channel sidebar with slide-out animation
+     */
+    private fun hideSidebar() {
+        sidebarContainer.animate()
+            .translationX(-320f * resources.displayMetrics.density)
+            .setDuration(300)
+            .withEndAction {
+                sidebarContainer.visibility = View.GONE
+                isSidebarVisible = false
+            }
+            .start()
+    }
+    
+    /**
+     * Set channels for sidebar
+     */
+    fun setSidebarChannels(channels: List<Channel>) {
+        channelSidebar?.setChannels(channels)
+    }
+    
+    /**
+     * Set channel selection listener
+     */
+    fun setOnChannelSelectedListener(listener: (Channel) -> Unit) {
+        channelSidebar?.setOnChannelSelectedListener(listener)
+    }
+    
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        // Toggle sidebar with MENU button
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            toggleChannelSidebar()
+            return true
+        }
+        
+        // Hide sidebar with BACK button when sidebar is visible
+        if (keyCode == KeyEvent.KEYCODE_BACK && isSidebarVisible) {
+            hideSidebar()
+            return true
+        }
+        
+        return super.onKeyDown(keyCode, event)
     }
 
     fun changeVideoBackground(videoResource: Int) {

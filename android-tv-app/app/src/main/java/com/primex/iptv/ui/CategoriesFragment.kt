@@ -42,6 +42,16 @@ class CategoriesFragment : Fragment() {
         contentRecycler.layoutManager = LinearLayoutManager(requireContext())
         
         loadCategoriesContent()
+        
+        // Setup sidebar channel selection listener
+        (activity as? MainActivity)?.setOnChannelSelectedListener { channel ->
+            // Play selected channel
+            android.widget.Toast.makeText(
+                requireContext(),
+                "Playing: ${channel.name}",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun loadCategoriesContent() {
@@ -75,18 +85,24 @@ class CategoriesFragment : Fragment() {
                     val channelsByCategory = streams.groupBy { it.categoryId ?: "Uncategorized" }
                     
                     // Create rows for each category
+                    val allChannels = mutableListOf<Channel>()
                     val rows = channelsByCategory.map { (categoryId, categoryStreams) ->
-                        val channels = categoryStreams.map { stream ->
+                        val channels = categoryStreams.mapIndexed { index, stream ->
                             Channel(
                                 id = stream.streamId?.toString() ?: "0",
                                 name = stream.name ?: "Unknown Channel",
+                                number = index + 1,
                                 logo_url = stream.streamIcon,
                                 stream_url = buildStreamUrl(username, password, stream.streamId?.toString() ?: "0"),
                                 category = categoryId
                             )
                         }
+                        allChannels.addAll(channels)
                         ContentRow("Category $categoryId", channels)
                     }
+                    
+                    // Update sidebar with all channels
+                    (activity as? MainActivity)?.setSidebarChannels(allChannels)
                     
                     contentRecycler.adapter = ContentRowAdapter(rows) { channel ->
                         // Play channel
