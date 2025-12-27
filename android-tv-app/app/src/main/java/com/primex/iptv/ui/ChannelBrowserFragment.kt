@@ -111,8 +111,8 @@ class ChannelBrowserFragment : Fragment() {
             }
         }
         
-        // Prevent focus from escaping
-        view.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+        // Prevent focus from escaping (cast to ViewGroup)
+        (view as? ViewGroup)?.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
     }
     
     private fun setupViews(view: View) {
