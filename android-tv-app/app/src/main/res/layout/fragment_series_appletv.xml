@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Apple TV Style Series Screen -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appletv_background_primary">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Navigation Bar -->
+            <include
+                android:id="@+id/navigation_bar"
+                layout="@layout/appletv_navigation_bar" />
+
+            <!-- Content Rows -->
+            <LinearLayout
+                android:id="@+id/series_rows_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/appletv_spacing_lg">
+
+                <!-- Continue Watching -->
+                <include
+                    android:id="@+id/continue_watching_row"
+                    layout="@layout/appletv_content_row" />
+
+                <!-- Popular Series -->
+                <include
+                    android:id="@+id/popular_series_row"
+                    layout="@layout/appletv_content_row" />
+
+                <!-- New Episodes -->
+                <include
+                    android:id="@+id/new_episodes_row"
+                    layout="@layout/appletv_content_row" />
+
+                <!-- Recommended -->
+                <include
+                    android:id="@+id/recommended_series_row"
+                    layout="@layout/appletv_content_row" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>

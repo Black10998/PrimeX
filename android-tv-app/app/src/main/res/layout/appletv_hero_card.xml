@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Apple TV Style Hero Card - Large Featured Content -->
+<com.primex.iptv.ui.appletv.AppleTVCard
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/appletv_card_hero_width"
+    android:layout_height="@dimen/appletv_card_hero_height"
+    android:layout_marginEnd="@dimen/appletv_spacing_lg">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Hero Image/Backdrop -->
+        <ImageView
+            android:id="@+id/hero_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/hero_content" />
+
+        <!-- Gradient Overlay -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/appletv_hero_gradient" />
+
+        <!-- Content Info (Bottom Left) -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:orientation="vertical"
+            android:padding="@dimen/appletv_spacing_xl">
+
+            <!-- Logo/Title -->
+            <ImageView
+                android:id="@+id/hero_logo"
+                android:layout_width="400dp"
+                android:layout_height="120dp"
+                android:scaleType="fitStart"
+                android:contentDescription="@string/content_logo"
+                android:visibility="gone" />
+
+            <!-- Title (if no logo) -->
+            <TextView
+                android:id="@+id/hero_title"
+                style="@style/AppleTV.Text.Hero"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="800dp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:shadowColor="@color/appletv_focus_shadow"
+                android:shadowDx="0"
+                android:shadowDy="2"
+                android:shadowRadius="8" />
+
+            <!-- Description -->
+            <TextView
+                android:id="@+id/hero_description"
+                style="@style/AppleTV.Text.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/appletv_spacing_sm"
+                android:maxWidth="700dp"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:shadowColor="@color/appletv_focus_shadow"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="4" />
+
+            <!-- Metadata (Genre, Year, Rating) -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/appletv_spacing_sm"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/hero_genre"
+                    style="@style/AppleTV.Text.Callout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/appletv_text_tertiary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" • "
+                    android:textColor="@color/appletv_text_quaternary"
+                    android:textSize="@dimen/appletv_text_callout" />
+
+                <TextView
+                    android:id="@+id/hero_year"
+                    style="@style/AppleTV.Text.Callout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/appletv_text_tertiary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" • "
+                    android:textColor="@color/appletv_text_quaternary"
+                    android:textSize="@dimen/appletv_text_callout" />
+
+                <TextView
+                    android:id="@+id/hero_rating"
+                    style="@style/AppleTV.Text.Callout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/appletv_text_tertiary" />
+
+            </LinearLayout>
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/appletv_spacing_lg"
+                android:orientation="horizontal">
+
+                <!-- Play Button -->
+                <com.primex.iptv.ui.appletv.AppleTVButton
+                    android:id="@+id/hero_play_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/appletv_button_height"
+                    android:paddingStart="@dimen/appletv_button_padding_horizontal"
+                    android:paddingEnd="@dimen/appletv_button_padding_horizontal"
+                    android:text="@string/play"
+                    android:textSize="@dimen/appletv_text_callout"
+                    android:drawableStart="@drawable/ic_play"
+                    android:drawablePadding="@dimen/appletv_spacing_xs"
+                    android:background="@color/appletv_text_primary"
+                    android:textColor="@color/appletv_background_primary" />
+
+                <!-- More Info Button -->
+                <com.primex.iptv.ui.appletv.AppleTVButton
+                    android:id="@+id/hero_info_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/appletv_button_height"
+                    android:layout_marginStart="@dimen/appletv_spacing_sm"
+                    android:paddingStart="@dimen/appletv_button_padding_horizontal"
+                    android:paddingEnd="@dimen/appletv_button_padding_horizontal"
+                    android:text="@string/more_info"
+                    android:textSize="@dimen/appletv_text_callout"
+                    android:drawableStart="@drawable/ic_info"
+                    android:drawablePadding="@dimen/appletv_spacing_xs" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</com.primex.iptv.ui.appletv.AppleTVCard>

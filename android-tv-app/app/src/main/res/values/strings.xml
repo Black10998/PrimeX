@@ -126,4 +126,18 @@
     <string name="no_subscription">No active subscription</string>
     <string name="no_expiry">No expiration</string>
     <string name="error_loading_profile">Failed to load profile</string>
+    
+    <!-- Apple TV Redesign Strings -->
+    <string name="hero_content">Hero content</string>
+    <string name="content_image">Content image</string>
+    <string name="content_logo">Content logo</string>
+    <string name="background_image">Background image</string>
+    <string name="play">Play</string>
+    <string name="more_info">More Info</string>
+    <string name="see_all">See All</string>
+    <string name="search">Search</string>
+    <string name="back">Back</string>
+    <string name="rewind">Rewind</string>
+    <string name="forward">Forward</string>
+    
 </resources>

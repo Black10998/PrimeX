@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Apple TV Style Content Details Screen -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appletv_background_primary">
+
+    <!-- Background Image (Blurred) -->
+    <ImageView
+        android:id="@+id/details_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:alpha="0.2"
+        android:contentDescription="@string/background_image" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/appletv_screen_margin_horizontal">
+
+            <!-- Back Button -->
+            <ImageView
+                android:id="@+id/details_back"
+                android:layout_width="@dimen/appletv_icon_md"
+                android:layout_height="@dimen/appletv_icon_md"
+                android:src="@drawable/ic_back"
+                android:tint="@color/appletv_text_primary"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_marginBottom="@dimen/appletv_spacing_xl"
+                android:contentDescription="@string/back" />
+
+            <!-- Content Info -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Poster -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="300dp"
+                    android:layout_height="450dp"
+                    android:layout_marginEnd="@dimen/appletv_spacing_xl"
+                    android:elevation="@dimen/appletv_focus_elevation">
+
+                    <ImageView
+                        android:id="@+id/details_poster"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/content_image" />
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Info -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Title -->
+                    <TextView
+                        android:id="@+id/details_title"
+                        style="@style/AppleTV.Text.Hero"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
+
+                    <!-- Metadata -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/appletv_spacing_sm"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/details_year"
+                            style="@style/AppleTV.Text.Callout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/appletv_text_tertiary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" • "
+                            android:textColor="@color/appletv_text_quaternary"
+                            android:textSize="@dimen/appletv_text_callout" />
+
+                        <TextView
+                            android:id="@+id/details_rating"
+                            style="@style/AppleTV.Text.Callout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/appletv_text_tertiary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" • "
+                            android:textColor="@color/appletv_text_quaternary"
+                            android:textSize="@dimen/appletv_text_callout" />
+
+                        <TextView
+                            android:id="@+id/details_duration"
+                            style="@style/AppleTV.Text.Callout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/appletv_text_tertiary" />
+
+                    </LinearLayout>
+
+                    <!-- Description -->
+                    <TextView
+                        android:id="@+id/details_description"
+                        style="@style/AppleTV.Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/appletv_spacing_lg"
+                        android:maxLines="4"
+                        android:ellipsize="end" />
+
+                    <!-- Genres -->
+                    <TextView
+                        android:id="@+id/details_genres"
+                        style="@style/AppleTV.Text.Callout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/appletv_spacing_md"
+                        android:textColor="@color/appletv_text_tertiary" />
+
+                    <!-- Action Buttons -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/appletv_spacing_xl"
+                        android:orientation="horizontal">
+
+                        <com.primex.iptv.ui.appletv.AppleTVButton
+                            android:id="@+id/details_play"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/appletv_button_height"
+                            android:paddingStart="@dimen/appletv_button_padding_horizontal"
+                            android:paddingEnd="@dimen/appletv_button_padding_horizontal"
+                            android:text="@string/play"
+                            android:textSize="@dimen/appletv_text_callout"
+                            android:drawableStart="@drawable/ic_play"
+                            android:drawablePadding="@dimen/appletv_spacing_xs"
+                            android:background="@color/appletv_text_primary"
+                            android:textColor="@color/appletv_background_primary" />
+
+                        <com.primex.iptv.ui.appletv.AppleTVButton
+                            android:id="@+id/details_add_list"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/appletv_button_height"
+                            android:layout_marginStart="@dimen/appletv_spacing_sm"
+                            android:paddingStart="@dimen/appletv_button_padding_horizontal"
+                            android:paddingEnd="@dimen/appletv_button_padding_horizontal"
+                            android:text="@string/my_list"
+                            android:textSize="@dimen/appletv_text_callout"
+                            android:drawableStart="@drawable/ic_add"
+                            android:drawablePadding="@dimen/appletv_spacing_xs" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Related Content -->
+            <include
+                android:id="@+id/related_content_row"
+                layout="@layout/appletv_content_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/appletv_spacing_xxxl" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>

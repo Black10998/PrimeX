@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Apple TV Design System - Typography Styles -->
+    
+    <!-- Hero Text -->
+    <style name="AppleTV.Text.Hero">
+        <item name="android:textSize">@dimen/appletv_text_hero</item>
+        <item name="android:textColor">@color/appletv_text_primary</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:lineSpacingMultiplier">1.1</item>
+    </style>
+    
+    <!-- Title Styles -->
+    <style name="AppleTV.Text.Title1">
+        <item name="android:textSize">@dimen/appletv_text_title1</item>
+        <item name="android:textColor">@color/appletv_text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+    
+    <style name="AppleTV.Text.Title2">
+        <item name="android:textSize">@dimen/appletv_text_title2</item>
+        <item name="android:textColor">@color/appletv_text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+    
+    <style name="AppleTV.Text.Title3">
+        <item name="android:textSize">@dimen/appletv_text_title3</item>
+        <item name="android:textColor">@color/appletv_text_primary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    
+    <!-- Headline -->
+    <style name="AppleTV.Text.Headline">
+        <item name="android:textSize">@dimen/appletv_text_headline</item>
+        <item name="android:textColor">@color/appletv_text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    
+    <!-- Body Text -->
+    <style name="AppleTV.Text.Body">
+        <item name="android:textSize">@dimen/appletv_text_body</item>
+        <item name="android:textColor">@color/appletv_text_secondary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+    
+    <!-- Callout -->
+    <style name="AppleTV.Text.Callout">
+        <item name="android:textSize">@dimen/appletv_text_callout</item>
+        <item name="android:textColor">@color/appletv_text_secondary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    
+    <!-- Subhead -->
+    <style name="AppleTV.Text.Subhead">
+        <item name="android:textSize">@dimen/appletv_text_subhead</item>
+        <item name="android:textColor">@color/appletv_text_tertiary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    
+    <!-- Footnote -->
+    <style name="AppleTV.Text.Footnote">
+        <item name="android:textSize">@dimen/appletv_text_footnote</item>
+        <item name="android:textColor">@color/appletv_text_tertiary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    
+    <!-- Caption -->
+    <style name="AppleTV.Text.Caption1">
+        <item name="android:textSize">@dimen/appletv_text_caption1</item>
+        <item name="android:textColor">@color/appletv_text_quaternary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    
+    <style name="AppleTV.Text.Caption2">
+        <item name="android:textSize">@dimen/appletv_text_caption2</item>
+        <item name="android:textColor">@color/appletv_text_quaternary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    
+    <!-- Section Title (for content rows) -->
+    <style name="AppleTV.Text.SectionTitle">
+        <item name="android:textSize">@dimen/appletv_text_title3</item>
+        <item name="android:textColor">@color/appletv_text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+    
+    <!-- Card Title -->
+    <style name="AppleTV.Text.CardTitle">
+        <item name="android:textSize">@dimen/appletv_text_callout</item>
+        <item name="android:textColor">@color/appletv_text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <!-- Card Subtitle -->
+    <style name="AppleTV.Text.CardSubtitle">
+        <item name="android:textSize">@dimen/appletv_text_footnote</item>
+        <item name="android:textColor">@color/appletv_text_tertiary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <!-- Navigation Item -->
+    <style name="AppleTV.NavItem">
+        <item name="android:textSize">@dimen/appletv_text_callout</item>
+        <item name="android:textColor">@color/appletv_text_secondary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:paddingStart">@dimen/appletv_spacing_sm</item>
+        <item name="android:paddingEnd">@dimen/appletv_spacing_sm</item>
+        <item name="android:paddingTop">@dimen/appletv_spacing_xs</item>
+        <item name="android:paddingBottom">@dimen/appletv_spacing_xs</item>
+        <item name="android:layout_marginEnd">@dimen/appletv_navbar_item_spacing</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+    
+    <!-- Navigation Item - Selected -->
+    <style name="AppleTV.NavItem.Selected">
+        <item name="android:textColor">@color/appletv_text_primary</item>
+    </style>
+    
+</resources>

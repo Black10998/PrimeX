@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Apple TV Style Live TV Screen -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appletv_background_primary">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Navigation Bar -->
+        <include
+            android:id="@+id/navigation_bar"
+            layout="@layout/appletv_navigation_bar" />
+
+        <!-- Content Area -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/appletv_screen_margin_horizontal"
+            android:paddingEnd="@dimen/appletv_screen_margin_horizontal"
+            android:paddingTop="@dimen/appletv_spacing_lg">
+
+            <!-- Left: Categories -->
+            <LinearLayout
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingEnd="@dimen/appletv_spacing_lg">
+
+                <TextView
+                    style="@style/AppleTV.Text.Title3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categories"
+                    android:layout_marginBottom="@dimen/appletv_spacing_md" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/categories_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false" />
+
+            </LinearLayout>
+
+            <!-- Right: Channels Grid -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/category_title"
+                    style="@style/AppleTV.Text.Title3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All Channels"
+                    android:layout_marginBottom="@dimen/appletv_spacing_md" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/channels_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

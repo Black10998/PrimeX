@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Apple TV Style Home Screen -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appletv_background_primary">
+
+    <!-- Background Video/Image (Optional) -->
+    <ImageView
+        android:id="@+id/home_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:alpha="0.3"
+        android:contentDescription="@string/background_image" />
+
+    <!-- Main Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Navigation Bar -->
+            <include
+                android:id="@+id/navigation_bar"
+                layout="@layout/appletv_navigation_bar" />
+
+            <!-- Hero Section -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/appletv_spacing_md"
+                android:paddingStart="@dimen/appletv_screen_margin_horizontal"
+                android:paddingEnd="@dimen/appletv_screen_margin_horizontal">
+
+                <HorizontalScrollView
+                    android:id="@+id/hero_scroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/hero_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+
+                </HorizontalScrollView>
+
+            </FrameLayout>
+
+            <!-- Content Rows Container -->
+            <LinearLayout
+                android:id="@+id/content_rows_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/appletv_spacing_xxl">
+
+                <!-- Continue Watching Row -->
+                <include
+                    android:id="@+id/continue_watching_row"
+                    layout="@layout/appletv_content_row" />
+
+                <!-- Recommended Row -->
+                <include
+                    android:id="@+id/recommended_row"
+                    layout="@layout/appletv_content_row" />
+
+                <!-- Live TV Row -->
+                <include
+                    android:id="@+id/live_tv_row"
+                    layout="@layout/appletv_content_row" />
+
+                <!-- Movies Row -->
+                <include
+                    android:id="@+id/movies_row"
+                    layout="@layout/appletv_content_row" />
+
+                <!-- Series Row -->
+                <include
+                    android:id="@+id/series_row"
+                    layout="@layout/appletv_content_row" />
+
+                <!-- Trending Row -->
+                <include
+                    android:id="@+id/trending_row"
+                    layout="@layout/appletv_content_row" />
+
+            </LinearLayout>
+
+            <!-- Bottom Spacing -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/appletv_spacing_xxxl" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>

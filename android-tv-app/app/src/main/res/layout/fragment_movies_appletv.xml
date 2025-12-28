@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Apple TV Style Movies Screen -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appletv_background_primary">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Navigation Bar -->
+            <include
+                android:id="@+id/navigation_bar"
+                layout="@layout/appletv_navigation_bar" />
+
+            <!-- Filter Bar -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/appletv_spacing_lg"
+                android:paddingStart="@dimen/appletv_screen_margin_horizontal"
+                android:paddingEnd="@dimen/appletv_screen_margin_horizontal"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/filter_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.primex.iptv.ui.appletv.AppleTVButton
+                        android:id="@+id/filter_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/appletv_button_height_small"
+                        android:paddingStart="@dimen/appletv_spacing_lg"
+                        android:paddingEnd="@dimen/appletv_spacing_lg"
+                        android:text="All"
+                        android:layout_marginEnd="@dimen/appletv_spacing_sm" />
+
+                    <com.primex.iptv.ui.appletv.AppleTVButton
+                        android:id="@+id/filter_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/appletv_button_height_small"
+                        android:paddingStart="@dimen/appletv_spacing_lg"
+                        android:paddingEnd="@dimen/appletv_spacing_lg"
+                        android:text="Action"
+                        android:layout_marginEnd="@dimen/appletv_spacing_sm" />
+
+                    <com.primex.iptv.ui.appletv.AppleTVButton
+                        android:id="@+id/filter_comedy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/appletv_button_height_small"
+                        android:paddingStart="@dimen/appletv_spacing_lg"
+                        android:paddingEnd="@dimen/appletv_spacing_lg"
+                        android:text="Comedy"
+                        android:layout_marginEnd="@dimen/appletv_spacing_sm" />
+
+                    <com.primex.iptv.ui.appletv.AppleTVButton
+                        android:id="@+id/filter_drama"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/appletv_button_height_small"
+                        android:paddingStart="@dimen/appletv_spacing_lg"
+                        android:paddingEnd="@dimen/appletv_spacing_lg"
+                        android:text="Drama"
+                        android:layout_marginEnd="@dimen/appletv_spacing_sm" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+            <!-- Movies Grid -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/movies_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/appletv_spacing_lg"
+                android:paddingStart="@dimen/appletv_screen_margin_horizontal"
+                android:paddingEnd="@dimen/appletv_screen_margin_horizontal"
+                android:clipToPadding="false" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>

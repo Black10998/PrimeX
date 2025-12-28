@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Apple TV Design System - Dimensions & Spacing -->
+    
+    <!-- Spacing Scale (8dp base) -->
+    <dimen name="appletv_spacing_xxxs">4dp</dimen>
+    <dimen name="appletv_spacing_xxs">8dp</dimen>
+    <dimen name="appletv_spacing_xs">12dp</dimen>
+    <dimen name="appletv_spacing_sm">16dp</dimen>
+    <dimen name="appletv_spacing_md">24dp</dimen>
+    <dimen name="appletv_spacing_lg">32dp</dimen>
+    <dimen name="appletv_spacing_xl">48dp</dimen>
+    <dimen name="appletv_spacing_xxl">64dp</dimen>
+    <dimen name="appletv_spacing_xxxl">96dp</dimen>
+    
+    <!-- Screen Margins -->
+    <dimen name="appletv_screen_margin_horizontal">60dp</dimen>
+    <dimen name="appletv_screen_margin_vertical">48dp</dimen>
+    <dimen name="appletv_screen_margin_top">90dp</dimen>
+    
+    <!-- Card Dimensions -->
+    <dimen name="appletv_card_hero_width">1200dp</dimen>
+    <dimen name="appletv_card_hero_height">675dp</dimen>
+    <dimen name="appletv_card_large_width">400dp</dimen>
+    <dimen name="appletv_card_large_height">225dp</dimen>
+    <dimen name="appletv_card_medium_width">300dp</dimen>
+    <dimen name="appletv_card_medium_height">450dp</dimen>
+    <dimen name="appletv_card_small_width">200dp</dimen>
+    <dimen name="appletv_card_small_height">300dp</dimen>
+    <dimen name="appletv_card_corner_radius">12dp</dimen>
+    <dimen name="appletv_card_corner_radius_large">16dp</dimen>
+    
+    <!-- Typography Sizes -->
+    <dimen name="appletv_text_hero">76sp</dimen>
+    <dimen name="appletv_text_title1">48sp</dimen>
+    <dimen name="appletv_text_title2">38sp</dimen>
+    <dimen name="appletv_text_title3">31sp</dimen>
+    <dimen name="appletv_text_headline">29sp</dimen>
+    <dimen name="appletv_text_body">25sp</dimen>
+    <dimen name="appletv_text_callout">23sp</dimen>
+    <dimen name="appletv_text_subhead">21sp</dimen>
+    <dimen name="appletv_text_footnote">19sp</dimen>
+    <dimen name="appletv_text_caption1">17sp</dimen>
+    <dimen name="appletv_text_caption2">15sp</dimen>
+    
+    <!-- Focus Effects -->
+    <dimen name="appletv_focus_scale">1.08</dimen>
+    <dimen name="appletv_focus_elevation">16dp</dimen>
+    <dimen name="appletv_focus_shadow_radius">24dp</dimen>
+    
+    <!-- Button Dimensions -->
+    <dimen name="appletv_button_height">66dp</dimen>
+    <dimen name="appletv_button_height_small">52dp</dimen>
+    <dimen name="appletv_button_corner_radius">8dp</dimen>
+    <dimen name="appletv_button_padding_horizontal">32dp</dimen>
+    
+    <!-- Icon Sizes -->
+    <dimen name="appletv_icon_xs">24dp</dimen>
+    <dimen name="appletv_icon_sm">32dp</dimen>
+    <dimen name="appletv_icon_md">48dp</dimen>
+    <dimen name="appletv_icon_lg">64dp</dimen>
+    <dimen name="appletv_icon_xl">96dp</dimen>
+    
+    <!-- Navigation Bar -->
+    <dimen name="appletv_navbar_height">90dp</dimen>
+    <dimen name="appletv_navbar_item_spacing">40dp</dimen>
+    
+    <!-- Content Row -->
+    <dimen name="appletv_row_spacing">48dp</dimen>
+    <dimen name="appletv_row_title_margin_bottom">16dp</dimen>
+    <dimen name="appletv_card_spacing">20dp</dimen>
+    
+</resources>

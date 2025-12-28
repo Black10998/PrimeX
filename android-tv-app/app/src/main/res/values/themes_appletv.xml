@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Apple TV Design System - Main Theme -->
+    
+    <style name="Theme.PrimeX.AppleTV" parent="Theme.Leanback">
+        <!-- Background Colors -->
+        <item name="android:windowBackground">@color/appletv_background_primary</item>
+        <item name="android:colorBackground">@color/appletv_background_primary</item>
+        <item name="android:colorBackgroundFloating">@color/appletv_background_elevated</item>
+        
+        <!-- Text Colors -->
+        <item name="android:textColorPrimary">@color/appletv_text_primary</item>
+        <item name="android:textColorSecondary">@color/appletv_text_secondary</item>
+        <item name="android:textColorTertiary">@color/appletv_text_tertiary</item>
+        
+        <!-- Accent Colors -->
+        <item name="colorPrimary">@color/appletv_accent_primary</item>
+        <item name="colorPrimaryDark">@color/appletv_background_primary</item>
+        <item name="colorAccent">@color/appletv_accent_primary</item>
+        
+        <!-- Status Bar & Navigation Bar -->
+        <item name="android:statusBarColor">@color/appletv_background_primary</item>
+        <item name="android:navigationBarColor">@color/appletv_background_primary</item>
+        <item name="android:windowLightStatusBar">false</item>
+        
+        <!-- Window Properties -->
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+        
+        <!-- Typography -->
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textAppearance">@style/AppleTV.Text.Body</item>
+    </style>
+    
+    <!-- No Action Bar variant -->
+    <style name="Theme.PrimeX.AppleTV.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    
+    <!-- Fullscreen variant -->
+    <style name="Theme.PrimeX.AppleTV.Fullscreen">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+    
+</resources>

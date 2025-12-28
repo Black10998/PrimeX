@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Apple TV Style Settings List Item -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/appletv_spacing_md"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="@drawable/appletv_settings_item_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Icon -->
+        <ImageView
+            android:id="@+id/settings_icon"
+            android:layout_width="@dimen/appletv_icon_sm"
+            android:layout_height="@dimen/appletv_icon_sm"
+            android:layout_marginEnd="@dimen/appletv_spacing_md"
+            android:tint="@color/appletv_text_secondary"
+            android:contentDescription="@string/settings" />
+
+        <!-- Text Container -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/settings_title"
+                style="@style/AppleTV.Text.Callout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/appletv_text_primary" />
+
+            <!-- Description -->
+            <TextView
+                android:id="@+id/settings_description"
+                style="@style/AppleTV.Text.Footnote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/appletv_spacing_xxxs"
+                android:textColor="@color/appletv_text_tertiary"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <!-- Value/Chevron -->
+        <TextView
+            android:id="@+id/settings_value"
+            style="@style/AppleTV.Text.Callout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/appletv_spacing_sm"
+            android:textColor="@color/appletv_text_tertiary"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/settings_chevron"
+            android:layout_width="@dimen/appletv_icon_xs"
+            android:layout_height="@dimen/appletv_icon_xs"
+            android:layout_marginStart="@dimen/appletv_spacing_sm"
+            android:src="@drawable/ic_chevron_right"
+            android:tint="@color/appletv_text_quaternary"
+            android:contentDescription="@string/more_info" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Apple TV Style Content Card -->
+<com.primex.iptv.ui.appletv.AppleTVCard
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/appletv_card_medium_width"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/appletv_card_spacing">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Card Image/Poster -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/appletv_card_medium_height"
+            app:cardCornerRadius="@dimen/appletv_card_corner_radius"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/appletv_background_card">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!-- Content Image -->
+                <ImageView
+                    android:id="@+id/card_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/content_image" />
+
+                <!-- Gradient Overlay (bottom) -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/appletv_gradient_bottom" />
+
+                <!-- Progress Bar (for continue watching) -->
+                <ProgressBar
+                    android:id="@+id/card_progress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:layout_gravity="bottom"
+                    android:progressTint="@color/appletv_accent_primary"
+                    android:progressBackgroundTint="@color/appletv_background_tertiary"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/appletv_spacing_xs"
+            android:paddingBottom="@dimen/appletv_spacing_sm">
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/card_title"
+                style="@style/AppleTV.Text.CardTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Subtitle/Metadata -->
+            <TextView
+                android:id="@+id/card_subtitle"
+                style="@style/AppleTV.Text.CardSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/appletv_spacing_xxxs" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.primex.iptv.ui.appletv.AppleTVCard>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Apple TV Design System - Color Palette -->
+    
+    <!-- Background Colors -->
+    <color name="appletv_background_primary">#000000</color>
+    <color name="appletv_background_secondary">#0A0A0A</color>
+    <color name="appletv_background_tertiary">#141414</color>
+    <color name="appletv_background_elevated">#1C1C1E</color>
+    <color name="appletv_background_card">#1C1C1E</color>
+    
+    <!-- Text Colors -->
+    <color name="appletv_text_primary">#FFFFFF</color>
+    <color name="appletv_text_secondary">#EBEBF5</color>
+    <color name="appletv_text_tertiary">#EBEBF599</color>
+    <color name="appletv_text_quaternary">#EBEBF54D</color>
+    <color name="appletv_text_disabled">#EBEBF533</color>
+    
+    <!-- Accent Colors -->
+    <color name="appletv_accent_primary">#007AFF</color>
+    <color name="appletv_accent_secondary">#5AC8FA</color>
+    <color name="appletv_accent_success">#34C759</color>
+    <color name="appletv_accent_warning">#FF9500</color>
+    <color name="appletv_accent_error">#FF3B30</color>
+    
+    <!-- Focus & Selection -->
+    <color name="appletv_focus_glow">#FFFFFF</color>
+    <color name="appletv_focus_shadow">#00000080</color>
+    <color name="appletv_selection_overlay">#FFFFFF1A</color>
+    
+    <!-- Overlay & Scrim -->
+    <color name="appletv_scrim_light">#00000033</color>
+    <color name="appletv_scrim_medium">#00000066</color>
+    <color name="appletv_scrim_heavy">#000000B3</color>
+    <color name="appletv_overlay_gradient_start">#00000000</color>
+    <color name="appletv_overlay_gradient_end">#000000E6</color>
+    
+    <!-- Separator & Border -->
+    <color name="appletv_separator">#EBEBF529</color>
+    <color name="appletv_border">#EBEBF51F</color>
+    
+    <!-- Interactive States -->
+    <color name="appletv_button_normal">#2C2C2E</color>
+    <color name="appletv_button_focused">#3A3A3C</color>
+    <color name="appletv_button_pressed">#48484A</color>
+    
+    <!-- Special Effects -->
+    <color name="appletv_glass_effect">#FFFFFF0D</color>
+    <color name="appletv_blur_tint">#0000001A</color>
+    
+</resources>

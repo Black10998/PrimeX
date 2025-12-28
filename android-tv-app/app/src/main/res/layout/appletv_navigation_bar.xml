@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Apple TV Style Navigation Bar -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/appletv_navbar_height"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="@dimen/appletv_screen_margin_horizontal"
+    android:paddingEnd="@dimen/appletv_screen_margin_horizontal"
+    android:background="@drawable/appletv_navbar_background">
+
+    <!-- App Logo -->
+    <ImageView
+        android:id="@+id/nav_logo"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/app_icon"
+        android:contentDescription="@string/app_name" />
+
+    <!-- Navigation Items Container -->
+    <HorizontalScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/appletv_spacing_xl"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/nav_items_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Home -->
+            <TextView
+                android:id="@+id/nav_home"
+                style="@style/AppleTV.NavItem"
+                android:text="@string/home" />
+
+            <!-- Live TV -->
+            <TextView
+                android:id="@+id/nav_live_tv"
+                style="@style/AppleTV.NavItem"
+                android:text="@string/live_tv" />
+
+            <!-- Movies -->
+            <TextView
+                android:id="@+id/nav_movies"
+                style="@style/AppleTV.NavItem"
+                android:text="@string/movies" />
+
+            <!-- Series -->
+            <TextView
+                android:id="@+id/nav_series"
+                style="@style/AppleTV.NavItem"
+                android:text="@string/series" />
+
+            <!-- Search -->
+            <TextView
+                android:id="@+id/nav_search"
+                style="@style/AppleTV.NavItem"
+                android:text="@string/search" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <!-- User Profile / Settings -->
+    <ImageView
+        android:id="@+id/nav_profile"
+        android:layout_width="@dimen/appletv_icon_md"
+        android:layout_height="@dimen/appletv_icon_md"
+        android:src="@drawable/ic_settings"
+        android:focusable="true"
+        android:clickable="true"
+        android:padding="@dimen/appletv_spacing_xs"
+        android:contentDescription="@string/settings" />
+
+</LinearLayout>
